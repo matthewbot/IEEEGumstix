@@ -1,10 +1,10 @@
-#ifndef ROOMGRID_H
-#define ROOMGRID_H
+#ifndef WORLDGRID_H
+#define WORLDGRID_H
 
 #include <boost/scoped_array.hpp>
 
 namespace roomsim {
-	class RoomGrid {
+	class WorldGrid {
 		public:
 			enum GridSquare {
 				EMPTY,
@@ -15,7 +15,7 @@ namespace roomsim {
 			
 			static bool passable(GridSquare square);
 		
-			RoomGrid(int w, int h);
+			WorldGrid(int w, int h);
 			
 			GridSquare &operator()(int x, int y);
 			GridSquare operator()(int x, int y) const;
