@@ -8,6 +8,10 @@ using namespace std;
 
 WorldGrid::WorldGrid(int w, int h)
 : width(w), height(h), squares(new GridSquare [w*h]) {
+	clear();
+}
+
+void WorldGrid::clear() {
 	fill(&squares[0], &squares[width*height], EMPTY);
 }
 

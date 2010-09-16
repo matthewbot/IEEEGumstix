@@ -17,6 +17,7 @@ namespace roomsim {
 		
 			WorldGrid(int w, int h);
 			
+			void clear();
 			inline int getWidth() const { return width; }
 			inline int getHeight() const { return height; }
 			
