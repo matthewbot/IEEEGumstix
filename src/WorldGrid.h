@@ -17,10 +17,14 @@ namespace roomsim {
 		
 			WorldGrid(int w, int h);
 			
+			inline int getWidth() const { return width; }
+			inline int getHeight() const { return height; }
+			
 			GridSquare &operator()(int x, int y);
 			GridSquare operator()(int x, int y) const;
 
 			bool isPassable(int x, int y) const;
+			
 		private:
 			int width, height;
 			boost::scoped_array<GridSquare> squares;
