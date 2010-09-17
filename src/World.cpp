@@ -8,12 +8,13 @@ using namespace std;
 
 World::World(int w, int h) : grid(w, h) { }
 
-World::WorldObjectIterator World::add(WorldObject *object) {
-	objects.push_back(object);
+World::iterator World::add(WorldObject *object) {
+	iterator pos = objects.insert(objects.end(), object);
 	object->fillWorldGrid(grid);
+	return pos;
 }
 
-void World::remove(WorldObjectIterator object) {
+void World::remove(iterator object) {
 	objects.erase(object);
 	updateGrid();
 }
