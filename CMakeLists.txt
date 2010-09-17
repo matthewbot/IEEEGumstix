@@ -1,8 +1,8 @@
 cmake_minimum_required (VERSION 2.6)
-project (HELLO)
+project (RoomSim)
 
 find_package(wxWidgets COMPONENTS core base REQUIRED)
-include( ${wxWidgets_INCLUDE_DIRS} )
+include( ${wxWidgets_USE_FILE} )
 
 find_package(Boost)
 include( ${Boost_INCLUDE_DIRS} )
