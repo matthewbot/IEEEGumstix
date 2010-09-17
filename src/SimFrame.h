@@ -2,11 +2,15 @@
 #define SIMFRAME_H
 
 #include <wx/wx.h>
+#include "WorldPanel.h"
 
 namespace pathsim {
 	class SimFrame : public wxFrame {
 		public:
-			SimFrame();
+			SimFrame(const World &world);
+			
+		private:
+			WorldPanel worldpanel;
 	};
 }
 
