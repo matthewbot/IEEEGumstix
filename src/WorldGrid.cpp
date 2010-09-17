@@ -43,13 +43,13 @@ void WorldGrid::fillLine(int startx, int starty, int endx, int endy, GridSquare 
 		swap(starty, endy);
 	}
 	
-	const float derror = abs(endy - starty) / (endx - startx);
+	const float derror = (float)abs(endy - starty) / (endx - startx);
 	
 	float error = 0;
 	int y = starty;
 	for (int x=startx; x<=endx; x++) {
 		if (steep)
-			set(x, y, square);
+			set(y, x, square);
 		else
 			set(x, y, square);
 			
