@@ -9,7 +9,7 @@ namespace pathsim {
 			VictimWorldObject(int x, int y);
 			virtual ~VictimWorldObject();
 			
-			virtual void fillWorldGrid(WorldGrid &grid) const = 0;
+			virtual void fillWorldGrid(WorldGrid &grid) const;
 			
 		private:
 			int x, y;

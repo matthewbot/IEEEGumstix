@@ -9,7 +9,7 @@ namespace pathsim {
 			ObstacleWorldObject(int startx, int starty, int endx, int endy, bool large);
 			virtual ~ObstacleWorldObject();
 			
-			virtual void fillWorldGrid(WorldGrid &grid) const = 0;
+			virtual void fillWorldGrid(WorldGrid &grid) const;
 			
 		private:
 			int startx, starty;
