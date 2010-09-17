@@ -3,7 +3,7 @@
 
 #include "WorldObject.h"
 
-namespace roomsim {
+namespace pathsim {
 	class ObstacleWorldObject : public WorldObject {
 		public:
 			ObstacleWorldObject(int startx, int starty, int endx, int endy, bool large);

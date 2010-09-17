@@ -3,7 +3,7 @@
 
 #include <wx/wx.h>
 
-namespace roomsim {
+namespace pathsim {
 	class SimFrame : public wxFrame {
 		public:
 			SimFrame();

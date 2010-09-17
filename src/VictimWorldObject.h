@@ -3,7 +3,7 @@
 
 #include "WorldObject.h"
 
-namespace roomsim {
+namespace pathsim {
 	class VictimWorldObject : public WorldObject {
 		public:
 			VictimWorldObject(int x, int y);

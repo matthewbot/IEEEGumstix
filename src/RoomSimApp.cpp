@@ -1,7 +1,7 @@
 #include "RoomSimApp.h"
 #include "SimFrame.h"
 
-using namespace roomsim;
+using namespace pathsim;
 
 IMPLEMENT_APP(RoomSimApp)
 

@@ -2,7 +2,7 @@
 #include <boost/bind.hpp>
 #include <algorithm>
 
-using namespace roomsim;
+using namespace pathsim;
 using namespace boost;
 using namespace std;
 

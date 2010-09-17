@@ -4,7 +4,7 @@
 #include <boost/ptr_container/ptr_vector.hpp>
 #include "WorldObject.h"
 
-namespace roomsim {
+namespace pathsim {
 	class World {
 		typedef boost::ptr_vector<WorldObject> WorldObjectList;
 	

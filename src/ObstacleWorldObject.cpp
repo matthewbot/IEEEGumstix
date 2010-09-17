@@ -1,6 +1,6 @@
 #include "ObstacleWorldObject.h"
 
-using namespace roomsim;
+using namespace pathsim;
 
 ObstacleWorldObject::ObstacleWorldObject(int startx, int starty, int endx, int endy, bool large)
 : startx(startx), starty(starty), endx(endx), endy(endy), large(large) { }

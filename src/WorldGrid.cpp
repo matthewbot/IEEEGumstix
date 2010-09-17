@@ -3,7 +3,7 @@
 #include <algorithm>
 
 using namespace boost;
-using namespace roomsim;
+using namespace pathsim;
 using namespace std;
 
 bool WorldGrid::passable(GridSquare square) {

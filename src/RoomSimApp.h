@@ -5,7 +5,7 @@
 #include "SimFrame.h"
 #include "World.h"
 
-namespace roomsim {
+namespace pathsim {
 	class RoomSimApp : public wxApp {
 		public:
 			RoomSimApp();

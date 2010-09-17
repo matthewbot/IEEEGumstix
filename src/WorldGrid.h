@@ -3,7 +3,7 @@
 
 #include <boost/scoped_array.hpp>
 
-namespace roomsim {
+namespace pathsim {
 	class WorldGrid {
 		public:
 			enum GridSquare {

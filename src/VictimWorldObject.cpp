@@ -1,6 +1,6 @@
 #include "VictimWorldObject.h"
 
-using namespace roomsim;
+using namespace pathsim;
 
 VictimWorldObject::VictimWorldObject(int x, int y) : x(x), y(y) { }
 VictimWorldObject::~VictimWorldObject() { }

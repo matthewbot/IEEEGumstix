@@ -1,6 +1,6 @@
 #include "SimFrame.h"
 
-using namespace roomsim;
+using namespace pathsim;
 
 SimFrame::SimFrame() : wxFrame(NULL, -1, _("Hello World")) { }
 

@@ -3,7 +3,7 @@
 
 #include "WorldGrid.h"
 
-namespace roomsim {
+namespace pathsim {
 	class WorldObject {
 		public:
 			inline virtual ~WorldObject() { }
