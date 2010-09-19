@@ -10,13 +10,15 @@ namespace pathsim {
 				EMPTY,
 				SMALL_OBSTACLE,
 				VICTIM,
-				LARGE_OBSTACLE
+				LARGE_OBSTACLE,
+				UNKNOWN
 			};
 			
-			static bool passable(GridSquare square);
+			inline static bool passable(GridSquare square) { return square < VICTIM; }
+			inline static bool known(GridSquare square) { return square != UNKNOWN; }
 		
-			WorldGrid(int w, int h);
-			void clear();
+			WorldGrid(int w, int h, GridSquare clearsquare=EMPTY);
+			void clear(GridSquare square=EMPTY);
 			
 			inline int getWidth() const { return width; }
 			inline int getHeight() const { return height; }

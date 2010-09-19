@@ -6,17 +6,13 @@ using namespace boost;
 using namespace pathsim;
 using namespace std;
 
-bool WorldGrid::passable(GridSquare square) {
-	return square < VICTIM;
-}
-
-WorldGrid::WorldGrid(int w, int h)
+WorldGrid::WorldGrid(int w, int h, GridSquare clearsquare)
 : width(w), height(h), squares(new GridSquare [w*h]) {
-	clear();
+	clear(clearsquare);
 }
 
-void WorldGrid::clear() {
-	fill(&squares[0], &squares[width*height], EMPTY);
+void WorldGrid::clear(GridSquare square) {
+	fill(&squares[0], &squares[width*height], square);
 }
 
 WorldGrid::GridSquare &WorldGrid::operator()(int x, int y) {
@@ -73,7 +69,6 @@ void WorldGrid::fillLine(int startx, int starty, int endx, int endy, GridSquare 
 			}
 			
 			error -= 1;
-
 		}
 	}
 }
