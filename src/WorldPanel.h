@@ -10,7 +10,9 @@ namespace pathsim {
 			WorldPanel(wxWindow *parent, const World &world);
 			
 		private:
-			void OnPaint(wxPaintEvent& event);
+			void OnPaint(wxPaintEvent &event);
+			void paintGrid(wxPaintDC &dc);
+			void paintObjects(wxPaintDC &dc);
 		
 			const World &world;
 			
