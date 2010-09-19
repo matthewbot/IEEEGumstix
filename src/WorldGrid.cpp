@@ -31,7 +31,7 @@ WorldGrid::GridSquare WorldGrid::operator()(int x, int y) const {
 	return squares[x + y*width];
 }
 
-// bresenham's line algorithm
+// based on bresenham's line algorithm
 void WorldGrid::fillLine(int startx, int starty, int endx, int endy, GridSquare square) {
 	const bool steep = abs(endy - starty) > abs(endx - startx);
 	if (steep) {
@@ -55,8 +55,25 @@ void WorldGrid::fillLine(int startx, int starty, int endx, int endy, GridSquare 
 			
 		error += derror;
 		if (error >= 0.5) {
+			const bool horizdiag = error - 0.5 < derror/2;
+			if (horizdiag) {
+				if (steep) // small tweak, make sure there are no diagonal holes for it to pathfind through
+					set(y, x+1, square);
+				else
+					set(x+1, y, square);
+			}
+				
 			y += (starty < endy ? 1 : -1);
+			
+			if (!horizdiag) {
+				if (steep)
+					set(y, x, square);
+				else
+					set(x, y, square);
+			}
+			
 			error -= 1;
+
 		}
 	}
 }
