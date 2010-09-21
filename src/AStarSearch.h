@@ -2,6 +2,7 @@
 #define ASTARSEARCH_H
 
 #include "WorldGrid.h"
+#include "util.h"
 #include <vector>
 #include <set>
 #include <boost/scoped_array.hpp>
@@ -9,35 +10,13 @@
 namespace pathsim {
 	class AStarSearch {
 		public:
-			struct Pos {
-				int x, y;
-				
-				bool operator==(const Pos &pos) const;
-				inline bool operator!=(const Pos &pos) const { return !(*this == pos); }
-			};
-		
-			enum Dir {
-				DIR_NONE,
-				DIR_E,
-				DIR_NE,
-				DIR_N,
-				DIR_NW,
-				DIR_W,
-				DIR_SW,
-				DIR_S,
-				DIR_SE,
-				MAX_DIR
-			};
-			
-			static Dir oppositeDir(Dir dir);
-			static bool isDirDiagonal(Dir dir);
-			static Pos advancePos(Pos pos, Dir dir);
-		
 			struct Square {
 				Dir parentdir;
 				int gscore; // best movement cost
 				int hscore; // heuristic score
 				bool closed;
+				
+				Square();
 			};
 
 			typedef std::vector<Pos> Route;
@@ -53,6 +32,8 @@ namespace pathsim {
 			
 		private:
 			inline Square &getSquare(const Pos &pos) { return squares[pos.x + pos.y*width]; }
+		
+			void doSearch(const WorldGrid &grid, const Pos &start, const Pos &end);
 		
 			int width, height;
 			boost::scoped_array<Square> squares;

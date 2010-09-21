@@ -6,48 +6,23 @@
 using namespace pathsim;
 using namespace std;
 
-bool AStarSearch::Pos::operator==(const Pos &other) const {
-	return x == other.x && y == other.y;
-}
-
-AStarSearch::Dir AStarSearch::oppositeDir(Dir dir) {
-	int newdir = dir + 4;
-	if (newdir >= MAX_DIR)
-		newdir -= MAX_DIR - 1; // -1 to skip DIR_NONE
-	return (Dir)newdir;
-}
-
-bool AStarSearch::isDirDiagonal(Dir dir) {
-	switch (dir) {
-		case DIR_NE:
-		case DIR_NW:
-		case DIR_SW:
-		case DIR_SE:
-			return true;
-			
-		default:
-			return false;
-	}
-}
-
-AStarSearch::Pos AStarSearch::advancePos(Pos pos, Dir dir) {
-	if (dir == DIR_NE || dir == DIR_E || dir == DIR_SE)
-		pos.x += 1;
-	else if (dir == DIR_NW || dir == DIR_W || dir == DIR_SW)
-		pos.x -= 1;
-	
-	if (dir == DIR_NW || dir == DIR_N || dir == DIR_NE)
-		pos.y -= 1;
-	else if (dir == DIR_SW || dir == DIR_S || dir == DIR_SE)
-		pos.y += 1;
-		
-	return pos;
-}
+AStarSearch::Square::Square()
+: parentdir(DIR_NONE), closed(false) { }
 
 AStarSearch::AStarSearch(const WorldGrid &grid, const Pos &start, const Pos &end)
 : width(grid.getWidth()), height(grid.getHeight()), squares(new Square[grid.getWidth()*grid.getHeight()]) {
-	memset(squares.get(), '\0', sizeof(Square)*grid.getWidth()*grid.getHeight());
+	doSearch(grid, start, end);
+	
+	Pos curpos=end;
+	while (curpos != start) {
+		route.push_back(curpos);
+		curpos = advancePos(curpos, getSquare(curpos).parentdir);
+	}
+	
+	reverse(route.begin(), route.end());
+}
 
+void AStarSearch::doSearch(const WorldGrid &grid, const Pos &start, const Pos &end) {
 	typedef std::vector<Pos> PosList;
 	PosList openlist;
 	
@@ -111,13 +86,5 @@ AStarSearch::AStarSearch(const WorldGrid &grid, const Pos &start, const Pos &end
 			}
 		}
 	}
-	
-	Pos curpos=end;
-	while (curpos != start) {
-		route.push_back(curpos);
-		curpos = advancePos(curpos, getSquare(curpos).parentdir);
-	}
-	
-	reverse(route.begin(), route.end());
 }
 
