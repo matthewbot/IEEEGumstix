@@ -4,7 +4,7 @@
 #include "WorldGrid.h"
 #include "util.h"
 #include <vector>
-#include <set>
+#include <list>
 #include <boost/scoped_array.hpp>
 
 namespace pathsim {
@@ -12,8 +12,8 @@ namespace pathsim {
 		public:
 			struct Square {
 				Dir parentdir;
-				int gscore; // best movement cost
-				int hscore; // heuristic score
+				int cost;
+				int heuristic; 
 				bool closed;
 				
 				Square();
@@ -33,6 +33,11 @@ namespace pathsim {
 		private:
 			inline Square &getSquare(const Pos &pos) { return squares[pos.x + pos.y*width]; }
 		
+			typedef std::list<Pos> OpenList;
+			bool isPosValid(const Pos &pos);
+			void insertPosToOpenList(OpenList &openlist, const Pos &pos, int fscore);
+			int pathCost(Dir dir, const Pos &pos, const WorldGrid &grid);
+			int positionHeuristic(const Pos &pos, const Pos &end);
 			void doSearch(const WorldGrid &grid, const Pos &start, const Pos &end);
 		
 			int width, height;

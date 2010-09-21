@@ -17,11 +17,9 @@ RoomSimApp::RoomSimApp() : world(10, 10) {
 	world.add(new ObstacleWorldObject(5, 0, 7, 8, true));
 	world.add(new ObstacleWorldObject(1, 6, 4, 7, false));
 	
-	AStarSearch::Pos start = {0, 0};
-	AStarSearch::Pos end = {8, 1};
-	AStarSearch search(world.getGrid(), start, end);
+	AStarSearch search(world.getGrid(), Pos(0, 0), Pos(8, 1));
 	for (AStarSearch::Route::const_iterator i = search.getRoute().begin(); i != search.getRoute().end(); ++i) {
-		cout << "(" << i->x << "," << i->y << ")" << endl;
+		cout << *i << endl;
 	}
 }
 

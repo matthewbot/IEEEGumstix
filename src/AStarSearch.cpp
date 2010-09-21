@@ -2,12 +2,13 @@
 #include <algorithm>
 #include <cstring>
 #include <iostream>
+#include <list>
 
 using namespace pathsim;
 using namespace std;
 
 AStarSearch::Square::Square()
-: parentdir(DIR_NONE), closed(false) { }
+: parentdir(DIR_NONE), cost(0), heuristic(0), closed(false) { }
 
 AStarSearch::AStarSearch(const WorldGrid &grid, const Pos &start, const Pos &end)
 : width(grid.getWidth()), height(grid.getHeight()), squares(new Square[grid.getWidth()*grid.getHeight()]) {
@@ -23,68 +24,85 @@ AStarSearch::AStarSearch(const WorldGrid &grid, const Pos &start, const Pos &end
 }
 
 void AStarSearch::doSearch(const WorldGrid &grid, const Pos &start, const Pos &end) {
-	typedef std::vector<Pos> PosList;
-	PosList openlist;
-	
-	openlist.push_back(start);
+	OpenList openlist;
+	openlist.push_back(start); // start off with the starting square on the open list
+
 	while (openlist.size() > 0) {
-		Pos curpos = openlist.front();
-		openlist.erase(openlist.begin());
+		Pos curpos = openlist.front(); // get the current best candidate's position
+		openlist.erase(openlist.begin()); // remove it from the open list
 		
-		Square &cursquare = getSquare(curpos);
-		cursquare.closed = true;
+		Square &cursquare = getSquare(curpos); // get the current square
+		cursquare.closed = true; // set it to closed so we don't search it again
 		
-		if (curpos == end)
+		if (curpos == end) // if we just closed the end square, we're done searching
 			break;
 		
-		for (Dir dir = DIR_E; dir <= DIR_SE; dir=(Dir)(dir+1)) {
-			Pos pos = advancePos(curpos, dir);
-			if (pos.x < 0 || pos.x >= width)
+		for (Dir dir = DIR_E; dir <= DIR_SE; dir=(Dir)(dir+1)) { // for each possible direction
+			Pos pos = advancePos(curpos, dir); // get the position of the location we'd end up
+			if (!isPosValid(pos)) // skip it if its not valid
 				continue;
-			if (pos.y < 0 || pos.y >= height)
-				continue;
-			if (!grid.getPassable(pos.x, pos.y))
+			if (!grid.getPassable(pos.x, pos.y)) // or if its not passable
 				continue;
 					
-			Square &square = getSquare(pos);
-		
-			if (square.closed)
+			Square &square = getSquare(pos); // get the square of where we'd end up
+			if (square.closed) // if its already been searched, skip it
 				continue;
 		
-			int gscore = cursquare.gscore + (isDirDiagonal(dir) ? 14 : 10);
-			if (grid(pos.x, pos.y) == WorldGrid::SMALL_OBSTACLE)
-				gscore += 20;
+			int ourcost = cursquare.cost + pathCost(dir, pos, grid); // otherwise compute the cost of moving from our square to this one
 			
-			if (square.parentdir == DIR_NONE) {
-				square.parentdir = oppositeDir(dir);
-				square.gscore = gscore;
-				square.hscore = abs(pos.x - end.x) + abs(pos.y - end.y);
-				int fscore = square.gscore + square.hscore;
+			if (square.parentdir != DIR_NONE) { // if the other square already has a parent/path to it
+				if (square.cost <= ourcost) // and the route from its parent to it is better than the route from us to it
+					continue; // then skip it, we're not as good
 				
-				PosList::iterator i;
-				for (i = openlist.begin(); i != openlist.end(); ++i) {
-					Square &othersquare = getSquare(*i);
-					if (othersquare.gscore + othersquare.hscore > fscore)
-						break;
-				}
-			
-				openlist.insert(i, pos);
-			} else if (square.gscore > gscore) {
-				square.gscore = gscore;
-				square.parentdir = oppositeDir(dir);
-				int fscore = gscore + square.hscore;
-				
-				PosList::iterator i = find(openlist.begin(), openlist.end(), pos);
-				openlist.erase(i);
-				for (i = openlist.begin(); i != openlist.end(); ++i) {
-					Square &othersquare = getSquare(*i);
-					if (othersquare.gscore + othersquare.hscore > fscore)
-						break;
-				}
-				
-				openlist.insert(i, pos);
+				// otherwise, we're better, and going to recompute its cost
+				openlist.erase(find(openlist.begin(), openlist.end(), pos)); // so remove it from the open list for now, since its going to get a new spot
+			} else { // the square has never been found before
+				square.heuristic = positionHeuristic(pos, end); // go ahead and compute its position heuristic
 			}
+			
+			// if we get here, we're the best route to this square
+			square.parentdir = oppositeDir(dir); // set the squares parent direction to the opposite direction we used to find it
+			square.cost = ourcost; // set its cost to our computed cost
+
+			insertPosToOpenList(openlist, pos, square.cost + square.heuristic); // put this square on the open list
 		}
 	}
 }
+
+bool AStarSearch::isPosValid(const Pos &pos) {
+	if (pos.x < 0 || pos.x >= width)
+		return false;
+	if (pos.y < 0 || pos.y >= height)
+		return false;
+	return true;
+}
+
+void AStarSearch::insertPosToOpenList(OpenList &openlist, const Pos &pos, int fscore) {
+	OpenList::iterator i;
+	for (i = openlist.begin(); i != openlist.end(); ++i) {
+		Square &othersquare = getSquare(*i);
+		if (othersquare.cost + othersquare.heuristic > fscore)
+			break;
+	}
+
+	openlist.insert(i, pos);
+}
+
+int AStarSearch::pathCost(Dir dir, const Pos &pos, const WorldGrid &grid) {
+	int cost;
+	if (isDirDiagonal(dir))
+		cost = 14;
+	else
+		cost = 10;
+	
+	if (grid(pos.x, pos.y) == WorldGrid::SMALL_OBSTACLE)
+		cost += 20;
+		
+	return cost;
+}
+
+int AStarSearch::positionHeuristic(const Pos &pos, const Pos &end) {
+	return abs(pos.x - end.x) + abs(pos.y - end.y);
+}
+
 
