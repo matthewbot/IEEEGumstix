@@ -10,21 +10,24 @@ using namespace std;
 
 IMPLEMENT_APP(RoomSimApp)
 
-RoomSimApp::RoomSimApp() : world(10, 10) {
-	world.add(new VictimWorldObject(2, 2));
-	world.add(new VictimWorldObject(9, 4));
-	world.add(new VictimWorldObject(5, 9));
-	world.add(new ObstacleWorldObject(5, 0, 7, 8, true));
-	world.add(new ObstacleWorldObject(1, 6, 4, 7, false));
-	
-	AStarSearch search(world.getGrid(), Pos(0, 0), Pos(8, 1));
-	for (AStarSearch::Route::const_iterator i = search.getRoute().begin(); i != search.getRoute().end(); ++i) {
-		cout << *i << endl;
-	}
+RoomSimApp::SimWorld::SimWorld()
+: World(10, 10) {
+	add(new ObstacleWorldObject(0, 3, 3, 3, true));
+	add(new ObstacleWorldObject(2, 6, 3, 9, true));
+	add(new ObstacleWorldObject(6, 3, 9, 2, true));
+	add(new ObstacleWorldObject(7, 6, 6, 9, true));
+
+	add(new VictimWorldObject(8, 1));
+	add(new VictimWorldObject(1, 8));
+	add(new VictimWorldObject(8, 8));
+}
+
+RoomSimApp::RoomSimApp()
+: robot(2, Pos(0, 0), world.getGrid()) {
 }
 
 bool RoomSimApp::OnInit() {
-	frame = new SimFrame(world);
+	frame = new SimFrame(world, robot);
 	frame->Show(true);
 	SetTopWindow(frame);
 	return true;

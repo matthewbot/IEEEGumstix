@@ -73,3 +73,32 @@ void WorldGrid::fillLine(int startx, int starty, int endx, int endy, GridSquare 
 	}
 }
 
+bool WorldGrid::getAdjacent(int x, int y, GridSquare square, int *outx, int *outy) const {
+	for (int dx=-1; dx<=1; dx++) {
+		for (int dy=-1; dy<=1; dy++) {
+			if (dx == 0 && dy == 0)
+				continue;
+			
+			const int checkx = x+dx;
+			const int checky = y+dy;
+			
+			if (checkx < 0 || checkx >= width)
+				continue;
+			if (checky < 0 || checky >= height)
+				continue;
+				
+			if (get(x+dx, y+dy) == square) {
+				if (outx && outy) {
+					*outx = checkx;
+					*outy = checky;
+				}
+				
+				return true;
+			}
+		}
+	}
+	
+	return false;
+}
+
+

@@ -4,6 +4,7 @@
 #include <wx/wx.h>
 #include "SimFrame.h"
 #include "World.h"
+#include "Robot.h"
 
 namespace pathsim {
 	class RoomSimApp : public wxApp {
@@ -14,8 +15,13 @@ namespace pathsim {
 			virtual bool OnInit();
 			virtual int OnExit();
 		
+			struct SimWorld : World {
+				SimWorld();
+			};
+		
 			SimFrame *frame;
-			World world;
+			SimWorld world;
+			Robot robot;
 	};
 }
 

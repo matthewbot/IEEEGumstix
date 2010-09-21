@@ -10,15 +10,17 @@ BEGIN_EVENT_TABLE(WorldPanel, wxPanel)
 	EVT_PAINT(WorldPanel::OnPaint)
 END_EVENT_TABLE()
 
-WorldPanel::WorldPanel(wxWindow *parent, const World &world)
+WorldPanel::WorldPanel(wxWindow *parent, const World &world, const Robot &robot)
 : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE), 
-  world(world) { }
+  world(world),
+  robot(robot) { }
 
 void WorldPanel::OnPaint(wxPaintEvent &event) {
 	wxPaintDC dc(this);
 	
 	paintGrid(dc);
 	paintObjects(dc);
+	paintRobot(dc);
 }
 
 void WorldPanel::paintGrid(wxPaintDC &dc) {
@@ -30,9 +32,8 @@ void WorldPanel::paintGrid(wxPaintDC &dc) {
 	const float squarew = (float)dispw/grid.getWidth();
 	const float squareh = (float)disph/grid.getHeight();
 	
-	wxBrush victimbrush(wxColor(150, 200, 130));
-	wxBrush smallobstaclebrush(wxColor(240, 240, 80));
-	wxBrush largeobstaclebrush(wxColor(250, 100, 100));
+	
+	wxBrush brush;
 	
 	for (int x=0; x<grid.getWidth(); x++) {
 		for (int y=0; y<grid.getHeight(); y++) {
@@ -41,25 +42,33 @@ void WorldPanel::paintGrid(wxPaintDC &dc) {
 		
 			switch (grid(x, y)) {
 				case WorldGrid::EMPTY:
-					dc.SetBrush(*wxWHITE_BRUSH);
+					brush.SetColour(255, 255, 255);
 					break;
 			
 				case WorldGrid::SMALL_OBSTACLE:
-					dc.SetBrush(smallobstaclebrush);
+					brush.SetColour(240, 240, 80);
 					break;
 					
 				case WorldGrid::VICTIM:
-					dc.SetBrush(victimbrush);
+					brush.SetColour(150, 200, 130);
 					break;
 					
 				case WorldGrid::LARGE_OBSTACLE:
-					dc.SetBrush(largeobstaclebrush);
+					brush.SetColour(250, 100, 100);
 					break;
 			}
 			
+			if (robot.getMap().get(x, y) == WorldGrid::UNKNOWN) {
+				wxColour color = brush.GetColour();
+				brush.SetColour(color.Red()/2, color.Green()/2, color.Blue()/2);
+			}
+			
+			dc.SetBrush(brush);
 			dc.DrawRectangle(floor(squarex), floor(squarey), ceil(squarew)+1, ceil(squareh)+1);
 		}
 	}
+	
+	dc.SetBrush(*wxWHITE_BRUSH);
 }
 
 void WorldPanel::paintObjects(wxPaintDC &dc) {
@@ -96,4 +105,31 @@ void WorldPanel::paintObjects(wxPaintDC &dc) {
 	}
 }
 
+void WorldPanel::paintRobot(wxPaintDC &dc) {
+	const WorldGrid &grid = world.getGrid();
+	
+	wxCoord dispw, disph;
+	dc.GetSize(&dispw, &disph);
+	
+	const float squarew = (float)dispw/grid.getWidth();
+	const float squareh = (float)disph/grid.getHeight();
+	
+	const float startx = squarew*(robot.getPosition().x + 0.5f);
+	const float starty = squareh*(robot.getPosition().y + 0.5f);
+	const float thickness = min(squarew, squareh) * .3;
+	
+	wxPoint points[3];
+	points[0].x = (int)startx;
+	points[0].y = (int)(starty - thickness);
+	points[1].x = (int)(startx + thickness*cos(7*M_PI/6));
+	points[1].y = (int)(starty - thickness*sin(7*M_PI/6));
+	points[2].x = (int)(startx + thickness*cos(11*M_PI/6));
+	points[2].y = (int)(starty - thickness*sin(11*M_PI/6));
+	dc.DrawPolygon(3, points);
+	
+	const float radius = max(min(squarew, squareh)*.1f, 3.0f);
+	for (AStarSearch::Route::const_iterator i = robot.getRoute().begin(); i != robot.getRoute().end(); ++i) {
+		dc.DrawCircle(squarew*(i->x + 0.5f), squareh*(i->y + 0.5f), radius);
+	}
+}
 

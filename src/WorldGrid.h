@@ -31,7 +31,7 @@ namespace pathsim {
 			void fillLine(int startx, int starty, int endx, int endy, GridSquare square);
 
 			inline bool getPassable(int x, int y) const { return passable(get(x, y)); }
-			
+			bool getAdjacent(int x, int y, GridSquare square, int *outx=NULL, int *outy=NULL) const;
 		private:
 			int width, height;
 			boost::scoped_array<GridSquare> squares;

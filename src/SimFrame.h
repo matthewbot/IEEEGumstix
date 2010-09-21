@@ -7,10 +7,16 @@
 namespace pathsim {
 	class SimFrame : public wxFrame {
 		public:
-			SimFrame(const World &world);
+			SimFrame(const World &world, Robot &robot);
 			
 		private:
+			Robot &robot;
 			WorldPanel worldpanel;
+			wxButton stepbutton;
+			
+			void onStepPressed(wxCommandEvent &event);
+			
+			DECLARE_EVENT_TABLE()
 	};
 }
 
