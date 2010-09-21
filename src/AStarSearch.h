@@ -38,7 +38,7 @@ namespace pathsim {
 			void insertPosToOpenList(OpenList &openlist, const Pos &pos, int fscore);
 			int pathCost(Dir dir, const Pos &pos, const WorldGrid &grid);
 			int positionHeuristic(const Pos &pos, const Pos &end);
-			void doSearch(const WorldGrid &grid, const Pos &start, const Pos &end);
+			bool doSearch(const WorldGrid &grid, const Pos &start, const Pos &end);
 		
 			int width, height;
 			boost::scoped_array<Square> squares;

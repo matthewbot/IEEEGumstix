@@ -12,18 +12,18 @@ AStarSearch::Square::Square()
 
 AStarSearch::AStarSearch(const WorldGrid &grid, const Pos &start, const Pos &end)
 : width(grid.getWidth()), height(grid.getHeight()), squares(new Square[grid.getWidth()*grid.getHeight()]) {
-	doSearch(grid, start, end);
+	if (doSearch(grid, start, end)) {
+		Pos curpos=end;
+		while (curpos != start) {
+			route.push_back(curpos);
+			curpos = advancePos(curpos, getSquare(curpos).parentdir);
+		}
 	
-	Pos curpos=end;
-	while (curpos != start) {
-		route.push_back(curpos);
-		curpos = advancePos(curpos, getSquare(curpos).parentdir);
+		reverse(route.begin(), route.end());
 	}
-	
-	reverse(route.begin(), route.end());
 }
 
-void AStarSearch::doSearch(const WorldGrid &grid, const Pos &start, const Pos &end) {
+bool AStarSearch::doSearch(const WorldGrid &grid, const Pos &start, const Pos &end) {
 	OpenList openlist;
 	openlist.push_back(start); // start off with the starting square on the open list
 
@@ -35,7 +35,7 @@ void AStarSearch::doSearch(const WorldGrid &grid, const Pos &start, const Pos &e
 		cursquare.closed = true; // set it to closed so we don't search it again
 		
 		if (curpos == end) // if we just closed the end square, we're done searching
-			break;
+			return true;
 		
 		for (Dir dir = DIR_E; dir <= DIR_SE; dir=(Dir)(dir+1)) { // for each possible direction
 			Pos pos = advancePos(curpos, dir); // get the position of the location we'd end up
@@ -67,6 +67,8 @@ void AStarSearch::doSearch(const WorldGrid &grid, const Pos &start, const Pos &e
 			insertPosToOpenList(openlist, pos, square.cost + square.heuristic); // put this square on the open list
 		}
 	}
+	
+	return false;
 }
 
 bool AStarSearch::isPosValid(const Pos &pos) {
