@@ -47,7 +47,10 @@ void Robot::updateSensorsStep() {
 	}
 }
 
+#include <iostream>
+
 void Robot::updateRouteStep() {
+	cout << "--------Update--------" << endl;
 	route.clear();
 	
 	int bestscore = 9999;
@@ -57,7 +60,7 @@ void Robot::updateRouteStep() {
 			if (!map.getPassable(x, y))
 				continue;
 
-			if (!map.getAdjacent(x, y, WorldGrid::UNKNOWN)) {
+			if (!map.getAdjacent(x, y, WorldGrid::UNKNOWN, NULL, NULL, sensorrange)) {
 				int victimx, victimy;
 				if (!map.getAdjacent(x, y, WorldGrid::VICTIM, &victimx, &victimy))
 					continue;
@@ -71,6 +74,7 @@ void Robot::updateRouteStep() {
 				continue;
 				
 			int score = scoreRoute(search);
+			cout << "Evaluated " << pos << " score " << score << endl;
 			if (score >= bestscore)
 				continue;
 				
@@ -84,7 +88,7 @@ int Robot::scoreRoute(const AStarSearch &search) const {
 	const Pos &dest = search.getRoute().back();
 	int score=0;
 
-	score += search.getRouteCost()/3;
+	score += search.getRouteCost()/2;
 
 	int victimx, victimy;
 	if (map.getAdjacent(dest.x, dest.y, WorldGrid::VICTIM, &victimx, &victimy)) {
@@ -92,7 +96,7 @@ int Robot::scoreRoute(const AStarSearch &search) const {
 			score -= 500;
 	}
 	
-	score -= 4*map.countAdjacent(dest.x, dest.y, WorldGrid::UNKNOWN);
+	score -= 2*map.countAdjacent(dest.x, dest.y, WorldGrid::UNKNOWN, sensorrange);
 	
 	return score;
 }

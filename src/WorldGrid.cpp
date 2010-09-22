@@ -73,11 +73,11 @@ void WorldGrid::fillLine(int startx, int starty, int endx, int endy, GridSquare 
 	}
 }
 
-int WorldGrid::countAdjacent(int x, int y, GridSquare square) const {
+int WorldGrid::countAdjacent(int x, int y, GridSquare square, int range) const {
 	int count=0;
 
-	for (int dx=-1; dx<=1; dx++) {
-		for (int dy=-1; dy<=1; dy++) {
+	for (int dx=-range; dx<=range; dx++) {
+		for (int dy=-range; dy<=range; dy++) {
 			if (dx == 0 && dy == 0)
 				continue;
 				
@@ -97,9 +97,9 @@ int WorldGrid::countAdjacent(int x, int y, GridSquare square) const {
 	return count;
 }
 
-bool WorldGrid::getAdjacent(int x, int y, GridSquare square, int *outx, int *outy) const {
-	for (int dx=-1; dx<=1; dx++) {
-		for (int dy=-1; dy<=1; dy++) {
+bool WorldGrid::getAdjacent(int x, int y, GridSquare square, int *outx, int *outy, int range) const {
+	for (int dx=-range; dx<=range; dx++) {
+		for (int dy=-range; dy<=range; dy++) {
 			if (dx == 0 && dy == 0)
 				continue;
 			
