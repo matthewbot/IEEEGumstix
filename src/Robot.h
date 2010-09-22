@@ -24,7 +24,7 @@ namespace pathsim {
 			void updateSensorsStep();
 			void computeDestStep();
 			void updateRouteStep();
-			int scoreRoute(const AStarSearch::Route &route) const;
+			int scoreRoute(const AStarSearch &search) const;
 		
 			const int sensorrange;
 		

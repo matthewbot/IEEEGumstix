@@ -12,10 +12,10 @@ IMPLEMENT_APP(RoomSimApp)
 
 RoomSimApp::SimWorld::SimWorld()
 : World(10, 10) {
-	add(new ObstacleWorldObject(0, 3, 3, 3, true));
+	add(new ObstacleWorldObject(0, 3, 3, 3, false));
 	add(new ObstacleWorldObject(2, 6, 3, 9, true));
 	add(new ObstacleWorldObject(6, 3, 9, 2, true));
-	add(new ObstacleWorldObject(7, 6, 6, 9, true));
+	add(new ObstacleWorldObject(7, 6, 6, 9, false));
 
 	add(new VictimWorldObject(8, 1));
 	add(new VictimWorldObject(1, 8));

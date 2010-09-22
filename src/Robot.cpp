@@ -70,7 +70,7 @@ void Robot::updateRouteStep() {
 			if (!search.foundRoute())
 				continue;
 				
-			int score = scoreRoute(search.getRoute());
+			int score = scoreRoute(search);
 			if (score >= bestscore)
 				continue;
 				
@@ -80,11 +80,11 @@ void Robot::updateRouteStep() {
 	}
 }
 
-int Robot::scoreRoute(const AStarSearch::Route &route) const {
-	const Pos &dest = route.back();
+int Robot::scoreRoute(const AStarSearch &search) const {
+	const Pos &dest = search.getRoute().back();
 	int score=0;
 
-	score += 5 * route.size();
+	score += search.getRouteCost()/3;
 	
 	if (dest.x < sensorrange)
 		score += 2 * (sensorrange - dest.x);
@@ -98,7 +98,7 @@ int Robot::scoreRoute(const AStarSearch::Route &route) const {
 	int victimx, victimy;
 	if (map.getAdjacent(dest.x, dest.y, WorldGrid::VICTIM, &victimx, &victimy)) {
 		if (find(identifiedvictims.begin(), identifiedvictims.end(), Pos(victimx, victimy)) == identifiedvictims.end())
-			score -= 100;
+			score -= 500;
 	}
 	
 	return score;

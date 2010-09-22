@@ -26,6 +26,7 @@ namespace pathsim {
 			inline const Route &getRoute() const { return route; }
 			inline int getRouteLength() const { return route.size(); }
 			inline bool foundRoute() const { return route.size() > 0; }
+			inline int getRouteCost() const { return getSquare(route.back()).cost; }
 			
 			const Square &getSquare(int x, int y) const { return squares[x + y*width]; }
 			const Square &getSquare(const Pos &pos) const { return getSquare(pos.x, pos.y); }
