@@ -84,16 +84,16 @@ int Robot::scoreRoute(const AStarSearch &search) const {
 	const Pos &dest = search.getRoute().back();
 	int score=0;
 
-	score += search.getRouteCost()/3;
+	score += search.getRouteCost()/2;
 	
 	if (dest.x < sensorrange)
-		score += 2 * (sensorrange - dest.x);
+		score += 3 * (sensorrange - dest.x);
 	else if (dest.x >= map.getWidth() - sensorrange)
-		score += 2 * (sensorrange - (map.getWidth() - dest.x - 1));
+		score += 3 * (sensorrange - (map.getWidth() - dest.x - 1));
 	if (dest.y < sensorrange)
-		score += 2 * (sensorrange - dest.y);
+		score += 3 * (sensorrange - dest.y);
 	else if (dest.y >= map.getHeight() - sensorrange)
-		score += 2 * (sensorrange - (map.getHeight() - dest.y - 1));		
+		score += 3 * (sensorrange - (map.getHeight() - dest.y - 1));		
 
 	int victimx, victimy;
 	if (map.getAdjacent(dest.x, dest.y, WorldGrid::VICTIM, &victimx, &victimy)) {
