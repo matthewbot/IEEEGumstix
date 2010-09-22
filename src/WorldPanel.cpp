@@ -82,7 +82,17 @@ void WorldPanel::paintObjects(wxPaintDC &dc) {
 	
 	for (World::const_iterator i = world.begin(); i != world.end(); ++i) {
 		if (const VictimWorldObject *victim = dynamic_cast<const VictimWorldObject *>(&*i)) {
-			dc.DrawCircle((victim->getX()+0.5f)*squarew, (victim->getY()+0.5)*squareh, min(squarew, squareh)*0.4f);
+			const float centerx = (victim->getX()+0.5f)*squarew;
+			const float centery = (victim->getY()+0.5)*squareh;
+			const float radius = min(squarew, squareh)*0.4f;
+			dc.DrawCircle(centerx, centery, radius);
+			
+			if (robot.identifiedVictim(Pos(victim->getX(), victim->getY()))) {
+				const float crossdelta = radius*0.3f;
+				dc.DrawLine(centerx-crossdelta, centery-crossdelta, centerx+crossdelta, centery+crossdelta);
+				dc.DrawLine(centerx-crossdelta, centery+crossdelta, centerx+crossdelta, centery-crossdelta);
+			}
+			
 		} else if (const ObstacleWorldObject *obstacle = dynamic_cast<const ObstacleWorldObject *>(&*i)) {
 			const float startx = (obstacle->getStartX()+0.5f)*squarew;
 			const float starty = (obstacle->getStartY()+0.5f)*squareh;

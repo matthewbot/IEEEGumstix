@@ -14,6 +14,7 @@ namespace pathsim {
 			void reset(const Pos &pos);
 			void step();
 			
+			bool identifiedVictim(const Pos &pos) const;
 			inline const Pos &getPosition() const { return curpos; }
 			inline const Pos &getDestination() const { return route.back(); }
 			inline const AStarSearch::Route &getRoute() const { return route; }

@@ -62,7 +62,7 @@ void Robot::updateRouteStep() {
 				if (!map.getAdjacent(x, y, WorldGrid::VICTIM, &victimx, &victimy))
 					continue;
 					
-				if (find(identifiedvictims.begin(), identifiedvictims.end(), Pos(victimx, victimy)) != identifiedvictims.end())
+				if (identifiedVictim(Pos(victimx, victimy)))
 					continue;
 			}
 			
@@ -97,11 +97,15 @@ int Robot::scoreRoute(const AStarSearch &search) const {
 
 	int victimx, victimy;
 	if (map.getAdjacent(dest.x, dest.y, WorldGrid::VICTIM, &victimx, &victimy)) {
-		if (find(identifiedvictims.begin(), identifiedvictims.end(), Pos(victimx, victimy)) == identifiedvictims.end())
+		if (!identifiedVictim(Pos(victimx, victimy)))
 			score -= 500;
 	}
 	
 	return score;
+}
+
+bool Robot::identifiedVictim(const Pos &pos) const {
+	return find(identifiedvictims.begin(), identifiedvictims.end(), pos) != identifiedvictims.end();
 }
 
 
