@@ -35,7 +35,6 @@ namespace pathsim {
 			inline Square &getSquare(const Pos &pos) { return squares[pos.x + pos.y*width]; }
 		
 			typedef std::list<Pos> OpenList;
-			bool isPosValid(const Pos &pos);
 			void insertPosToOpenList(OpenList &openlist, const Pos &pos, int fscore);
 			int pathCost(Dir dir, const Pos &pos, const WorldGrid &grid);
 			int positionHeuristic(const Pos &pos, const Pos &end);

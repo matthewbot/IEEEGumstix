@@ -2,6 +2,7 @@
 #define WORLDGRID_H
 
 #include <boost/scoped_array.hpp>
+#include "util.h"
 
 namespace pathsim {
 	class WorldGrid {
@@ -22,17 +23,24 @@ namespace pathsim {
 			
 			inline int getWidth() const { return width; }
 			inline int getHeight() const { return height; }
+			bool inBounds(const Pos &pos) const;
 			
-			GridSquare &operator()(int x, int y);
-			GridSquare operator()(int x, int y) const;
+			GridSquare &operator[](const Pos &pos);
+			GridSquare operator[](const Pos &po) const;
+			inline GridSquare &operator()(int x, int y) { return (*this)[Pos(x, y)]; }
+			inline GridSquare operator()(int x, int y) const { return (*this)[Pos(x, y)]; }
 			
-			inline GridSquare get(int x, int y) const { return (*this)(x, y); }
-			inline void set(int x, int y, GridSquare square) { (*this)(x, y) = square; }
-			void fillLine(int startx, int starty, int endx, int endy, GridSquare square);
+			inline GridSquare get(const Pos &pos) const { return (*this)[pos]; }
+			inline void set(const Pos &pos, GridSquare square) { (*this)[pos] = square; }
+			inline GridSquare get(int x, int y) const { return get(Pos(x, y)); }
+			inline void set(int x, int y, GridSquare square) { set(Pos(x, y), square); }
+			
+			void fillLine(Pos start, Pos end, GridSquare square);
 
-			inline bool getPassable(int x, int y) const { return passable(get(x, y)); }
-			int countAdjacent(int x, int y, GridSquare square, int range=1) const;
-			bool getAdjacent(int x, int y, GridSquare square, int *outx=NULL, int *outy=NULL, int range=1) const;
+			inline bool getPassable(const Pos &pos) const { return passable((*this)[pos]); }
+			int countAdjacent(const Pos &pos, GridSquare square, int range=1) const;
+			bool getAdjacent(const Pos &pos, GridSquare square, Pos *out, int range=1) const;
+			
 		private:
 			int width, height;
 			boost::scoped_array<GridSquare> squares;

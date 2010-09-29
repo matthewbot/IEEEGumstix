@@ -15,35 +15,41 @@ void WorldGrid::clear(GridSquare square) {
 	fill(&squares[0], &squares[width*height], square);
 }
 
-WorldGrid::GridSquare &WorldGrid::operator()(int x, int y) {
-	assert(x >= 0 && x < width);
-	assert(y >= 0 && y < height);
-	return squares[x + y*width];
+bool WorldGrid::inBounds(const Pos &pos) const {
+	if (pos.x < 0 || pos.x >= width)
+		return false;
+	if (pos.y < 0 || pos.y >= height)
+		return false;
+	return true;
 }
 
-WorldGrid::GridSquare WorldGrid::operator()(int x, int y) const {
-	assert(x >= 0 && x < width);
-	assert(y >= 0 && y < height);
-	return squares[x + y*width];
+WorldGrid::GridSquare &WorldGrid::operator[](const Pos &pos) {
+	assert(inBounds(pos));
+	return squares[pos.x + pos.y*width];
+}
+
+WorldGrid::GridSquare WorldGrid::operator[](const Pos &pos) const {
+	assert(inBounds(pos));
+	return squares[pos.x + pos.y*width];
 }
 
 // based on bresenham's line algorithm
-void WorldGrid::fillLine(int startx, int starty, int endx, int endy, GridSquare square) {
-	const bool steep = abs(endy - starty) > abs(endx - startx);
+void WorldGrid::fillLine(Pos start, Pos end, GridSquare square) {
+	const bool steep = abs(end.y - start.y) > abs(end.x - start.x);
 	if (steep) {
-		swap(startx, starty);
-		swap(endx, endy);
+		swap(start.x, start.y);
+		swap(end.x, end.y);
 	}
-	if (startx > endx) {
-		swap(startx, endx);
-		swap(starty, endy);
+	if (start.x > end.x) {
+		swap(start.x, end.x);
+		swap(start.y, end.y);
 	}
 	
-	const float derror = (float)abs(endy - starty) / (endx - startx);
+	const float derror = (float)abs(end.y - start.y) / (end.x - start.x);
 	
 	float error = 0;
-	int y = starty;
-	for (int x=startx; x<=endx; x++) {
+	int y = start.y;
+	for (int x=start.x; x<=end.x; x++) {
 		if (steep)
 			set(y, x, square);
 		else
@@ -59,7 +65,7 @@ void WorldGrid::fillLine(int startx, int starty, int endx, int endy, GridSquare 
 					set(x+1, y, square);
 			}
 				
-			y += (starty < endy ? 1 : -1);
+			y += (start.y < end.y ? 1 : -1);
 			
 			if (!horizdiag) {
 				if (steep)
@@ -73,7 +79,7 @@ void WorldGrid::fillLine(int startx, int starty, int endx, int endy, GridSquare 
 	}
 }
 
-int WorldGrid::countAdjacent(int x, int y, GridSquare square, int range) const {
+int WorldGrid::countAdjacent(const Pos &pos, GridSquare square, int range) const {
 	int count=0;
 
 	for (int dx=-range; dx<=range; dx++) {
@@ -81,15 +87,12 @@ int WorldGrid::countAdjacent(int x, int y, GridSquare square, int range) const {
 			if (dx == 0 && dy == 0)
 				continue;
 				
-			const int checkx = x+dx;
-			const int checky = y+dy;
+			Pos checkpos(pos.x+dx, pos.y+dy);
 			
-			if (checkx < 0 || checkx >= width)
-				continue;
-			if (checky < 0 || checky >= height)
+			if (!inBounds(checkpos))
 				continue;
 				
-			if (get(checkx, checky) == square)
+			if (get(checkpos) == square)
 				count++;
 		}
 	}
@@ -97,25 +100,20 @@ int WorldGrid::countAdjacent(int x, int y, GridSquare square, int range) const {
 	return count;
 }
 
-bool WorldGrid::getAdjacent(int x, int y, GridSquare square, int *outx, int *outy, int range) const {
+bool WorldGrid::getAdjacent(const Pos &pos, GridSquare square, Pos *out, int range) const {
 	for (int dx=-range; dx<=range; dx++) {
 		for (int dy=-range; dy<=range; dy++) {
 			if (dx == 0 && dy == 0)
 				continue;
 			
-			const int checkx = x+dx;
-			const int checky = y+dy;
+			Pos checkpos(pos.x+dx, pos.y+dy);
 			
-			if (checkx < 0 || checkx >= width)
-				continue;
-			if (checky < 0 || checky >= height)
+			if (!inBounds(checkpos))
 				continue;
 				
-			if (get(checkx, checky) == square) {
-				if (outx && outy) {
-					*outx = checkx;
-					*outy = checky;
-				}
+			if (get(checkpos) == square) {
+				if (out) 
+					*out = checkpos;
 				
 				return true;
 			}

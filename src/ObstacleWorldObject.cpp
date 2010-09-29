@@ -2,11 +2,11 @@
 
 using namespace pathsim;
 
-ObstacleWorldObject::ObstacleWorldObject(int startx, int starty, int endx, int endy, bool large)
-: startx(startx), starty(starty), endx(endx), endy(endy), large(large) { }
+ObstacleWorldObject::ObstacleWorldObject(const Pos &startpos, const Pos &endpos, bool large)
+: startpos(startpos), endpos(endpos), large(large) { }
 ObstacleWorldObject::~ObstacleWorldObject() { }
 
 void ObstacleWorldObject::fillWorldGrid(WorldGrid &grid) const {
-	grid.fillLine(startx, starty, endx, endy, large ? WorldGrid::LARGE_OBSTACLE : WorldGrid::SMALL_OBSTACLE);
+	grid.fillLine(startpos, endpos, large ? WorldGrid::LARGE_OBSTACLE : WorldGrid::SMALL_OBSTACLE);
 }
 

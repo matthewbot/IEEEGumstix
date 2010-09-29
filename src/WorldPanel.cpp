@@ -37,10 +37,11 @@ void WorldPanel::paintGrid(wxPaintDC &dc) {
 	
 	for (int x=0; x<grid.getWidth(); x++) {
 		for (int y=0; y<grid.getHeight(); y++) {
+			Pos pos(x, y);
 			float squarex = x * squarew;
 			float squarey = y * squareh;
 		
-			switch (grid(x, y)) {
+			switch (grid[pos]) {
 				case WorldGrid::EMPTY:
 					brush.SetColour(255, 255, 255);
 					break;
@@ -58,7 +59,7 @@ void WorldPanel::paintGrid(wxPaintDC &dc) {
 					break;
 			}
 			
-			if (robot.getMap().get(x, y) == WorldGrid::UNKNOWN) {
+			if (robot.getMap()[pos] == WorldGrid::UNKNOWN) {
 				wxColour color = brush.GetColour();
 				brush.SetColour(color.Red()/2, color.Green()/2, color.Blue()/2);
 			}
@@ -82,22 +83,22 @@ void WorldPanel::paintObjects(wxPaintDC &dc) {
 	
 	for (World::const_iterator i = world.begin(); i != world.end(); ++i) {
 		if (const VictimWorldObject *victim = dynamic_cast<const VictimWorldObject *>(&*i)) {
-			const float centerx = (victim->getX()+0.5f)*squarew;
-			const float centery = (victim->getY()+0.5)*squareh;
+			const float centerx = (victim->getPos().x+0.5f)*squarew;
+			const float centery = (victim->getPos().y+0.5)*squareh;
 			const float radius = min(squarew, squareh)*0.4f;
 			dc.DrawCircle(centerx, centery, radius);
 			
-			if (robot.identifiedVictim(Pos(victim->getX(), victim->getY()))) {
+			if (robot.identifiedVictim(victim->getPos())) {
 				const float crossdelta = radius*0.3f;
 				dc.DrawLine(centerx-crossdelta, centery-crossdelta, centerx+crossdelta, centery+crossdelta);
 				dc.DrawLine(centerx-crossdelta, centery+crossdelta, centerx+crossdelta, centery-crossdelta);
 			}
 			
 		} else if (const ObstacleWorldObject *obstacle = dynamic_cast<const ObstacleWorldObject *>(&*i)) {
-			const float startx = (obstacle->getStartX()+0.5f)*squarew;
-			const float starty = (obstacle->getStartY()+0.5f)*squareh;
-			const float endx = (obstacle->getEndX()+0.5f)*squarew;
-			const float endy = (obstacle->getEndY()+0.5f)*squareh;
+			const float startx = (obstacle->getStartPos().x+0.5f)*squarew;
+			const float starty = (obstacle->getStartPos().y+0.5f)*squareh;
+			const float endx = (obstacle->getEndPos().x+0.5f)*squarew;
+			const float endy = (obstacle->getEndPos().y+0.5f)*squareh;
 			const float dir = atan2(endy-starty, endx - startx);
 			
 			const float thickness = (obstacle->isLarge() ? 0.3 : 0.1) * min(squarew, squareh);

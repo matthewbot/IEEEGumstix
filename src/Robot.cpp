@@ -31,9 +31,9 @@ void Robot::moveStep() {
 	curdir = getDirFromPoses(curpos, route[0]);
 	curpos = route[0];
 	
-	int victimx, victimy;
-	if (map.getAdjacent(curpos.x, curpos.y, WorldGrid::VICTIM, &victimx, &victimy))
-		identifiedvictims.push_back(Pos(victimx, victimy));
+	Pos victim;
+	if (map.getAdjacent(curpos, WorldGrid::VICTIM, &victim))
+		identifiedvictims.push_back(victim);
 }
 
 void Robot::updateSensorsStep() {
@@ -44,7 +44,8 @@ void Robot::updateSensorsStep() {
 	
 	for (int x=minx; x<=maxx; x++) {
 		for (int y=miny; y<=maxy; y++) {
-			map(x, y) = grid(x, y);
+			Pos pos(x, y);
+			map[pos] = grid[pos];
 		}
 	}
 }
@@ -59,15 +60,15 @@ void Robot::updateRouteStep() {
 	for (int x=0; x<map.getWidth(); x++) {
 		for (int y=0; y<map.getHeight(); y++) {
 			Pos pos(x, y);
-			if (!map.getPassable(x, y))
+			if (!map.getPassable(pos))
 				continue;
 
-			if (!map.getAdjacent(x, y, WorldGrid::UNKNOWN, NULL, NULL, sensorrange)) {
-				int victimx, victimy;
-				if (!map.getAdjacent(x, y, WorldGrid::VICTIM, &victimx, &victimy))
+			if (!map.getAdjacent(pos, WorldGrid::UNKNOWN, NULL, sensorrange)) {
+				Pos victim;
+				if (!map.getAdjacent(pos, WorldGrid::VICTIM, &victim))
 					continue;
 					
-				if (identifiedVictim(Pos(victimx, victimy)))
+				if (identifiedVictim(victim))
 					continue;
 			}
 			
@@ -92,13 +93,13 @@ int Robot::scoreRoute(const AStarSearch &search) const {
 
 	score += search.getRouteCost()/2;
 
-	int victimx, victimy;
-	if (map.getAdjacent(dest.x, dest.y, WorldGrid::VICTIM, &victimx, &victimy)) {
-		if (!identifiedVictim(Pos(victimx, victimy)))
+	Pos victim;
+	if (map.getAdjacent(dest, WorldGrid::VICTIM, &victim)) {
+		if (!identifiedVictim(victim))
 			score -= 500;
 	}
 	
-	score -= 2*map.countAdjacent(dest.x, dest.y, WorldGrid::UNKNOWN, sensorrange);
+	score -= 2*map.countAdjacent(dest, WorldGrid::UNKNOWN, sensorrange);
 	
 	return score;
 }

@@ -6,23 +6,20 @@
 namespace pathsim {
 	class ObstacleWorldObject : public WorldObject {
 		public:
-			ObstacleWorldObject(int startx, int starty, int endx, int endy, bool large);
+			ObstacleWorldObject(const Pos &start, const Pos &end, bool large);
 			virtual ~ObstacleWorldObject();
 			
 			virtual void fillWorldGrid(WorldGrid &grid) const;
 			
-			inline int getStartX() const { return startx; }
-			inline int getStartY() const { return starty; }
-			inline int getEndX() const { return endx; }
-			inline int getEndY() const { return endy; }
+			inline const Pos &getStartPos() const { return startpos; }
+			inline const Pos &getEndPos() const { return endpos; }
 			inline bool isLarge() const { return large; }
 			
-			inline void setStart(int x, int y) { startx = x; starty = y; }
-			inline void setEnd(int x, int y) { endx = x; endy = y; }
+			inline void setStartPos(const Pos &startpos) { this->startpos = startpos; }
+			inline void setEndPos(const Pos &endpos) { this->endpos = endpos; }
 			
 		private:
-			int startx, starty;
-			int endx, endy;
+			Pos startpos, endpos;
 			bool large;
 	};
 }

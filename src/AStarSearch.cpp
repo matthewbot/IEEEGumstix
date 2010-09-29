@@ -39,9 +39,9 @@ bool AStarSearch::doSearch(const WorldGrid &grid, const Pos &start, const Pos &e
 		
 		for (Dir dir = DIR_E; dir <= DIR_SE; dir=(Dir)(dir+1)) { // for each possible direction
 			Pos pos = advancePos(curpos, dir); // get the position of the location we'd end up
-			if (!isPosValid(pos)) // skip it if its not valid
+			if (!grid.inBounds(pos)) // skip it if its not valid
 				continue;
-			if (!grid.getPassable(pos.x, pos.y)) // or if its not passable
+			if (!grid.getPassable(pos)) // or if its not passable
 				continue;
 					
 			Square &square = getSquare(pos); // get the square of where we'd end up
@@ -71,14 +71,6 @@ bool AStarSearch::doSearch(const WorldGrid &grid, const Pos &start, const Pos &e
 	return false;
 }
 
-bool AStarSearch::isPosValid(const Pos &pos) {
-	if (pos.x < 0 || pos.x >= width)
-		return false;
-	if (pos.y < 0 || pos.y >= height)
-		return false;
-	return true;
-}
-
 void AStarSearch::insertPosToOpenList(OpenList &openlist, const Pos &pos, int fscore) {
 	OpenList::iterator i;
 	for (i = openlist.begin(); i != openlist.end(); ++i) {
@@ -97,7 +89,7 @@ int AStarSearch::pathCost(Dir dir, const Pos &pos, const WorldGrid &grid) {
 	else
 		cost = 10;
 	
-	if (grid(pos.x, pos.y) == WorldGrid::SMALL_OBSTACLE)
+	if (grid[pos] == WorldGrid::SMALL_OBSTACLE)
 		cost += 20;
 		
 	return cost;
