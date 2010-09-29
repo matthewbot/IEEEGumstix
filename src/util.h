@@ -32,6 +32,8 @@ namespace pathsim {
 	Dir oppositeDir(Dir dir);
 	bool isDirDiagonal(Dir dir);
 	Pos advancePos(Pos pos, Dir dir);
+	Dir getDirFromPoses(const Pos &start, const Pos &end);
+	float dirToRad(Dir dir);
 }
 
 #endif

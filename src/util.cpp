@@ -1,4 +1,5 @@
 #include "util.h"
+#include <cmath>
 
 using namespace pathsim;
 using namespace std;
@@ -40,4 +41,40 @@ Pos pathsim::advancePos(Pos pos, Dir dir) {
 		
 	return pos;
 }
+
+Dir pathsim::getDirFromPoses(const Pos &start, const Pos &end) {
+	int dx = end.x - start.x;
+	int dy = end.y - start.y;
+	if (dx > 0) {
+		if (dy > 0)
+			return DIR_SE;
+		else if (dy < 0)
+			return DIR_NE;
+		else
+			return DIR_E;
+	} else if (dx < 0) {
+		if (dy > 0)
+			return DIR_SW;
+		else if (dy < 0)
+			return DIR_NW;
+		else
+			return DIR_W;
+	} else {
+		if (dy > 0)
+			return DIR_S;
+		else if (dy < 0)
+			return DIR_N;
+		else
+			return DIR_NONE;	
+	}
+}
+
+float pathsim::dirToRad(Dir dir) {
+	if (dir == DIR_NONE)
+		return 0;
+	else {
+		return (dir-1)*M_PI/4;
+	}
+}
+
 

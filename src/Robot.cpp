@@ -11,8 +11,9 @@ Robot::Robot(int sensorrange, const Pos &startpos, const WorldGrid &grid)
 	reset(startpos);
 }
 
-void Robot::reset(const Pos &pos) {
+void Robot::reset(const Pos &pos, Dir dir) {
 	curpos = pos;
+	curdir = dir;
 	map.clear(WorldGrid::UNKNOWN);
 	identifiedvictims.clear();
 	
@@ -27,6 +28,7 @@ void Robot::step() {
 }
 
 void Robot::moveStep() {
+	curdir = getDirFromPoses(curpos, route[0]);
 	curpos = route[0];
 	
 	int victimx, victimy;

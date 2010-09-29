@@ -127,14 +127,15 @@ void WorldPanel::paintRobot(wxPaintDC &dc) {
 	const float startx = squarew*(robot.getPosition().x + 0.5f);
 	const float starty = squareh*(robot.getPosition().y + 0.5f);
 	const float thickness = min(squarew, squareh) * .3;
+	const float dir = dirToRad(robot.getDirection());
 	
 	wxPoint points[3];
-	points[0].x = (int)startx;
-	points[0].y = (int)(starty - thickness);
-	points[1].x = (int)(startx + thickness*cos(7*M_PI/6));
-	points[1].y = (int)(starty - thickness*sin(7*M_PI/6));
-	points[2].x = (int)(startx + thickness*cos(11*M_PI/6));
-	points[2].y = (int)(starty - thickness*sin(11*M_PI/6));
+	points[0].x = (int)(startx + thickness*cos(dir));
+	points[0].y = (int)(starty - thickness*sin(dir));
+	points[1].x = (int)(startx + thickness*cos(dir + 5*M_PI/4));
+	points[1].y = (int)(starty - thickness*sin(dir + 5*M_PI/4));
+	points[2].x = (int)(startx + thickness*cos(dir - 5*M_PI/4));
+	points[2].y = (int)(starty - thickness*sin(dir - 5*M_PI/4));
 	dc.DrawPolygon(3, points);
 	
 	const float radius = max(min(squarew, squareh)*.1f, 3.0f);

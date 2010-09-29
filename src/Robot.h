@@ -11,11 +11,12 @@ namespace pathsim {
 		public:
 			Robot(int sensorrange, const Pos &startpos, const WorldGrid &grid);
 			
-			void reset(const Pos &pos);
+			void reset(const Pos &pos, Dir dir=DIR_E);
 			void step();
 			
 			bool identifiedVictim(const Pos &pos) const;
 			inline const Pos &getPosition() const { return curpos; }
+			inline Dir getDirection() const { return curdir; }
 			inline const Pos &getDestination() const { return route.back(); }
 			inline const AStarSearch::Route &getRoute() const { return route; }
 			inline const WorldGrid &getMap() const { return map; }
@@ -30,6 +31,7 @@ namespace pathsim {
 			const int sensorrange;
 		
 			Pos curpos;
+			Dir curdir;
 			const WorldGrid &grid;
 			
 			WorldGrid map;
