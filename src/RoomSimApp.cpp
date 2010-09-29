@@ -33,7 +33,3 @@ bool RoomSimApp::OnInit() {
 	return true;
 }
 
-int RoomSimApp::OnExit() {
-	delete frame;
-}
-

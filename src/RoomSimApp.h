@@ -13,7 +13,6 @@ namespace pathsim {
 			
 		private:
 			virtual bool OnInit();
-			virtual int OnExit();
 		
 			struct SimWorld : World {
 				SimWorld();
