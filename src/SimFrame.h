@@ -12,9 +12,12 @@ namespace pathsim {
 		private:
 			Robot &robot;
 			WorldPanel worldpanel;
+			wxPanel buttonpanel;
 			wxButton stepbutton;
+			wxButton resetbutton;
 			
 			void onStepPressed(wxCommandEvent &event);
+			void onResetPressed(wxCommandEvent &event);
 			
 			DECLARE_EVENT_TABLE()
 	};
