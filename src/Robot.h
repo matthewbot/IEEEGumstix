@@ -2,7 +2,7 @@
 #define ROBOT_H
 
 #include "WorldGrid.h"
-#include "AStarSearch.h"
+#include "RoutePlanner.h"
 #include "util.h"
 #include <vector>
 
@@ -14,11 +14,11 @@ namespace pathsim {
 			void reset(const Pos &pos, Dir dir=DIR_E);
 			void step();
 			
-			bool identifiedVictim(const Pos &pos) const;
+			inline bool isVictimIdentified(const Pos &pos) const { return routeplanner.isVictimIdentified(pos); }
 			inline const Pos &getPosition() const { return curpos; }
 			inline Dir getDirection() const { return curdir; }
-			inline const Pos &getDestination() const { return path.back(); }
-			inline const Path &getPath() const { return path; }
+			inline const Pos &getDestination() const { return route.path.back(); }
+			inline const RoutePlanner::Route &getRoute() const { return route; }
 			inline const WorldGrid &getMap() const { return map; }
 			
 		private:
@@ -26,7 +26,6 @@ namespace pathsim {
 			void updateSensorsStep();
 			void computeDestStep();
 			void updatePathStep();
-			int scorePath(const AStarSearch &search) const;
 		
 			const int sensorrange;
 		
@@ -35,8 +34,8 @@ namespace pathsim {
 			const WorldGrid &grid;
 			
 			WorldGrid map;
-			Path path;
-			std::vector<Pos> identifiedvictims;
+			RoutePlanner::Route route;
+			RoutePlanner routeplanner;
 	};
 }
 

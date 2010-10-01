@@ -88,7 +88,7 @@ void WorldPanel::paintObjects(wxPaintDC &dc) {
 			const float radius = min(squarew, squareh)*0.4f;
 			dc.DrawCircle(centerx, centery, radius);
 			
-			if (robot.identifiedVictim(victim->getPos())) {
+			if (robot.isVictimIdentified(victim->getPos())) {
 				const float crossdelta = radius*0.3f;
 				dc.DrawLine(centerx-crossdelta, centery-crossdelta, centerx+crossdelta, centery+crossdelta);
 				dc.DrawLine(centerx-crossdelta, centery+crossdelta, centerx+crossdelta, centery-crossdelta);
@@ -140,7 +140,8 @@ void WorldPanel::paintRobot(wxPaintDC &dc) {
 	dc.DrawPolygon(3, points);
 	
 	const float radius = max(min(squarew, squareh)*.1f, 3.0f);
-	for (Path::const_iterator i = robot.getPath().begin(); i != robot.getPath().end(); ++i) {
+	const RoutePlanner::Route &route = robot.getRoute();
+	for (Path::const_iterator i = route.path.begin(); i != route.path.end(); ++i) {
 		dc.DrawCircle(squarew*(i->x + 0.5f), squareh*(i->y + 0.5f), radius);
 	}
 }
