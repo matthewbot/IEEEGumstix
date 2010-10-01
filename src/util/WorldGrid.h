@@ -2,7 +2,7 @@
 #define WORLDGRID_H
 
 #include <boost/scoped_array.hpp>
-#include "util.h"
+#include "types.h"
 
 namespace pathsim {
 	class WorldGrid {

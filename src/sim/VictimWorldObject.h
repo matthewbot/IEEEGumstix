@@ -2,7 +2,7 @@
 #define VICTIMWORLDOBJECT_H
 
 #include "WorldObject.h"
-#include "util.h"
+#include "types.h"
 
 namespace pathsim {
 	class VictimWorldObject : public WorldObject {

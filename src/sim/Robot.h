@@ -3,7 +3,7 @@
 
 #include "WorldGrid.h"
 #include "RoutePlanner.h"
-#include "util.h"
+#include "types.h"
 #include <vector>
 
 namespace pathsim {

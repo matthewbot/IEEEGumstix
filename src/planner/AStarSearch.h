@@ -2,7 +2,7 @@
 #define ASTARSEARCH_H
 
 #include "WorldGrid.h"
-#include "util.h"
+#include "types.h"
 #include <vector>
 #include <list>
 #include <boost/scoped_array.hpp>
