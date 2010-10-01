@@ -1,11 +1,12 @@
 #include "Robot.h"
 #include <algorithm>
+#include <cmath>
 
 using namespace pathsim;
 using namespace std;
 
-Robot::Robot(int sensorrange, const Pos &startpos, const WorldGrid &grid) 
-: sensorpred(sensorrange), 
+Robot::Robot(const Pos &startpos, const WorldGrid &grid) 
+: sensorpred(5, M_PI/3, .05),
   grid(grid), 
   map(grid.getWidth(), grid.getHeight()),
   routeplanner(sensorpred, map) {

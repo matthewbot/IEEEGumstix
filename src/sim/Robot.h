@@ -3,14 +3,14 @@
 
 #include "WorldGrid.h"
 #include "RoutePlanner.h"
-#include "TelepathicSensorPredictor.h"
+#include "CameraSensorPredictor.h"
 #include "types.h"
 #include <vector>
 
 namespace pathsim {
 	class Robot {
 		public:
-			Robot(int sensorrange, const Pos &startpos, const WorldGrid &grid);
+			Robot(const Pos &startpos, const WorldGrid &grid);
 			
 			void reset(const Pos &pos, Dir dir=DIR_E);
 			void step();
@@ -28,7 +28,7 @@ namespace pathsim {
 			void computeDestStep();
 			void updatePathStep();
 		
-			TelepathicSensorPredictor sensorpred;
+			CameraSensorPredictor sensorpred;
 		
 			Pos curpos;
 			Dir curdir;
