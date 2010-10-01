@@ -11,6 +11,7 @@ namespace pathsim {
 		public:
 			struct Route {
 				Path path;
+				Dir facedir;
 			};
 			
 			RoutePlanner(const SensorPredictor &sensorpred, const WorldGrid &map);
@@ -22,8 +23,10 @@ namespace pathsim {
 			void resetVictims();
 			
 		private:
-			int scorePath(const AStarSearch &search) const;
-			int countUnknownRevealedFrom(const Pos &pos) const;
+			int scorePath(const AStarSearch &search, Dir &bestdir) const;
+			int countUnknownRevealedFrom(const Pos &pos, Dir curdir) const;
+			bool canSeeUnknownInAnyDirFrom(const Pos &pos) const;
+			int countMostUnknownRevealedFrom(const Pos &pos, Dir *bestdir=NULL) const;			
 		
 			const SensorPredictor &sensorpred;
 			const WorldGrid &map;

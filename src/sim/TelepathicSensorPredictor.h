@@ -8,7 +8,7 @@ namespace pathsim {
 		public:
 			TelepathicSensorPredictor(int range);
 			
-			virtual PosSet predictVision(const Pos &curpos, const WorldGrid &grid) const;
+			virtual PosSet predictVision(const Pos &curpos, Dir curdir, const WorldGrid &grid) const;
 		private:
 			int range;
 	};

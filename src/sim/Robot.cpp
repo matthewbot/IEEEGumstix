@@ -29,9 +29,12 @@ void Robot::step() {
 }
 
 void Robot::moveStep() {
-	const Pos &newpos = route.path[0];
-	curdir = getDirFromPoses(curpos, newpos);
-	curpos = newpos;
+	if (route.path.size() > 0) {
+		const Pos &newpos = route.path[0];
+		curdir = getDirFromPoses(curpos, newpos);
+		curpos = newpos;
+	} else
+		curdir = route.facedir;
 	
 	Pos victim;
 	if (map.getAdjacent(curpos, WorldGrid::VICTIM, &victim))
@@ -39,7 +42,7 @@ void Robot::moveStep() {
 }
 
 void Robot::updateSensorsStep() {
-	PosSet seenset = sensorpred.predictVision(curpos, grid);
+	PosSet seenset = sensorpred.predictVision(curpos, curdir, grid);
 	
 	for (PosSet::const_iterator i = seenset.begin(); i != seenset.end(); ++i) {
 		map[*i] = grid[*i];

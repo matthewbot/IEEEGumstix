@@ -7,7 +7,7 @@
 namespace pathsim {
 	class SensorPredictor {
 		public:
-			virtual PosSet predictVision(const Pos &curpos, const WorldGrid &grid) const =0;
+			virtual PosSet predictVision(const Pos &curpos, Dir curdir, const WorldGrid &grid) const =0;
 	};
 }
 
