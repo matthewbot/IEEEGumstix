@@ -78,6 +78,28 @@ Dir pathsim::getDirFromPoses(const Pos &start, const Pos &end) {
 	}
 }
 
+Dir pathsim::getIntermediateDir(Dir cur, Dir dest) {
+	int newdir;
+	
+	int delta = dest - cur;
+	if (delta >= 4)
+		delta -= 8;
+	else if (delta < -4)
+		delta += 8;
+		
+	if (delta > 0)
+		newdir = cur + 1;
+	else if (delta < 0)
+		newdir = cur - 1;
+		
+	if (newdir >= MAX_DIR)
+		newdir -= MAX_DIR - 1;
+	else if (newdir <= DIR_NONE)
+		newdir += MAX_DIR - 1;
+	
+	return (Dir)newdir;
+}
+
 float pathsim::dirToRad(Dir dir) {
 	if (dir == DIR_NONE)
 		return 0;
