@@ -141,8 +141,18 @@ void WorldPanel::paintRobot(wxPaintDC &dc) {
 	
 	const float radius = max(min(squarew, squareh)*.1f, 3.0f);
 	const RoutePlanner::Route &route = robot.getRoute();
-	for (Path::const_iterator i = route.path.begin(); i != route.path.end(); ++i) {
-		dc.DrawCircle(squarew*(i->x + 0.5f), squareh*(i->y + 0.5f), radius);
+	
+	for (int i = 0; i != route.path.size(); ++i) {
+		const Pos &pos = route.path[i];
+		Dir dir = route.facedirs[i];
+		float dirrad = dirToRad(dir);
+		
+		const float centerx = squarew*(pos.x + 0.5f);
+		const float centery = squareh*(pos.y + 0.5f);
+		dc.DrawCircle(centerx, centery, radius);
+		
+		const float len = min(squarew, squareh)*0.3;
+		dc.DrawLine(centerx, centery, centerx+len*cos(dirrad), centery-len*sin(dirrad));
 	}
 }
 
