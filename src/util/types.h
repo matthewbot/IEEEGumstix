@@ -3,6 +3,7 @@
 
 #include <ostream>
 #include <vector>
+#include <set>
 
 namespace pathsim {
 	struct Pos {
@@ -10,12 +11,14 @@ namespace pathsim {
 		
 		inline bool operator==(const Pos &pos) const { return pos.x == x && pos.y == y; }
 		inline bool operator!=(const Pos &pos) const { return !(*this == pos); }
+		bool operator<(const Pos &pos) const;
 		
 		inline Pos() { }
 		inline Pos(int x, int y) : x(x), y(y) { }
 	};
 	
 	typedef std::vector<Pos> Path;
+	typedef std::set<Pos> PosSet;
 	
 	std::ostream &operator<<(std::ostream &stream, const Pos &pos);
 

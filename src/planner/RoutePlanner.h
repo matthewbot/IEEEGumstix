@@ -4,7 +4,6 @@
 #include "WorldGrid.h"
 #include "AStarSearch.h"
 #include "types.h"
-#include <vector>
 
 namespace pathsim {
 	class RoutePlanner {
@@ -26,7 +25,7 @@ namespace pathsim {
 		
 			int sensorrange;
 			const WorldGrid &map;
-			std::vector<Pos> identifiedvictims;
+			PosSet identifiedvictims;
 	};
 }
 

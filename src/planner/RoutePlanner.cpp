@@ -63,11 +63,11 @@ int RoutePlanner::scorePath(const AStarSearch &search) const {
 }
 
 bool RoutePlanner::isVictimIdentified(const Pos &pos) const {
-	return find(identifiedvictims.begin(), identifiedvictims.end(), pos) != identifiedvictims.end();
+	return identifiedvictims.find(pos) != identifiedvictims.end();
 }
 
 void RoutePlanner::setVictimIdentified(const Pos &pos) {
-	identifiedvictims.push_back(pos);
+	identifiedvictims.insert(pos);
 }
 
 void RoutePlanner::resetVictims() {

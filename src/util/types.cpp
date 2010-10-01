@@ -4,6 +4,15 @@
 using namespace pathsim;
 using namespace std;
 
+bool Pos::operator<(const Pos &pos) const {
+	if (x < pos.x)
+		return true;
+	else if (x > pos.x)
+		return false;
+	else
+		return y < pos.y;
+}
+
 ostream &pathsim::operator<<(ostream &out, const Pos &pos) {
 	out << "(" << pos.x << ", " << pos.y << ")";
 }
