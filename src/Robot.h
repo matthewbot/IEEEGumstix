@@ -18,7 +18,7 @@ namespace pathsim {
 			inline const Pos &getPosition() const { return curpos; }
 			inline Dir getDirection() const { return curdir; }
 			inline const Pos &getDestination() const { return path.back(); }
-			inline const AStarSearch::Path &getPath() const { return path; }
+			inline const Path &getPath() const { return path; }
 			inline const WorldGrid &getMap() const { return map; }
 			
 		private:
@@ -35,7 +35,7 @@ namespace pathsim {
 			const WorldGrid &grid;
 			
 			WorldGrid map;
-			AStarSearch::Path path;
+			Path path;
 			std::vector<Pos> identifiedvictims;
 	};
 }

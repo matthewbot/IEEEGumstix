@@ -18,8 +18,6 @@ namespace pathsim {
 				
 				Square();
 			};
-
-			typedef std::vector<Pos> Path;
 			
 			AStarSearch(const WorldGrid &grid, const Pos &start, const Pos &end);
 			

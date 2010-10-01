@@ -140,7 +140,7 @@ void WorldPanel::paintRobot(wxPaintDC &dc) {
 	dc.DrawPolygon(3, points);
 	
 	const float radius = max(min(squarew, squareh)*.1f, 3.0f);
-	for (AStarSearch::Path::const_iterator i = robot.getPath().begin(); i != robot.getPath().end(); ++i) {
+	for (Path::const_iterator i = robot.getPath().begin(); i != robot.getPath().end(); ++i) {
 		dc.DrawCircle(squarew*(i->x + 0.5f), squareh*(i->y + 0.5f), radius);
 	}
 }

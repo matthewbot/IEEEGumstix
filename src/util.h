@@ -2,6 +2,7 @@
 #define UTIL_H
 
 #include <ostream>
+#include <vector>
 
 namespace pathsim {
 	struct Pos {
@@ -13,6 +14,8 @@ namespace pathsim {
 		inline Pos() { }
 		inline Pos(int x, int y) : x(x), y(y) { }
 	};
+	
+	typedef std::vector<Pos> Path;
 	
 	std::ostream &operator<<(std::ostream &stream, const Pos &pos);
 
