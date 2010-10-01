@@ -5,13 +5,14 @@
 #include "AStarSearch.h"
 #include "SensorPredictor.h"
 #include "types.h"
+#include <vector>
 
 namespace pathsim {
 	class RoutePlanner {
 		public:
 			struct Route {
 				Path path;
-				Dir facedir;
+				DirVec facedirs;
 			};
 			
 			RoutePlanner(const SensorPredictor &sensorpred, const WorldGrid &map);
@@ -23,10 +24,10 @@ namespace pathsim {
 			void resetVictims();
 			
 		private:
-			int scorePath(const AStarSearch &search, Dir &bestdir) const;
-			int countUnknownRevealedFrom(const Pos &pos, Dir curdir) const;
+			int scorePath(const AStarSearch &search, Dir curdir, DirVec &bestdirs) const;
+			PosSet getUnknownRevealedFrom(const Pos &pos, Dir dir) const;
 			bool canSeeUnknownInAnyDirFrom(const Pos &pos) const;
-			int countMostUnknownRevealedFrom(const Pos &pos, Dir *bestdir=NULL) const;			
+			PosSet getMostUnknownRevealedFrom(const Pos &pos, Dir &bestdir, const PosSet &revealed) const;			
 		
 			const SensorPredictor &sensorpred;
 			const WorldGrid &map;

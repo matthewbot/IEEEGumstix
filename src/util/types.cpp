@@ -17,6 +17,17 @@ ostream &pathsim::operator<<(ostream &out, const Pos &pos) {
 	out << "(" << pos.x << ", " << pos.y << ")";
 }
 
+ostream &pathsim::operator<<(ostream &out, Dir dir) {
+	static const char *dirstr[] = {"none", "E", "NE", "N", "NW", "W", "SW", "S", "SE"};
+	
+	if (dir < MAX_DIR && dir >= 0)
+		out << dirstr[dir];
+	else
+		out << "(BAD DIR)";
+		
+	return out;
+}
+
 Dir pathsim::oppositeDir(Dir dir) {
 	int newdir = dir + 4;
 	if (newdir >= MAX_DIR)

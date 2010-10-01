@@ -30,10 +30,10 @@ void Robot::step() {
 }
 
 void Robot::moveStep() {
-	if (route.path.size() > 1)
+	if (curdir != route.facedirs[0])
+		curdir = getIntermediateDir(curdir, route.facedirs[0]);
+	else if (route.path.size() > 1)
 		curpos = route.path[1];
-	else
-		curdir = getIntermediateDir(curdir, route.facedir);
 	
 	Pos victim;
 	if (map.getAdjacent(curpos, WorldGrid::VICTIM, &victim))

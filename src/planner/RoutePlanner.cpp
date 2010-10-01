@@ -11,7 +11,6 @@ RoutePlanner::RoutePlanner(const SensorPredictor &sensorpred, const WorldGrid &m
 RoutePlanner::Route RoutePlanner::planRoute(const Pos &curpos, Dir curdir) const {
 	cout << "--------Update--------" << endl;
 	Route route;
-	route.facedir = DIR_E;
 	
 	int bestscore = 9999;
 	for (int x=0; x<map.getWidth(); x++) {
@@ -33,26 +32,28 @@ RoutePlanner::Route RoutePlanner::planRoute(const Pos &curpos, Dir curdir) const
 			if (!search.foundPath())
 				continue;
 			
-			Dir bestdir;
-			int score = scorePath(search, bestdir);
-			cout << "Evaluated " << pos << " score " << score << endl;
+			DirVec bestdirs;
+			bestdirs.resize(search.getPathLength());
+			
+			int score = scorePath(search, curdir, bestdirs);
+			cout << "Evaluated " << pos << " facing " << bestdirs.back() << " score " << score << endl;
 			if (score >= bestscore)
 				continue;
 				
 			bestscore = score;
 			route.path = search.getPath();
-			route.facedir = bestdir;
+			route.facedirs = bestdirs;
 		}
 	}
 	
 	return route;
 }
 
-int RoutePlanner::scorePath(const AStarSearch &search, Dir &bestdir) const {
+int RoutePlanner::scorePath(const AStarSearch &search, Dir curdir, DirVec &bestdirs) const {
 	const Pos &dest = search.getPath().back();
 	int score=0;
 
-	score += search.getPathCost()/2;
+	score += search.getPathCost()/3;
 
 	Pos victim;
 	if (map.getAdjacent(dest, WorldGrid::VICTIM, &victim)) {
@@ -60,45 +61,65 @@ int RoutePlanner::scorePath(const AStarSearch &search, Dir &bestdir) const {
 			score -= 500;
 	}
 	
-	score -= 2*countMostUnknownRevealedFrom(dest, &bestdir);
+	PosSet revealed;
+	for (int i=0; i < search.getPathLength(); ++i) {
+		Dir bestdir;
+		PosSet newseen = getMostUnknownRevealedFrom(search.getPath()[i], bestdir, revealed);
+		if (newseen.size() > 4 || i == search.getPathLength()-1) { // TODO changeable constant
+			revealed.insert(newseen.begin(), newseen.end());
+			bestdirs[i] = bestdir;
+		} else if (i > 0) {
+			bestdirs[i] = bestdirs[i-1];
+		} else {
+			bestdirs[i] = curdir;
+		}
+			
+	}	
+	score -= 2*revealed.size();
 	
 	return score;
 }
 
-int RoutePlanner::countUnknownRevealedFrom(const Pos &pos, Dir dir) const {
-	int count=0;
-
-	PosSet seenset = sensorpred.predictVision(pos, dir, map);
-	for (PosSet::const_iterator i = seenset.begin(); i != seenset.end(); ++i) {
+PosSet RoutePlanner::getUnknownRevealedFrom(const Pos &pos, Dir dir) const {
+	PosSet poses = sensorpred.predictVision(pos, dir, map);
+	
+	for (PosSet::const_iterator i = poses.begin(); i != poses.end();) {
 		if (map[*i] == WorldGrid::UNKNOWN)
-			count++;
+			++i;
+		else {
+			poses.erase(i);
+			i = poses.begin();
+		}
 	}
 	
-	return count;
+	return poses;
 }
 
 bool RoutePlanner::canSeeUnknownInAnyDirFrom(const Pos &pos) const {
 	for (Dir dir=DIR_E; dir<MAX_DIR; dir=(Dir)(dir+1)) {
-		if (countUnknownRevealedFrom(pos, dir) > 0)
+		if (getUnknownRevealedFrom(pos, dir).size() > 0)
 			return true;
 	}
 	
 	return false;
 }
 
-int RoutePlanner::countMostUnknownRevealedFrom(const Pos &pos, Dir *bestdir) const {
-	int bestcount=0;
+PosSet RoutePlanner::getMostUnknownRevealedFrom(const Pos &pos, Dir &bestdir, const PosSet &revealed) const {
+	PosSet bestset;
 	
 	for (Dir dir=DIR_E; dir<MAX_DIR; dir=(Dir)(dir+1)) {
-		int count = countUnknownRevealedFrom(pos, dir);
-		if (count > bestcount) {
-			bestcount = count;
-			if (bestdir)
-				*bestdir = dir;
+		PosSet set = getUnknownRevealedFrom(pos, dir);
+		
+		for (PosSet::const_iterator i = revealed.begin(); i != revealed.end(); ++i)
+			set.erase(*i);
+		
+		if (set.size() > bestset.size()) {
+			bestset = set;
+			bestdir = dir;
 		}
 	}
 	
-	return bestcount;
+	return bestset;
 }
 
 bool RoutePlanner::isVictimIdentified(const Pos &pos) const {

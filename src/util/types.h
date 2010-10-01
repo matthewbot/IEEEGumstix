@@ -34,6 +34,10 @@ namespace pathsim {
 		DIR_SE,
 		MAX_DIR
 	};
+	
+	std::ostream &operator<<(std::ostream &stream, Dir dir);
+	
+	typedef std::vector<Dir> DirVec;
 
 	Dir oppositeDir(Dir dir);
 	bool isDirDiagonal(Dir dir);
