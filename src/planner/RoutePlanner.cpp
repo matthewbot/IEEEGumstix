@@ -71,18 +71,17 @@ int RoutePlanner::scorePath(const AStarSearch &search, Dir curdir, DirVec &bestd
 			continue;
 		}
 		
-		Dir bestdir;
-		PosSet newseen = getMostUnknownRevealedFrom(search.getPath()[i], bestdir, revealed);
-		if (newseen.size() > 4 || i == search.getPathLength()-1) { // TODO changeable constant
-			revealed.insert(newseen.begin(), newseen.end());
-			bestdirs[i] = bestdir;
-		} else if (i > 0) {
-			bestdirs[i] = bestdirs[i-1];
-		} else {
-			bestdirs[i] = curdir;
-		}
-			
+		Dir prevdir;
+		if (i == 0)
+			prevdir = curdir;
+		else
+			prevdir = bestdirs[i-1];
+		
+		bool mustsee = (i == search.getPathLength() - 1) && (revealed.size() == 0) && !havevictim;
+		PosSet newseen = getBestUnknownRevealedFrom(search.getPath()[i], prevdir, bestdirs[i], revealed, mustsee);
+		revealed.insert(newseen.begin(), newseen.end());	
 	}	
+	
 	score -= 2*revealed.size();
 	
 	return score;
@@ -112,18 +111,28 @@ bool RoutePlanner::canSeeUnknownInAnyDirFrom(const Pos &pos) const {
 	return false;
 }
 
-PosSet RoutePlanner::getMostUnknownRevealedFrom(const Pos &pos, Dir &bestdir, const PosSet &revealed) const {
+PosSet RoutePlanner::getBestUnknownRevealedFrom(const Pos &pos, Dir prevdir, Dir &bestdir, const PosSet &revealed, bool mustsee) const {
 	PosSet bestset;
+	int bestscore=999;
 	
-	for (Dir dir=DIR_E; dir<MAX_DIR; dir=(Dir)(dir+1)) {
-		PosSet set = getUnknownRevealedFrom(pos, dir);
+	for (Dir dir=DIR_E; dir<MAX_DIR; dir=(Dir)(dir+1)) { 
+		int score=0;
 		
+		score += 2*abs(getDirDelta(prevdir, dir)); // TODO changeable
+		
+		PosSet set = getUnknownRevealedFrom(pos, dir);
 		for (PosSet::const_iterator i = revealed.begin(); i != revealed.end(); ++i)
 			set.erase(*i);
 		
-		if (set.size() > bestset.size()) {
+		score -= set.size();
+	
+		if (set.size() == 0 && mustsee)
+			continue;
+	
+		if (score < bestscore) {
 			bestset = set;
 			bestdir = dir;
+			bestscore = score;
 		}
 	}
 	

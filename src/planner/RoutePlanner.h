@@ -27,7 +27,7 @@ namespace pathsim {
 			int scorePath(const AStarSearch &search, Dir curdir, DirVec &bestdirs) const;
 			PosSet getUnknownRevealedFrom(const Pos &pos, Dir dir) const;
 			bool canSeeUnknownInAnyDirFrom(const Pos &pos) const;
-			PosSet getMostUnknownRevealedFrom(const Pos &pos, Dir &bestdir, const PosSet &revealed) const;			
+			PosSet getBestUnknownRevealedFrom(const Pos &pos, Dir prevdir, Dir &bestdir, const PosSet &revealed, bool mustsee) const;			
 		
 			const SensorPredictor &sensorpred;
 			const WorldGrid &map;

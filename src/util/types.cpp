@@ -89,15 +89,19 @@ Dir pathsim::getDirFromPoses(const Pos &start, const Pos &end) {
 	}
 }
 
-Dir pathsim::getIntermediateDir(Dir cur, Dir dest) {
-	int newdir;
-	
+int pathsim::getDirDelta(Dir cur, Dir dest) {
 	int delta = dest - cur;
 	if (delta >= 4)
 		delta -= 8;
 	else if (delta < -4)
 		delta += 8;
-		
+	return delta;
+}
+
+Dir pathsim::getIntermediateDir(Dir cur, Dir dest) {
+	int newdir;
+	
+	int delta = getDirDelta(cur, dest);
 	if (delta > 0)
 		newdir = cur + 1;
 	else if (delta < 0)
