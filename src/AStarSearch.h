@@ -19,14 +19,14 @@ namespace pathsim {
 				Square();
 			};
 
-			typedef std::vector<Pos> Route;
+			typedef std::vector<Pos> Path;
 			
 			AStarSearch(const WorldGrid &grid, const Pos &start, const Pos &end);
 			
-			inline const Route &getRoute() const { return route; }
-			inline int getRouteLength() const { return route.size(); }
-			inline bool foundRoute() const { return route.size() > 0; }
-			inline int getRouteCost() const { return getSquare(route.back()).cost; }
+			inline const Path &getPath() const { return path; }
+			inline int getPathLength() const { return path.size(); }
+			inline bool foundPath() const { return path.size() > 0; }
+			inline int getPathCost() const { return getSquare(path.back()).cost; }
 			
 			const Square &getSquare(int x, int y) const { return squares[x + y*width]; }
 			const Square &getSquare(const Pos &pos) const { return getSquare(pos.x, pos.y); }
@@ -42,7 +42,7 @@ namespace pathsim {
 		
 			int width, height;
 			boost::scoped_array<Square> squares;
-			Route route;
+			Path path;
 	};
 }
 

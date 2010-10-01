@@ -15,11 +15,11 @@ AStarSearch::AStarSearch(const WorldGrid &grid, const Pos &start, const Pos &end
 	if (doSearch(grid, start, end)) {
 		Pos curpos=end;
 		while (curpos != start) {
-			route.push_back(curpos);
+			path.push_back(curpos);
 			curpos = advancePos(curpos, getSquare(curpos).parentdir);
 		}
 	
-		reverse(route.begin(), route.end());
+		reverse(path.begin(), path.end());
 	}
 }
 
@@ -51,7 +51,7 @@ bool AStarSearch::doSearch(const WorldGrid &grid, const Pos &start, const Pos &e
 			int ourcost = cursquare.cost + pathCost(dir, pos, grid); // otherwise compute the cost of moving from our square to this one
 			
 			if (square.parentdir != DIR_NONE) { // if the other square already has a parent/path to it
-				if (square.cost <= ourcost) // and the route from its parent to it is better than the route from us to it
+				if (square.cost <= ourcost) // and the path from its parent to it is better than the path from us to it
 					continue; // then skip it, we're not as good
 				
 				// otherwise, we're better, and going to recompute its cost
@@ -60,7 +60,7 @@ bool AStarSearch::doSearch(const WorldGrid &grid, const Pos &start, const Pos &e
 				square.heuristic = positionHeuristic(pos, end); // go ahead and compute its position heuristic
 			}
 			
-			// if we get here, we're the best route to this square
+			// if we get here, we're the best path to this square
 			square.parentdir = oppositeDir(dir); // set the squares parent direction to the opposite direction we used to find it
 			square.cost = ourcost; // set its cost to our computed cost
 

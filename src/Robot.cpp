@@ -18,18 +18,18 @@ void Robot::reset(const Pos &pos, Dir dir) {
 	identifiedvictims.clear();
 	
 	updateSensorsStep();
-	updateRouteStep();
+	updatePathStep();
 }
 
 void Robot::step() {
 	moveStep();
 	updateSensorsStep();
-	updateRouteStep();
+	updatePathStep();
 }
 
 void Robot::moveStep() {
-	curdir = getDirFromPoses(curpos, route[0]);
-	curpos = route[0];
+	curdir = getDirFromPoses(curpos, path[0]);
+	curpos = path[0];
 	
 	Pos victim;
 	if (map.getAdjacent(curpos, WorldGrid::VICTIM, &victim))
@@ -52,9 +52,9 @@ void Robot::updateSensorsStep() {
 
 #include <iostream>
 
-void Robot::updateRouteStep() {
+void Robot::updatePathStep() {
 	cout << "--------Update--------" << endl;
-	route.clear();
+	path.clear();
 	
 	int bestscore = 9999;
 	for (int x=0; x<map.getWidth(); x++) {
@@ -73,25 +73,25 @@ void Robot::updateRouteStep() {
 			}
 			
 			AStarSearch search(map, curpos, pos);
-			if (!search.foundRoute())
+			if (!search.foundPath())
 				continue;
 				
-			int score = scoreRoute(search);
+			int score = scorePath(search);
 			cout << "Evaluated " << pos << " score " << score << endl;
 			if (score >= bestscore)
 				continue;
 				
 			bestscore = score;
-			route = search.getRoute();
+			path = search.getPath();
 		}
 	}
 }
 
-int Robot::scoreRoute(const AStarSearch &search) const {
-	const Pos &dest = search.getRoute().back();
+int Robot::scorePath(const AStarSearch &search) const {
+	const Pos &dest = search.getPath().back();
 	int score=0;
 
-	score += search.getRouteCost()/2;
+	score += search.getPathCost()/2;
 
 	Pos victim;
 	if (map.getAdjacent(dest, WorldGrid::VICTIM, &victim)) {

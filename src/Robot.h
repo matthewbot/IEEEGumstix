@@ -17,16 +17,16 @@ namespace pathsim {
 			bool identifiedVictim(const Pos &pos) const;
 			inline const Pos &getPosition() const { return curpos; }
 			inline Dir getDirection() const { return curdir; }
-			inline const Pos &getDestination() const { return route.back(); }
-			inline const AStarSearch::Route &getRoute() const { return route; }
+			inline const Pos &getDestination() const { return path.back(); }
+			inline const AStarSearch::Path &getPath() const { return path; }
 			inline const WorldGrid &getMap() const { return map; }
 			
 		private:
 			void moveStep();
 			void updateSensorsStep();
 			void computeDestStep();
-			void updateRouteStep();
-			int scoreRoute(const AStarSearch &search) const;
+			void updatePathStep();
+			int scorePath(const AStarSearch &search) const;
 		
 			const int sensorrange;
 		
@@ -35,7 +35,7 @@ namespace pathsim {
 			const WorldGrid &grid;
 			
 			WorldGrid map;
-			AStarSearch::Route route;
+			AStarSearch::Path path;
 			std::vector<Pos> identifiedvictims;
 	};
 }
