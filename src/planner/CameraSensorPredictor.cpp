@@ -17,8 +17,8 @@ PosSet CameraSensorPredictor::predictVision(const Pos &curpos, Dir curdir, const
 		int deadspotheight = 0;
 	
 		for (int dist=0; dist<=maxdistance; dist++) {
-			float x = curpos.x + dist*cos(rad);
-			float y = curpos.y - dist*sin(rad); // our y axis is inverted
+			float x = curpos.x + .5f + dist*cos(rad);
+			float y = curpos.y + .5f - dist*sin(rad); // our y axis is inverted
 			Pos pos((int)floor(x), (int)floor(y));
 			
 			if (!grid.inBounds(pos))
@@ -29,7 +29,7 @@ PosSet CameraSensorPredictor::predictVision(const Pos &curpos, Dir curdir, const
 			if (square == WorldGrid::LARGE_OBSTACLE)
 				height = dist*3;
 			else if (square == WorldGrid::VICTIM)
-				height = dist/2;
+				height = dist;
 				
 			if (height < deadspotheight) {
 				deadspotheight--;
