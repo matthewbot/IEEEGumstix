@@ -36,7 +36,7 @@ void Robot::moveStep() {
 		curpos = route.path[1];
 	
 	Pos facepos = advancePos(curpos, curdir);
-	if (grid[facepos] == WorldGrid::VICTIM)
+	if (grid.inBounds(facepos) && grid[facepos] == WorldGrid::VICTIM)
 		routeplanner.setVictimIdentified(facepos);
 }
 
