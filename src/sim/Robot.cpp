@@ -35,9 +35,9 @@ void Robot::moveStep() {
 	else if (route.path.size() > 1)
 		curpos = route.path[1];
 	
-	Pos victim;
-	if (map.getAdjacent(curpos, WorldGrid::VICTIM, &victim))
-		routeplanner.setVictimIdentified(victim);
+	Pos facepos = advancePos(curpos, curdir);
+	if (grid[facepos] == WorldGrid::VICTIM)
+		routeplanner.setVictimIdentified(facepos);
 }
 
 void Robot::updateSensorsStep() {

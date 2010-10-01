@@ -56,13 +56,21 @@ int RoutePlanner::scorePath(const AStarSearch &search, Dir curdir, DirVec &bestd
 	score += search.getPathCost()/3;
 
 	Pos victim;
+	bool havevictim;
 	if (map.getAdjacent(dest, WorldGrid::VICTIM, &victim)) {
-		if (!isVictimIdentified(victim))
+		if (!isVictimIdentified(victim)) {
+			havevictim = true;
 			score -= 500;
+		}
 	}
 	
 	PosSet revealed;
 	for (int i=0; i < search.getPathLength(); ++i) {
+		if (havevictim && i == search.getPathLength()-1) {
+			bestdirs[i] = getDirFromPoses(search.getPath()[i], victim);
+			continue;
+		}
+		
 		Dir bestdir;
 		PosSet newseen = getMostUnknownRevealedFrom(search.getPath()[i], bestdir, revealed);
 		if (newseen.size() > 4 || i == search.getPathLength()-1) { // TODO changeable constant
