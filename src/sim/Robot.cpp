@@ -29,8 +29,8 @@ void Robot::step() {
 }
 
 void Robot::moveStep() {
-	if (route.path.size() > 0) {
-		const Pos &newpos = route.path[0];
+	if (route.path.size() > 1) {
+		const Pos &newpos = route.path[1];
 		curdir = getDirFromPoses(curpos, newpos);
 		curpos = newpos;
 	} else

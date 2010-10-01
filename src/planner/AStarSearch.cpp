@@ -18,7 +18,8 @@ AStarSearch::AStarSearch(const WorldGrid &grid, const Pos &start, const Pos &end
 			path.push_back(curpos);
 			curpos = advancePos(curpos, getSquare(curpos).parentdir);
 		}
-	
+		path.push_back(start);
+		
 		reverse(path.begin(), path.end());
 	}
 }
