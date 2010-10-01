@@ -3,6 +3,7 @@
 
 #include "WorldGrid.h"
 #include "RoutePlanner.h"
+#include "TelepathicSensorPredictor.h"
 #include "types.h"
 #include <vector>
 
@@ -27,7 +28,7 @@ namespace pathsim {
 			void computeDestStep();
 			void updatePathStep();
 		
-			const int sensorrange;
+			TelepathicSensorPredictor sensorpred;
 		
 			Pos curpos;
 			Dir curdir;

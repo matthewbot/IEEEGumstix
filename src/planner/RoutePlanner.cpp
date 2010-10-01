@@ -4,7 +4,7 @@
 using namespace pathsim;
 using namespace std;
 
-RoutePlanner::RoutePlanner(const WorldGrid &map, int sensorrange) : map(map), sensorrange(sensorrange) { }
+RoutePlanner::RoutePlanner(const SensorPredictor &sensorpred, const WorldGrid &map) : sensorpred(sensorpred), map(map) { }
 
 #include <iostream>
 
@@ -18,8 +18,8 @@ RoutePlanner::Route RoutePlanner::planRoute(const Pos &curpos, Dir curdir) const
 			Pos pos(x, y);
 			if (!map.getPassable(pos))
 				continue;
-
-			if (!map.getAdjacent(pos, WorldGrid::UNKNOWN, NULL, sensorrange)) {
+			
+			if (countUnknownRevealedFrom(pos) == 0) {
 				Pos victim;
 				if (!map.getAdjacent(pos, WorldGrid::VICTIM, &victim))
 					continue;
@@ -57,9 +57,21 @@ int RoutePlanner::scorePath(const AStarSearch &search) const {
 			score -= 500;
 	}
 	
-	score -= 2*map.countAdjacent(dest, WorldGrid::UNKNOWN, sensorrange);
+	score -= 2*countUnknownRevealedFrom(dest);
 	
 	return score;
+}
+
+int RoutePlanner::countUnknownRevealedFrom(const Pos &pos) const {
+	int count=0;
+
+	PosSet seenset = sensorpred.predictVision(pos, map);
+	for (PosSet::const_iterator i = seenset.begin(); i != seenset.end(); ++i) {
+		if (map[*i] == WorldGrid::UNKNOWN)
+			count++;
+	}
+	
+	return count;
 }
 
 bool RoutePlanner::isVictimIdentified(const Pos &pos) const {

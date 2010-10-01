@@ -5,10 +5,10 @@ using namespace pathsim;
 using namespace std;
 
 Robot::Robot(int sensorrange, const Pos &startpos, const WorldGrid &grid) 
-: sensorrange(sensorrange), 
+: sensorpred(sensorrange), 
   grid(grid), 
   map(grid.getWidth(), grid.getHeight()),
-  routeplanner(map, sensorrange) {
+  routeplanner(sensorpred, map) {
 	reset(startpos);
 }
 
@@ -39,16 +39,10 @@ void Robot::moveStep() {
 }
 
 void Robot::updateSensorsStep() {
-	const int minx = max(curpos.x-sensorrange, 0);
-	const int maxx = min(curpos.x+sensorrange, map.getWidth()-1);
-	const int miny = max(curpos.y-sensorrange, 0);
-	const int maxy = min(curpos.y+sensorrange, map.getHeight()-1);
+	PosSet seenset = sensorpred.predictVision(curpos, grid);
 	
-	for (int x=minx; x<=maxx; x++) {
-		for (int y=miny; y<=maxy; y++) {
-			Pos pos(x, y);
-			map[pos] = grid[pos];
-		}
+	for (PosSet::const_iterator i = seenset.begin(); i != seenset.end(); ++i) {
+		map[*i] = grid[*i];
 	}
 }
 

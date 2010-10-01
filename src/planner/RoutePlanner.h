@@ -3,6 +3,7 @@
 
 #include "WorldGrid.h"
 #include "AStarSearch.h"
+#include "SensorPredictor.h"
 #include "types.h"
 
 namespace pathsim {
@@ -12,7 +13,7 @@ namespace pathsim {
 				Path path;
 			};
 			
-			RoutePlanner(const WorldGrid &map, int sensorrange);
+			RoutePlanner(const SensorPredictor &sensorpred, const WorldGrid &map);
 			
 			Route planRoute(const Pos &curpos, Dir curdir) const;
 			
@@ -22,8 +23,9 @@ namespace pathsim {
 			
 		private:
 			int scorePath(const AStarSearch &search) const;
+			int countUnknownRevealedFrom(const Pos &pos) const;
 		
-			int sensorrange;
+			const SensorPredictor &sensorpred;
 			const WorldGrid &map;
 			PosSet identifiedvictims;
 	};
