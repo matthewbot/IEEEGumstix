@@ -12,6 +12,7 @@ RoutePlanner::Route RoutePlanner::planRoute(const Pos &curpos, Dir curdir) const
 	timespec start;
 	clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &start);
 	
+	clearSensorCache();
 	Route route;
 	
 	int bestscore = 9999;
@@ -95,7 +96,7 @@ int RoutePlanner::scorePath(const AStarSearch &search, Dir curdir, DirVec &bestd
 }
 
 PosSet RoutePlanner::getUnknownRevealedFrom(const Pos &pos, Dir dir) const {
-	PosSet poses = sensorpred.predictVision(pos, dir, map);
+	PosSet poses = predictSensor(pos, dir);
 	
 	PosSet unknownposes;
 	
@@ -142,6 +143,21 @@ PosSet RoutePlanner::getBestUnknownRevealedFrom(const Pos &pos, Dir prevdir, Dir
 	}
 	
 	return bestset;
+}
+
+void RoutePlanner::clearSensorCache() const {
+	sensorpred_cache.clear();
+}
+
+const PosSet &RoutePlanner::predictSensor(const Pos &pos, Dir dir) const {
+	SensorCacheMap::key_type key = make_pair(pos, dir);
+	SensorCacheMap::iterator i = sensorpred_cache.find(key);
+	if (i == sensorpred_cache.end()) {
+		PosSet poses = sensorpred.predictVision(pos, dir, map);
+		i = sensorpred_cache.insert(make_pair(key, poses)).first;
+	}
+	
+	return i->second;
 }
 
 bool RoutePlanner::isVictimIdentified(const Pos &pos) const {

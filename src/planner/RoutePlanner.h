@@ -6,6 +6,7 @@
 #include "SensorPredictor.h"
 #include "types.h"
 #include <vector>
+#include <boost/unordered_map.hpp>
 
 namespace pathsim {
 	class RoutePlanner {
@@ -29,9 +30,15 @@ namespace pathsim {
 			bool canSeeUnknownInAnyDirFrom(const Pos &pos) const;
 			PosSet getBestUnknownRevealedFrom(const Pos &pos, Dir prevdir, Dir &bestdir, const PosSet &revealed, bool mustsee) const;			
 		
+			void clearSensorCache() const;
+			const PosSet &predictSensor(const Pos &pos, Dir dir) const;
+		
 			const SensorPredictor &sensorpred;
 			const WorldGrid &map;
 			PosSet identifiedvictims;
+			
+			typedef boost::unordered_map<std::pair<Pos, Dir>, PosSet> SensorCacheMap;
+			mutable SensorCacheMap sensorpred_cache;
 	};
 }
 
