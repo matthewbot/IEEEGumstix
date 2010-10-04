@@ -6,10 +6,7 @@ using namespace std;
 
 RoutePlanner::RoutePlanner(const SensorPredictor &sensorpred, const WorldGrid &map) : sensorpred(sensorpred), map(map) { }
 
-#include <iostream>
-
 RoutePlanner::Route RoutePlanner::planRoute(const Pos &curpos, Dir curdir) const {
-	cout << "--------Update--------" << endl;
 	Route route;
 	
 	int bestscore = 9999;
@@ -36,7 +33,6 @@ RoutePlanner::Route RoutePlanner::planRoute(const Pos &curpos, Dir curdir) const
 			bestdirs.resize(search.getPathLength());
 			
 			int score = scorePath(search, curdir, bestdirs);
-			cout << "Evaluated " << pos << " facing " << bestdirs.back() << " score " << score << endl;
 			if (score >= bestscore)
 				continue;
 				
