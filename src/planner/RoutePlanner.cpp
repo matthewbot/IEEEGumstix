@@ -64,7 +64,7 @@ int RoutePlanner::scorePath(const AStarSearch &search, Dir curdir, DirVec &bestd
 	score += search.getPathCost()/3;
 
 	Pos victim;
-	bool havevictim;
+	bool havevictim=false;
 	if (map.getAdjacent(dest, WorldGrid::VICTIM, &victim)) {
 		if (!isVictimIdentified(victim)) {
 			havevictim = true;
