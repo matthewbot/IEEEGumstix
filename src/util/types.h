@@ -1,6 +1,7 @@
 #ifndef UTIL_H
 #define UTIL_H
 
+#include <boost/unordered_set.hpp>
 #include <ostream>
 #include <vector>
 #include <set>
@@ -17,8 +18,10 @@ namespace pathsim {
 		inline Pos(int x, int y) : x(x), y(y) { }
 	};
 	
+	inline size_t hash_value(const Pos &pos) { return (pos.x << 8) | pos.y; }
+	
 	typedef std::vector<Pos> Path;
-	typedef std::set<Pos> PosSet;
+	typedef boost::unordered_set<Pos> PosSet;
 	
 	std::ostream &operator<<(std::ostream &stream, const Pos &pos);
 
