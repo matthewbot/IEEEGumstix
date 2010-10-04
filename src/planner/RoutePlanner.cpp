@@ -97,16 +97,14 @@ int RoutePlanner::scorePath(const AStarSearch &search, Dir curdir, DirVec &bestd
 PosSet RoutePlanner::getUnknownRevealedFrom(const Pos &pos, Dir dir) const {
 	PosSet poses = sensorpred.predictVision(pos, dir, map);
 	
-	for (PosSet::const_iterator i = poses.begin(); i != poses.end();) {
+	PosSet unknownposes;
+	
+	for (PosSet::const_iterator i = poses.begin(); i != poses.end(); ++i) {
 		if (map[*i] == WorldGrid::UNKNOWN)
-			++i;
-		else {
-			poses.erase(i);
-			i = poses.begin();
-		}
+			unknownposes.insert(*i);
 	}
 	
-	return poses;
+	return unknownposes;
 }
 
 bool RoutePlanner::canSeeUnknownInAnyDirFrom(const Pos &pos) const {
