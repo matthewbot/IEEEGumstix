@@ -1,5 +1,7 @@
 #include "RoutePlanner.h"
 #include <algorithm>
+#include <iostream>
+#include <ctime>
 
 using namespace pathsim;
 using namespace std;
@@ -7,6 +9,9 @@ using namespace std;
 RoutePlanner::RoutePlanner(const SensorPredictor &sensorpred, const WorldGrid &map) : sensorpred(sensorpred), map(map) { }
 
 RoutePlanner::Route RoutePlanner::planRoute(const Pos &curpos, Dir curdir) const {
+	timespec start;
+	clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &start);
+	
 	Route route;
 	
 	int bestscore = 9999;
@@ -41,6 +46,12 @@ RoutePlanner::Route RoutePlanner::planRoute(const Pos &curpos, Dir curdir) const
 			route.facedirs = bestdirs;
 		}
 	}
+	
+	timespec end;
+	clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &end);
+	
+	float tdelta = (float)(end.tv_sec - start.tv_sec) + (float)(end.tv_nsec - start.tv_nsec)/1E9;
+	cout << "Route planned in " << tdelta * 1000 << " ms" << endl;
 	
 	return route;
 }
