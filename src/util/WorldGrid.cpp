@@ -58,7 +58,7 @@ void WorldGrid::fillLine(Pos start, Pos end, GridSquare square) {
 		error += derror;
 		if (error >= 0.5) {
 			const bool horizdiag = error - 0.5 < derror/2;
-			if (horizdiag) {
+			if (horizdiag && x+1 <= end.x) {
 				if (steep) // small tweak, make sure there are no diagonal holes for it to pathfind through
 					set(y, x+1, square);
 				else
@@ -67,7 +67,7 @@ void WorldGrid::fillLine(Pos start, Pos end, GridSquare square) {
 				
 			y += (start.y < end.y ? 1 : -1);
 			
-			if (!horizdiag) {
+			if (!horizdiag && y <= end.y) {
 				if (steep)
 					set(y, x, square);
 				else

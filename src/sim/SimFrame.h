@@ -7,15 +7,20 @@
 namespace pathsim {
 	class SimFrame : public wxFrame, public WorldPanel::Callbacks {
 		public:
-			SimFrame(const World &world, Robot &robot);
+			SimFrame(World &world, Robot &robot);
 			
 			// WorldPanel::Callbacks
 			virtual bool onWorldClicked(const Pos &pos);
 			virtual void onWorldDragged(const Pos &pos);
 			
 		private:
+			World &world;
 			Robot &robot;
 			WorldPanel worldpanel;
+			
+			World::iterator selectedobj;
+			int selectedid;
+			
 			wxPanel buttonpanel;
 			wxButton stepbutton;
 			wxButton resetbutton;

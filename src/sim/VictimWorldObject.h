@@ -11,6 +11,8 @@ namespace pathsim {
 			virtual ~VictimWorldObject();
 			
 			virtual void fillWorldGrid(WorldGrid &grid) const;
+			virtual int selectionTest(const Pos &selectpos) const;
+			virtual void selectionMoved(int id, const Pos &newpos);
 			
 			inline const Pos &getPos() const { return pos; }
 			inline void setPos(const Pos &pos) { this->pos = pos; }

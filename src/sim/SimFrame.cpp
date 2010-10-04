@@ -13,10 +13,12 @@ BEGIN_EVENT_TABLE(SimFrame, wxFrame)
 	EVT_BUTTON(RESET_BUTTON, SimFrame::onResetPressed)
 END_EVENT_TABLE()
 
-SimFrame::SimFrame(const World &world, Robot &robot) 
-: robot(robot),
-  wxFrame(NULL, -1, _("Hello World"), wxDefaultPosition, wxSize(400, 400)), 
+SimFrame::SimFrame(World &world, Robot &robot) 
+: wxFrame(NULL, -1, _("Hello World"), wxDefaultPosition, wxSize(400, 400)), 
+  world(world),
+  robot(robot),
   worldpanel(this, *this, world, robot),
+  selectedid(-1),
   buttonpanel(this),
   stepbutton(&buttonpanel, STEP_BUTTON, _("Step")),
   resetbutton(&buttonpanel, RESET_BUTTON, _("Reset")) {
@@ -44,11 +46,21 @@ void SimFrame::onResetPressed(wxCommandEvent &evt) {
 #include <iostream>
 
 bool SimFrame::onWorldClicked(const Pos &pos) {
-	cout << "World clicked at " << pos << endl;
-	return true;
+	for (World::iterator i = world.begin(); i != world.end(); ++i) {
+		int id = i->selectionTest(pos);
+		if (id != -1) {
+			selectedid = id;
+			selectedobj = i;
+			return true;
+		}
+	}
+	
+	return false;
 }
 
 void SimFrame::onWorldDragged(const Pos &pos) {
-	cout << "World dragged to " << pos << endl;
+	selectedobj->selectionMoved(selectedid, pos);
+	world.updateGrid();
+	worldpanel.Refresh();
 }
 
