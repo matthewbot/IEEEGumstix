@@ -7,11 +7,15 @@ using namespace pathsim;
 using namespace std;
 
 BEGIN_EVENT_TABLE(WorldPanel, wxPanel)
+	EVT_LEFT_DOWN(WorldPanel::OnLeftDown)
+	EVT_LEFT_UP(WorldPanel::OnLeftUp)
+	EVT_MOTION(WorldPanel::OnMotion)
 	EVT_PAINT(WorldPanel::OnPaint)
 END_EVENT_TABLE()
 
-WorldPanel::WorldPanel(wxWindow *parent, const World &world, const Robot &robot)
+WorldPanel::WorldPanel(wxWindow *parent, Callbacks &callbacks, const World &world, const Robot &robot)
 : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE), 
+  callbacks(callbacks), 
   world(world),
   robot(robot) { }
 
@@ -31,7 +35,6 @@ void WorldPanel::paintGrid(wxPaintDC &dc) {
 	
 	const float squarew = (float)dispw/grid.getWidth();
 	const float squareh = (float)disph/grid.getHeight();
-	
 	
 	wxBrush brush;
 	
@@ -153,6 +156,38 @@ void WorldPanel::paintRobot(wxPaintDC &dc) {
 		
 		const float len = min(squarew, squareh)*0.3;
 		dc.DrawLine(centerx, centery, centerx+len*cos(dirrad), centery-len*sin(dirrad));
+	}
+}
+
+void WorldPanel::OnLeftDown(wxMouseEvent &event) {
+	const WorldGrid &grid = world.getGrid();
+	wxSize size = GetSize();
+	const int gridx = event.GetX()*grid.getWidth()/size.GetWidth();
+	const int gridy = event.GetY()*grid.getHeight()/size.GetHeight();
+
+	Pos pos(gridx, gridy);
+	dragging = callbacks.onWorldClicked(pos);
+	if (dragging)
+		lastdragpos = pos;
+}
+
+void WorldPanel::OnLeftUp(wxMouseEvent &event) {
+	dragging = false;
+}
+
+void WorldPanel::OnMotion(wxMouseEvent &event) {
+	if (!dragging)
+		return;
+		
+	const WorldGrid &grid = world.getGrid();
+	wxSize size = GetSize();
+	const int gridx = event.GetX()*grid.getWidth()/size.GetWidth();
+	const int gridy = event.GetY()*grid.getHeight()/size.GetHeight();
+
+	Pos pos(gridx, gridy);
+	if (lastdragpos != pos) {
+		callbacks.onWorldDragged(pos);
+		lastdragpos = pos;
 	}
 }
 

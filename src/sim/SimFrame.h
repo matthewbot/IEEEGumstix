@@ -5,9 +5,13 @@
 #include "WorldPanel.h"
 
 namespace pathsim {
-	class SimFrame : public wxFrame {
+	class SimFrame : public wxFrame, public WorldPanel::Callbacks {
 		public:
 			SimFrame(const World &world, Robot &robot);
+			
+			// WorldPanel::Callbacks
+			virtual bool onWorldClicked(const Pos &pos);
+			virtual void onWorldDragged(const Pos &pos);
 			
 		private:
 			Robot &robot;

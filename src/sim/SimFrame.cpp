@@ -16,7 +16,7 @@ END_EVENT_TABLE()
 SimFrame::SimFrame(const World &world, Robot &robot) 
 : robot(robot),
   wxFrame(NULL, -1, _("Hello World"), wxDefaultPosition, wxSize(400, 400)), 
-  worldpanel(this, world, robot),
+  worldpanel(this, *this, world, robot),
   buttonpanel(this),
   stepbutton(&buttonpanel, STEP_BUTTON, _("Step")),
   resetbutton(&buttonpanel, RESET_BUTTON, _("Reset")) {
@@ -41,4 +41,14 @@ void SimFrame::onResetPressed(wxCommandEvent &evt) {
 	worldpanel.Refresh();
 }
 
+#include <iostream>
+
+bool SimFrame::onWorldClicked(const Pos &pos) {
+	cout << "World clicked at " << pos << endl;
+	return true;
+}
+
+void SimFrame::onWorldDragged(const Pos &pos) {
+	cout << "World dragged to " << pos << endl;
+}
 
