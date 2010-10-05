@@ -95,11 +95,16 @@ int RoutePlanner::scorePath(const AStarSearch &search, Dir curdir, DirVec &bestd
 	return score;
 }
 
-PosSet RoutePlanner::getUnknownRevealedFrom(const Pos &pos, Dir dir) const {
-	PosSet poses = predictSensor(pos, dir);
+const PosSet &RoutePlanner::getUnknownRevealedFrom(const Pos &pos, Dir dir) const {
+	UnknownPosCacheMap::key_type key = make_pair(pos, dir);
+	UnknownPosCacheMap::iterator i = unknownposes_cache.find(key);
+	if (i != unknownposes_cache.end())
+		return i->second;
 	
-	PosSet unknownposes;
-	
+	i = unknownposes_cache.insert(make_pair(key, PosSet())).first;
+	PosSet &unknownposes = i->second;
+
+	PosSet poses = sensorpred.predictVision(pos, dir, map);
 	for (PosSet::const_iterator i = poses.begin(); i != poses.end(); ++i) {
 		if (map[*i] == WorldGrid::UNKNOWN)
 			unknownposes.insert(*i);
@@ -146,18 +151,7 @@ PosSet RoutePlanner::getBestUnknownRevealedFrom(const Pos &pos, Dir prevdir, Dir
 }
 
 void RoutePlanner::clearSensorCache() const {
-	sensorpred_cache.clear();
-}
-
-const PosSet &RoutePlanner::predictSensor(const Pos &pos, Dir dir) const {
-	SensorCacheMap::key_type key = make_pair(pos, dir);
-	SensorCacheMap::iterator i = sensorpred_cache.find(key);
-	if (i == sensorpred_cache.end()) {
-		PosSet poses = sensorpred.predictVision(pos, dir, map);
-		i = sensorpred_cache.insert(make_pair(key, poses)).first;
-	}
-	
-	return i->second;
+	unknownposes_cache.clear();
 }
 
 bool RoutePlanner::isVictimIdentified(const Pos &pos) const {
