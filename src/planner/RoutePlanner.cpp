@@ -22,7 +22,7 @@ RoutePlanner::Route RoutePlanner::planRoute(const Pos &curpos, Dir curdir) const
 			if (!map.getPassable(pos))
 				continue;
 			
-			if (!canSeeUnknownInAnyDirFrom(pos)) {
+			if (!map.getAdjacent(pos, WorldGrid::UNKNOWN, NULL, 3) || !canSeeUnknownInAnyDirFrom(pos)) {
 				Pos victim;
 				if (!map.getAdjacent(pos, WorldGrid::VICTIM, &victim))
 					continue;
