@@ -13,13 +13,17 @@ PosSet CameraSensorPredictor::predictVision(const Pos &curpos, Dir curdir, const
 	
 	PosSet seen;
 	
+	const float startx = curpos.x + .5f;
+	const float starty = curpos.y + .5f;
 	for (float rad=startrad; rad <= endrad; rad += fovstep) {
-		int deadspotheight = 0;
+		const float dx = cos(rad);
+		const float dy = -sin(rad);
 	
-		for (int dist=0; dist<=maxdistance; dist++) {
-			float x = curpos.x + .5f + dist*cos(rad);
-			float y = curpos.y + .5f - dist*sin(rad); // our y axis is inverted
-			Pos pos((int)floor(x), (int)floor(y));
+		int deadspotheight = 0;
+		float x = startx;
+		float y = starty;
+		for (int dist=0; dist<=maxdistance; dist++, x+=dx, y+=dy) {
+			Pos pos((int)x, (int)y);
 			
 			if (!grid.inBounds(pos))
 				break;
