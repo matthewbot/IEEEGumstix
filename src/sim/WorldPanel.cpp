@@ -181,8 +181,18 @@ void WorldPanel::OnMotion(wxMouseEvent &event) {
 		
 	const WorldGrid &grid = world.getGrid();
 	wxSize size = GetSize();
-	const int gridx = event.GetX()*grid.getWidth()/size.GetWidth();
-	const int gridy = event.GetY()*grid.getHeight()/size.GetHeight();
+	int gridx = event.GetX()*grid.getWidth()/size.GetWidth();
+	int gridy = event.GetY()*grid.getHeight()/size.GetHeight();
+
+	if (gridx < 0)
+		gridx = 0;
+	else if (gridx >= grid.getWidth())
+		gridx = grid.getWidth()-1;
+		
+	if (gridy < 0)
+		gridy = 0;
+	else if (gridy >= grid.getHeight())
+		gridy = grid.getHeight()-1;
 
 	Pos pos(gridx, gridy);
 	if (lastdragpos != pos) {
