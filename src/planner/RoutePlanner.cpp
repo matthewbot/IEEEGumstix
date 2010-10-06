@@ -61,8 +61,6 @@ int RoutePlanner::scorePath(const AStarSearch &search, Dir curdir, DirVec &bestd
 	const Pos &dest = search.getPath().back();
 	int score=0;
 
-	score += search.getPathCost()/3;
-
 	Pos victim;
 	bool havevictim=false;
 	if (map.getAdjacent(dest, WorldGrid::VICTIM, &victim)) {
@@ -71,6 +69,11 @@ int RoutePlanner::scorePath(const AStarSearch &search, Dir curdir, DirVec &bestd
 			score -= 500;
 		}
 	}
+	
+	if (havevictim)
+		score += search.getPathCost();
+	else
+		score += search.getPathCost()/3;
 	
 	PosSet revealed;
 	for (int i=0; i < search.getPathLength(); ++i) {
