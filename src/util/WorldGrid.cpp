@@ -15,24 +15,6 @@ void WorldGrid::clear(GridSquare square) {
 	fill(&squares[0], &squares[width*height], square);
 }
 
-bool WorldGrid::inBounds(const Pos &pos) const {
-	if (pos.x < 0 || pos.x >= width)
-		return false;
-	if (pos.y < 0 || pos.y >= height)
-		return false;
-	return true;
-}
-
-WorldGrid::GridSquare &WorldGrid::operator[](const Pos &pos) {
-	assert(inBounds(pos));
-	return squares[pos.x + pos.y*width];
-}
-
-WorldGrid::GridSquare WorldGrid::operator[](const Pos &pos) const {
-	assert(inBounds(pos));
-	return squares[pos.x + pos.y*width];
-}
-
 // based on bresenham's line algorithm
 void WorldGrid::fillLine(Pos start, Pos end, GridSquare square) {
 	const bool steep = abs(end.y - start.y) > abs(end.x - start.x);

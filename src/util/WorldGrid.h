@@ -23,10 +23,23 @@ namespace pathsim {
 			
 			inline int getWidth() const { return width; }
 			inline int getHeight() const { return height; }
-			bool inBounds(const Pos &pos) const;
 			
-			GridSquare &operator[](const Pos &pos);
-			GridSquare operator[](const Pos &po) const;
+			inline bool inBounds(const Pos &pos) const {
+				if (pos.x < 0 || pos.x >= width)
+					return false;
+				if (pos.y < 0 || pos.y >= height)
+					return false;
+				return true;			
+			}
+			
+			inline GridSquare &operator[](const Pos &pos) {
+				assert(inBounds(pos));
+				return squares[pos.x + pos.y*width];
+			}
+			inline GridSquare operator[](const Pos &pos) const {
+				assert(inBounds(pos));
+				return squares[pos.x + pos.y*width];
+			}
 			inline GridSquare &operator()(int x, int y) { return (*this)[Pos(x, y)]; }
 			inline GridSquare operator()(int x, int y) const { return (*this)[Pos(x, y)]; }
 			
