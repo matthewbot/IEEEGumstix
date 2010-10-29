@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <cmath>
 
-using namespace pathsim;
+using namespace ieeepath;
 using namespace std;
 
 Robot::Robot(const Pos &startpos, const WorldGrid &grid) 

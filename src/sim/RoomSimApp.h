@@ -6,7 +6,7 @@
 #include "World.h"
 #include "Robot.h"
 
-namespace pathsim {
+namespace ieeepath {
 	class RoomSimApp : public wxApp {
 		public:
 			RoomSimApp();

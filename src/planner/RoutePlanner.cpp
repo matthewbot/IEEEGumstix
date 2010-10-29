@@ -3,7 +3,7 @@
 #include <iostream>
 #include <ctime>
 
-using namespace pathsim;
+using namespace ieeepath;
 using namespace std;
 
 RoutePlanner::RoutePlanner(const SensorPredictor &sensorpred, const WorldGrid &map) : sensorpred(sensorpred), map(map) { }

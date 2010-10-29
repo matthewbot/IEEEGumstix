@@ -4,7 +4,7 @@
 #include <boost/scoped_array.hpp>
 #include "types.h"
 
-namespace pathsim {
+namespace ieeepath {
 	class WorldGrid {
 		public:
 			enum GridSquare {

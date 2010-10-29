@@ -3,7 +3,7 @@
 #include "ObstacleWorldObject.h"
 #include <algorithm>
 
-using namespace pathsim;
+using namespace ieeepath;
 using namespace std;
 
 BEGIN_EVENT_TABLE(WorldPanel, wxPanel)

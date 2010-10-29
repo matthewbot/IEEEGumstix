@@ -3,7 +3,7 @@
 
 #include "SensorPredictor.h"
 
-namespace pathsim {
+namespace ieeepath {
 	class CameraSensorPredictor : public SensorPredictor {
 		public:
 			CameraSensorPredictor(int maxdistance, float fieldofview, float fovstep);

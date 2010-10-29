@@ -1,6 +1,6 @@
 #include "SimFrame.h"
 
-using namespace pathsim;
+using namespace ieeepath;
 using namespace std;
 
 enum { 

@@ -4,7 +4,7 @@
 #include "WorldGrid.h"
 #include "types.h"
 
-namespace pathsim {
+namespace ieeepath {
 	class SensorPredictor {
 		public:
 			virtual PosSet predictVision(const Pos &curpos, Dir curdir, const WorldGrid &grid) const =0;

@@ -5,7 +5,7 @@
 #include "World.h"
 #include "Robot.h"
 
-namespace pathsim {
+namespace ieeepath {
 	class WorldPanel : public wxPanel {
 		public:
 			struct Callbacks {

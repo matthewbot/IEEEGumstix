@@ -8,7 +8,7 @@
 #include <vector>
 #include <boost/unordered_map.hpp>
 
-namespace pathsim {
+namespace ieeepath {
 	class RoutePlanner {
 		public:
 			struct Route {

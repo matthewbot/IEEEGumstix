@@ -7,7 +7,7 @@
 #include <list>
 #include <boost/scoped_array.hpp>
 
-namespace pathsim {
+namespace ieeepath {
 	class AStarSearch {
 		public:
 			struct Square {

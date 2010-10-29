@@ -7,7 +7,7 @@
 #include "types.h"
 #include <vector>
 
-namespace pathsim {
+namespace ieeepath {
 	class Robot {
 		public:
 			Robot(const Pos &startpos, const WorldGrid &grid);

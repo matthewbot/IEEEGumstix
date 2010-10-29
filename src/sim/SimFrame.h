@@ -4,7 +4,7 @@
 #include <wx/wx.h>
 #include "WorldPanel.h"
 
-namespace pathsim {
+namespace ieeepath {
 	class SimFrame : public wxFrame, public WorldPanel::Callbacks {
 		public:
 			SimFrame(World &world, Robot &robot);

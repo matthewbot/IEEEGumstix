@@ -1,6 +1,6 @@
 #include "ObstacleWorldObject.h"
 
-using namespace pathsim;
+using namespace ieeepath;
 
 ObstacleWorldObject::ObstacleWorldObject(const Pos &startpos, const Pos &endpos, bool large)
 : startpos(startpos), endpos(endpos), large(large) { }

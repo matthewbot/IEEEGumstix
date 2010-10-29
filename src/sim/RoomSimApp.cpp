@@ -5,7 +5,7 @@
 #include "AStarSearch.h"
 #include <iostream>
 
-using namespace pathsim;
+using namespace ieeepath;
 using namespace std;
 
 IMPLEMENT_APP(RoomSimApp)

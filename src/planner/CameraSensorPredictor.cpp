@@ -1,7 +1,7 @@
 #include "CameraSensorPredictor.h"
 #include <cmath>
 
-using namespace pathsim;
+using namespace ieeepath;
 using namespace std;
 
 CameraSensorPredictor::CameraSensorPredictor(int maxdistance, float fieldofview, float fovstep) 
