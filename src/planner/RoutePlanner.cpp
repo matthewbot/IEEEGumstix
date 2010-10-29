@@ -7,7 +7,8 @@
 using namespace ieeepath;
 using namespace std;
 
-RoutePlanner::RoutePlanner(const SensorPredictor &sensorpred, const WorldGrid &map) : sensorpred(sensorpred), map(map) { }
+RoutePlanner::RoutePlanner(const SensorPredictor &sensorpred, const WorldGrid &map, const Config &config)
+: sensorpred(sensorpred), map(map), config(config) { }
 
 RoutePlanner::Route RoutePlanner::planRoute(const Pos &curpos, Dir curdir) const {
 	Timer tim;
@@ -22,7 +23,7 @@ RoutePlanner::Route RoutePlanner::planRoute(const Pos &curpos, Dir curdir) const
 			if (!map.getPassable(pos))
 				continue;
 			
-			if (!map.getAdjacent(pos, WorldGrid::UNKNOWN, NULL, 2) || !canSeeUnknownInAnyDirFrom(pos)) {
+			if (!map.getAdjacent(pos, WorldGrid::UNKNOWN, NULL, config.unknownPruneDist) || !canSeeUnknownInAnyDirFrom(pos)) {
 				Pos victim;
 				if (!map.getAdjacent(pos, WorldGrid::VICTIM, &victim))
 					continue;
@@ -67,10 +68,7 @@ int RoutePlanner::scorePath(const AStarSearch &search, Dir curdir, DirVec &bestd
 		}
 	}
 	
-	if (havevictim)
-		score += search.getPathCost();
-	else
-		score += search.getPathCost()/3;
+	score += search.getPathCost() * (havevictim ? config.pathCostFactorVictim : config.pathCostFactor);
 	
 	PosSet revealed;
 	for (int i=0; i < search.getPathLength(); ++i) {
@@ -90,7 +88,7 @@ int RoutePlanner::scorePath(const AStarSearch &search, Dir curdir, DirVec &bestd
 		revealed.insert(newseen.begin(), newseen.end());	
 	}	
 	
-	score -= 2*revealed.size();
+	score -= revealed.size() * config.revealedScoreFactor;
 	
 	return score;
 }

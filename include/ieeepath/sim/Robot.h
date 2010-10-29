@@ -36,6 +36,12 @@ namespace ieeepath {
 			
 			WorldGrid map;
 			RoutePlanner::Route route;
+			
+			struct RoutePlannerConfig : public RoutePlanner::Config {
+				RoutePlannerConfig();
+			};
+			
+			RoutePlannerConfig routeplannerconfig;
 			RoutePlanner routeplanner;
 	};
 }

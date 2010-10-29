@@ -16,7 +16,14 @@ namespace ieeepath {
 				DirVec facedirs;
 			};
 			
-			RoutePlanner(const SensorPredictor &sensorpred, const WorldGrid &map);
+			struct Config {
+				int unknownPruneDist; // prune squares that are this many squares or more from an unknown square
+				int pathCostFactor; // scale factor for a route's path cost
+				int pathCostFactorVictim; // scale factor for a route's path cost, when destination is a victim
+				int revealedScoreFactor; // scale factor for a route's revealed squares score (or negative cost)
+			};
+			
+			RoutePlanner(const SensorPredictor &sensorpred, const WorldGrid &map, const Config &config);
 			
 			Route planRoute(const Pos &curpos, Dir curdir) const;
 			
@@ -32,6 +39,7 @@ namespace ieeepath {
 		
 			void clearSensorCache() const;
 		
+			const Config &config;
 			const SensorPredictor &sensorpred;
 			const WorldGrid &map;
 			PosSet identifiedvictims;

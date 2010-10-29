@@ -9,8 +9,15 @@ Robot::Robot(const Pos &startpos, const WorldGrid &grid)
 : sensorpred(7, M_PI/4, .15),
   grid(grid), 
   map(grid.getWidth(), grid.getHeight()),
-  routeplanner(sensorpred, map) {
+  routeplanner(sensorpred, map, routeplannerconfig) {
 	reset(startpos);
+}
+
+Robot::RoutePlannerConfig::RoutePlannerConfig() {
+	unknownPruneDist = 2;
+	pathCostFactor = 1;
+	pathCostFactorVictim = 3;
+	revealedScoreFactor = 6;
 }
 
 void Robot::reset(const Pos &pos, Dir dir) {
