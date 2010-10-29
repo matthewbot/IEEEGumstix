@@ -1,8 +1,8 @@
 #ifndef SENSORPREDICTOR_H
 #define SENSORPREDICTOR_H
 
-#include "WorldGrid.h"
-#include "types.h"
+#include "ieeepath/shared/WorldGrid.h"
+#include "ieeepath/shared/types.h"
 
 namespace ieeepath {
 	class SensorPredictor {

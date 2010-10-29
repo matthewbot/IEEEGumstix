@@ -1,10 +1,10 @@
 #ifndef ROUTEPLANNER_H
 #define ROUTEPLANNER_H
 
-#include "WorldGrid.h"
-#include "AStarSearch.h"
-#include "SensorPredictor.h"
-#include "types.h"
+#include "ieeepath/planner/AStarSearch.h"
+#include "ieeepath/planner/SensorPredictor.h"
+#include "ieeepath/shared/WorldGrid.h"
+#include "ieeepath/shared/types.h"
 #include <vector>
 #include <boost/unordered_map.hpp>
 

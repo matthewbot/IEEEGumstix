@@ -2,7 +2,7 @@
 #define SIMFRAME_H
 
 #include <wx/wx.h>
-#include "WorldPanel.h"
+#include "ieeepath/sim/WorldPanel.h"
 
 namespace ieeepath {
 	class SimFrame : public wxFrame, public WorldPanel::Callbacks {

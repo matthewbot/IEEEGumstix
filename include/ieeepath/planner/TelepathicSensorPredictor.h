@@ -1,7 +1,7 @@
 #ifndef TELEPATHICSENSORPREDICTOR_H
 #define TELEPATHICSENSORPREDICTOR_H
 
-#include "SensorPredictor.h"
+#include "ieeepath/planner/SensorPredictor.h"
 
 namespace ieeepath {
 	class TelepathicSensorPredictor : public SensorPredictor {

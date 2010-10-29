@@ -1,9 +1,9 @@
 #ifndef WORLDCANVAS_H
 #define WORLDCANVAS_H
 
+#include "ieeepath/sim/Robot.h"
+#include "ieeepath/sim/World.h"
 #include <wx/wx.h>
-#include "World.h"
-#include "Robot.h"
 
 namespace ieeepath {
 	class WorldPanel : public wxPanel {

@@ -1,10 +1,10 @@
 #ifndef ROBOT_H
 #define ROBOT_H
 
-#include "WorldGrid.h"
-#include "RoutePlanner.h"
-#include "CameraSensorPredictor.h"
-#include "types.h"
+#include "ieeepath/planner/RoutePlanner.h"
+#include "ieeepath/planner/CameraSensorPredictor.h"
+#include "ieeepath/shared/WorldGrid.h"
+#include "ieeepath/shared/types.h"
 #include <vector>
 
 namespace ieeepath {

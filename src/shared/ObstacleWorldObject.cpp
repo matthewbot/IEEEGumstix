@@ -1,4 +1,4 @@
-#include "ObstacleWorldObject.h"
+#include "ieeepath/shared/ObstacleWorldObject.h"
 
 using namespace ieeepath;
 

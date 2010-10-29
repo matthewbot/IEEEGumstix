@@ -1,8 +1,8 @@
 #ifndef ASTARSEARCH_H
 #define ASTARSEARCH_H
 
-#include "WorldGrid.h"
-#include "types.h"
+#include "ieeepath/shared/WorldGrid.h"
+#include "ieeepath/shared/types.h"
 #include <vector>
 #include <list>
 #include <boost/scoped_array.hpp>

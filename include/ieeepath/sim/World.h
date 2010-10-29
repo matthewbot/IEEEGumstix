@@ -2,7 +2,7 @@
 #define WORLD_H
 
 #include <boost/ptr_container/ptr_vector.hpp>
-#include "WorldObject.h"
+#include "ieeepath/shared/WorldObject.h"
 
 namespace ieeepath {
 	class World {

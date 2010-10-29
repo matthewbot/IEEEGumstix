@@ -1,8 +1,7 @@
-#include "RoomSimApp.h"
-#include "SimFrame.h"
-#include "VictimWorldObject.h"
-#include "ObstacleWorldObject.h"
-#include "AStarSearch.h"
+#include "ieeepath/sim/RoomSimApp.h"
+#include "ieeepath/sim/SimFrame.h"
+#include "ieeepath/shared/VictimWorldObject.h"
+#include "ieeepath/shared/ObstacleWorldObject.h"
 #include <iostream>
 
 using namespace ieeepath;

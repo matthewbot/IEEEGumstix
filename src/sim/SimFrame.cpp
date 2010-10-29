@@ -1,4 +1,4 @@
-#include "SimFrame.h"
+#include "ieeepath/sim/SimFrame.h"
 
 using namespace ieeepath;
 using namespace std;
@@ -42,8 +42,6 @@ void SimFrame::onResetPressed(wxCommandEvent &evt) {
 	robot.reset(Pos(0, 0), DIR_E);
 	worldpanel.Refresh();
 }
-
-#include <iostream>
 
 bool SimFrame::onWorldClicked(const Pos &pos) {
 	for (World::iterator i = world.begin(); i != world.end(); ++i) {
