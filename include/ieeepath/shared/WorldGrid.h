@@ -51,6 +51,8 @@ namespace ieeepath {
 			void fillLine(Pos start, Pos end, GridSquare square);
 
 			inline bool getPassable(const Pos &pos) const { return passable((*this)[pos]); }
+			bool passableRect(const Pos &pos, int w=2, int h=2) const;
+			
 			int countAdjacent(const Pos &pos, GridSquare square, int range=1) const;
 			bool getAdjacent(const Pos &pos, GridSquare square, Pos *out, int range=1) const;
 			
