@@ -155,7 +155,10 @@ void WorldPanel::paintRobot(wxPaintDC &dc) {
 		dc.DrawCircle(centerx, centery, radius);
 		
 		const float len = min(squarew, squareh)*0.3;
-		dc.DrawLine(centerx, centery, centerx+len*cos(dirrad), centery-len*sin(dirrad));
+		const float finalx = centerx+len*cos(dirrad);
+		const float finaly = centery-len*sin(dirrad);
+		dc.DrawLine(centerx, centery, finalx, finaly);
+		dc.DrawCircle(finalx, finaly, 1);
 	}
 }
 
