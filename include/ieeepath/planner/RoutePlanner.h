@@ -3,7 +3,7 @@
 
 #include "ieeepath/planner/AStarSearch.h"
 #include "ieeepath/planner/SensorPredictor.h"
-#include "ieeepath/shared/WorldGrid.h"
+#include "ieeepath/planner/NodeGrid.h"
 #include "ieeepath/shared/types.h"
 #include <vector>
 #include <boost/unordered_map.hpp>
@@ -14,6 +14,8 @@ namespace ieeepath {
 			struct Route {
 				Path path;
 				DirVec facedirs;
+				bool identifyvictim;
+				Pos victimpos;
 			};
 			
 			struct Config {
@@ -23,7 +25,7 @@ namespace ieeepath {
 				int revealedScoreFactor; // scale factor for a route's revealed squares score (or negative cost)
 			};
 			
-			RoutePlanner(const SensorPredictor &sensorpred, const WorldGrid &map, const Config &config);
+			RoutePlanner(const SensorPredictor &sensorpred, const WorldGrid &worldmap, const Config &config);
 			
 			Route planRoute(const Pos &curpos, Dir curdir) const;
 			
@@ -32,7 +34,7 @@ namespace ieeepath {
 			void resetVictims();
 			
 		private:
-			int scorePath(const AStarSearch &search, Dir curdir, DirVec &bestdirs) const;
+			int scorePath(const AStarSearch &search, Dir curdir, DirVec &bestdirs, bool destvictim) const;
 			const PosSet &getUnknownRevealedFrom(const Pos &pos, Dir dir) const;
 			bool canSeeUnknownInAnyDirFrom(const Pos &pos) const;
 			PosSet getBestUnknownRevealedFrom(const Pos &pos, Dir prevdir, Dir &bestdir, const PosSet &revealed, bool mustsee) const;			
@@ -41,7 +43,8 @@ namespace ieeepath {
 		
 			const Config &config;
 			const SensorPredictor &sensorpred;
-			const WorldGrid &map;
+			const WorldGrid &worldmap;
+			mutable NodeGrid map;
 			PosSet identifiedvictims;
 			
 			typedef boost::unordered_map<std::pair<Pos, Dir>, PosSet> UnknownPosCacheMap;

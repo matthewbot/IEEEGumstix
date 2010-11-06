@@ -10,7 +10,7 @@ using namespace std;
 AStarSearch::Square::Square()
 : parentdir(DIR_NONE), cost(0), heuristic(0), closed(false) { }
 
-AStarSearch::AStarSearch(const WorldGrid &grid, const Pos &start, const Pos &end)
+AStarSearch::AStarSearch(const NodeGrid &grid, const Pos &start, const Pos &end)
 : width(grid.getWidth()), height(grid.getHeight()), squares(new Square[grid.getWidth()*grid.getHeight()]) {
 	if (doSearch(grid, start, end)) {
 		Pos curpos=end;
@@ -24,7 +24,7 @@ AStarSearch::AStarSearch(const WorldGrid &grid, const Pos &start, const Pos &end
 	}
 }
 
-bool AStarSearch::doSearch(const WorldGrid &grid, const Pos &start, const Pos &end) {
+bool AStarSearch::doSearch(const NodeGrid &grid, const Pos &start, const Pos &end) {
 	OpenList openlist;
 	openlist.push_back(start); // start off with the starting square on the open list
 
@@ -42,7 +42,7 @@ bool AStarSearch::doSearch(const WorldGrid &grid, const Pos &start, const Pos &e
 			Pos pos = advancePos(curpos, dir); // get the position of the location we'd end up
 			if (!grid.inBounds(pos)) // skip it if its not valid
 				continue;
-			if (!grid.getPassable(pos)) // or if its not passable
+			if (!grid[pos].traverseableFrom(dir)) // or if its not passable
 				continue;
 					
 			Square &square = getSquare(pos); // get the square of where we'd end up
@@ -83,14 +83,14 @@ void AStarSearch::insertPosToOpenList(OpenList &openlist, const Pos &pos, int fs
 	openlist.insert(i, pos);
 }
 
-int AStarSearch::pathCost(Dir dir, const Pos &pos, const WorldGrid &grid) {
+int AStarSearch::pathCost(Dir dir, const Pos &pos, const NodeGrid &grid) {
 	int cost;
 	if (isDirDiagonal(dir))
 		cost = 14;
 	else
 		cost = 10;
 	
-	if (grid[pos] == WorldGrid::SMALL_OBSTACLE)
+	if (grid[pos].getType() == Node::CLIMB)
 		cost += 20;
 		
 	return cost;

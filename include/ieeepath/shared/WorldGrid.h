@@ -15,7 +15,7 @@ namespace ieeepath {
 				UNKNOWN
 			};
 			
-			inline static bool passable(GridSquare square) { return square < VICTIM; }
+			inline static bool passable(GridSquare square) { return square != LARGE_OBSTACLE && square != VICTIM; }
 			inline static bool known(GridSquare square) { return square != UNKNOWN; }
 		
 			WorldGrid(int w, int h, GridSquare clearsquare=EMPTY);

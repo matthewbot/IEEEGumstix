@@ -4,6 +4,7 @@
 #include "ieeepath/planner/Node.h"
 #include "ieeepath/shared/WorldGrid.h"
 #include <boost/multi_array.hpp>
+#include <ostream>
 
 namespace ieeepath {
 	class NodeGrid {
@@ -13,10 +14,10 @@ namespace ieeepath {
 			inline int getWidth() const { return array.shape()[0]; }
 			inline int getHeight() const { return array.shape()[1]; }
 			
-			inline const Node &operator[](const Pos &pos) const { return (*this)(pos.x, pos.y); }
-			inline Node &operator[](const Pos &pos) { return (*this)(pos.x, pos.y); }
-			inline const Node &operator()(int x, int y) const { return array[x][y]; }
-			inline Node &operator()(int x, int y) { return array[x][y]; }
+			inline bool inBounds(Pos pos) const { return pos.x >= 0 && pos.y >= 0 && pos.x < getWidth() && pos.y < getHeight(); }
+			
+			inline const Node &operator[](const Pos &pos) const { assert(inBounds(pos)); return array[pos.x][pos.y]; }
+			inline Node &operator[](const Pos &pos) { assert(inBounds(pos)); return array[pos.x][pos.y]; }	
 			
 			static NodeGrid fromWorldGrid(const WorldGrid &grid);
 			
@@ -24,6 +25,8 @@ namespace ieeepath {
 			boost::multi_array<Node, 2> array;
 	
 	};
+	
+	std::ostream &operator<<(std::ostream &out, const NodeGrid &grid);
 }
 
 #endif

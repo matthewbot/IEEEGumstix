@@ -18,7 +18,7 @@ NodeGrid NodeGrid::fromWorldGrid(const WorldGrid &grid) {
 			
 			// determine if passable
 			if (!grid.passableRect(pos)) {
-				node = Node::CLOSED;
+				node = Node::IMPASSABLE;
 				continue;
 			}
 
@@ -31,31 +31,19 @@ NodeGrid NodeGrid::fromWorldGrid(const WorldGrid &grid) {
 			nodes[pos] = Node::OPEN;
 		}
 	}
+	
+	return nodes;
 }
 
-static Dir getVictimIDDir(const Pos &pos, const WorldGrid &grid) {
-	// determine if a victim check
-	static const struct victimcheck {
-		int dx, dy;
-		Dir dir;
-	} victimchecks[] = {
-		{0, -1, DIR_N},
-		{1, -1, DIR_N},
-		{0, 2, DIR_S},
-		{1, 2, DIR_S},
-		{-1, 0, DIR_W},
-		{-1, 1, DIR_W},
-		{2, 0, DIR_E},
-		{2, 1, DIR_E},
-		{0, 0, DIR_NONE}
-	};
-	
-	for (const victimcheck *check = victimchecks; check->dir != DIR_NONE; check++) {
-		if (grid(pos.x + check->dx, pos.y + check->dy) == WorldGrid::VICTIM)
-			return check->dir;
+std::ostream &ieeepath::operator<<(std::ostream &out, const NodeGrid &grid) {
+	for (int y=0; y<grid.getHeight(); y++) {
+		for (int x=0; x<grid.getWidth(); x++) {
+			out << grid[Pos(x, y)];
+		}
+		
+		out << endl;
 	}
 	
-	return DIR_NONE;
+	return out;
 }
-
 
