@@ -1,4 +1,4 @@
-#include "ieeepath/vision/V4LCapture.h"
+#include "ieeepath/drivers/V4LCapture.h"
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
 

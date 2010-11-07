@@ -5,10 +5,10 @@ find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIR})
 
 file(GLOB sources "*.cpp")
-list(REMOVE_ITEM sources main.cpp)
+list(REMOVE_ITEM sources capturetest.cpp)
 
 add_library(ieeepathvision ${sources})
 
-add_executable(ieeepathvision_test main.cpp)
-target_link_libraries(ieeepathvision_test ieeepathvision ${OpenCV_LIBS})
+add_executable(ieeepathdrivers_capturetest capturetest.cpp)
+target_link_libraries(ieeepathdrivers_capturetest ieeepathvision ${OpenCV_LIBS})
 
