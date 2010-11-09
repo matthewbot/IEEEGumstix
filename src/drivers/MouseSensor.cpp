@@ -16,6 +16,22 @@ MouseSensor::MouseSensor(const string &path) {
 		buf << "Failed to open " << path << ": " << strerror(errno) << endl;
 		throw Error(buf.str());
 	}
+	
+	int evtype;
+	memset(&evtype, 0, sizeof(evtype));
+	if (ioctl(fd, EVIOCGBIT(0, sizeof(evtype)), &evtype) < 0) {
+		close(fd);
+		stringstream buf;
+		buf << "Failed to determine event interface capabilities of " << path << ": " << strerror(errno) << endl;
+		throw Error(buf.str());
+	}
+	
+	if (!(evtype & (1 << EV_REL))) {
+		close(fd);
+		stringstream buf;
+		buf << "Device file " << path << " is not a mouse" << endl;
+		throw Error(buf.str());
+	}
 }
 
 MouseSensor::Reading MouseSensor::getReading() {
