@@ -3,22 +3,22 @@
 
 #include <string>
 #include <boost/cstdint.hpp>
+#include <opencv/cv.h>
 
 namespace ieeepath {
 	class V4LCapture {
 		public:
-			V4LCapture(const std::string &filename);
+			V4LCapture(const std::string &filename, int width, int height);
 			~V4LCapture();
 			
-			struct RGBPixel {
-				uint8_t b, g, r;
-			} __attribute__((__packed__));
-
-			typedef RGBPixel Frame[320*240];
-			void readFrame(Frame &frame);
+			inline int getWidth() { return width; }
+			inline int getHeight() { return height; }
+			
+			void readFrame(cv::Mat &mat);
 		
 		private:
 			int fd;
+			int width, height;
 	};
 }
 

@@ -7,15 +7,13 @@ using namespace cv;
 using namespace std;
 
 int main(int argc, char **argv) {
-	V4LCapture cap("/dev/video1");
-	
-	V4LCapture::Frame capframe;
+	V4LCapture cap("/dev/video0", 640, 480);
 	
 	namedWindow("frame");
 	
+	Mat frame;
 	while (true) {
-		cap.readFrame(capframe);
-		Mat frame(240, 320, CV_8UC3, capframe);
+		cap.readFrame(frame);
 		imshow("frame", frame);
 		
 		if(waitKey(30) >= 0) break;

@@ -9,11 +9,16 @@
 #include <stdexcept>
 
 using namespace ieeepath;
+using namespace cv;
 using namespace std;
 
 struct YUVPixel {
 	uint8_t y, u, v;
-};
+} __attribute__((__packed__));
+
+struct BGRPixel {
+	uint8_t b, g, r;
+} __attribute__((__packed__));
 
 struct YUYV {
 	uint8_t y;
@@ -22,13 +27,10 @@ struct YUYV {
 	uint8_t v;
 } __attribute__((__packed__));
 
-typedef YUYV RawFrame[320*240/2];
+static BGRPixel yuv2bgr(const YUVPixel &in);
+static void convertFrame(BGRPixel *frame, const YUYV *yuyv, int length);
 
-static uint8_t clamp_u8(int val);
-static V4LCapture::RGBPixel yuv2rgb(const YUVPixel &in);
-static void convertFromRaw(const RawFrame &rawframe, V4LCapture::Frame &frame);
-
-V4LCapture::V4LCapture(const string &filename) {
+V4LCapture::V4LCapture(const string &filename, int width, int height) : width(width), height(height) {
 	fd = open(filename.c_str(), O_RDWR, 0);
 	if (fd == -1)
 		throw runtime_error("Can't open " + filename);
@@ -42,8 +44,8 @@ V4LCapture::V4LCapture(const string &filename) {
 	struct v4l2_format fmt;
 	memset(&fmt, 0, sizeof(fmt));
     fmt.type                = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-    fmt.fmt.pix.width       = 320; 
-    fmt.fmt.pix.height      = 240;
+    fmt.fmt.pix.width       = width; 
+    fmt.fmt.pix.height      = height;
     fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_YUYV;
     
     if (ioctl(fd, VIDIOC_S_FMT, &fmt) == -1)
@@ -80,7 +82,7 @@ V4LCapture::~V4LCapture() {
 }
 
 		
-void V4LCapture::readFrame(Frame &frame) {
+void V4LCapture::readFrame(Mat &mat) {
 	struct v4l2_buffer buf;
 	memset(&buf, 0, sizeof(buf));
 	buf.index = 0;
@@ -89,18 +91,18 @@ void V4LCapture::readFrame(Frame &frame) {
 	
 	if (ioctl(fd, VIDIOC_DQBUF, &buf) == -1)
 		throw runtime_error("Failed to dequeue buffer");
-	if (buf.length != sizeof(RawFrame)) {
+	if (buf.length != width*height*2) {
 		stringstream errbuf;
 		errbuf << "Bad number of bytes " << buf.length;
 		throw runtime_error(errbuf.str());
 	}
 	
-	
-	RawFrame *rawframe = (RawFrame *)mmap(NULL, buf.length, PROT_READ | PROT_WRITE, MAP_SHARED, fd, buf.m.offset);
+	YUYV *rawframe = (YUYV *)mmap(NULL, buf.length, PROT_READ | PROT_WRITE, MAP_SHARED, fd, buf.m.offset);
 	if (rawframe == NULL)
 		throw runtime_error("Failed to mmap buffer");
 	
-	convertFromRaw(*rawframe, frame);
+	mat.create(height, width, CV_8UC3);
+	convertFrame((BGRPixel *)mat.data, rawframe, width*height*2);
 	
 	munmap(rawframe, buf.length);
 	
@@ -108,40 +110,28 @@ void V4LCapture::readFrame(Frame &frame) {
 		throw runtime_error("Failed to re-queue buffer");
 }
 		
-static void convertFromRaw(const RawFrame &rawframe, V4LCapture::Frame &frame) {
-	struct V4LCapture::RGBPixel *rgb = frame;
-	const struct YUYV *yuyv = rawframe;
-	
-	for (int i=0; i<320*240/2; i++) {
-		YUVPixel pix1 = { yuyv->y, yuyv->u, yuyv->v};
-		YUVPixel pix2 = { yuyv->y2, yuyv->u, yuyv->v};
-		yuyv++;
+static void convertFrame(BGRPixel *frame, const YUYV *rawframe, int length) {
+	while (length) {
+		YUVPixel pix1 = { rawframe->y, rawframe->u, rawframe->v};
+		YUVPixel pix2 = { rawframe->y2, rawframe->u, rawframe->v};
+		rawframe++;
+		length -= sizeof(YUYV);
 		
-		*rgb++ = yuv2rgb(pix1);
-		*rgb++ = yuv2rgb(pix2);
+		*frame++ = yuv2bgr(pix1);
+		*frame++ = yuv2bgr(pix2);
 	}
 }
 
-static uint8_t clamp_u8(int val) {
-	if (val > 255)
-		return 255;
-	else if (val < 0)
-		return 0;
-	else
-		return (uint8_t)val;
-}
-
 // based on http://social.msdn.microsoft.com/Forums/en/windowsdirectshowdevelopment/thread/1071301e-74a2-4de4-be72-81c34604cde9
-static V4LCapture::RGBPixel yuv2rgb(const YUVPixel &in) {
-	V4LCapture::RGBPixel out;
-	
+static BGRPixel yuv2bgr(const YUVPixel &in) {
 	int c = (int)in.y-16;
 	int d = (int)in.u-128;
 	int e = (int)in.v-128;       
 
-	out.r = clamp_u8((298 * c           + 409 * e + 128) >> 8);
-	out.g = clamp_u8((298 * c - 100 * d - 208 * e + 128) >> 8);
-	out.b = clamp_u8((298 * c + 516 * d           + 128) >> 8);
+	BGRPixel out;
+	out.r = saturate_cast<uint8_t>((298 * c           + 409 * e + 128) >> 8);
+	out.g = saturate_cast<uint8_t>((298 * c - 100 * d - 208 * e + 128) >> 8);
+	out.b = saturate_cast<uint8_t>((298 * c + 516 * d           + 128) >> 8);
 	
 	return out;
 }
