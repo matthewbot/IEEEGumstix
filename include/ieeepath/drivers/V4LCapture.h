@@ -2,7 +2,6 @@
 #define V4LCAPTURE_H
 
 #include <string>
-#include <boost/cstdint.hpp>
 #include <opencv/cv.h>
 
 namespace ieeepath {
