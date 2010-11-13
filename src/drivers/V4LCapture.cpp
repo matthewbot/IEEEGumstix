@@ -14,18 +14,15 @@ using namespace std;
 
 struct YUVPixel {
 	uint8_t y, u, v;
-} __attribute__((__packed__));
+};
 
 struct BGRPixel {
 	uint8_t b, g, r;
-} __attribute__((__packed__));
+};
 
 struct YUYV {
-	uint8_t y;
-	uint8_t u;
-	uint8_t y2;
-	uint8_t v;
-} __attribute__((__packed__));
+	uint8_t y, u, y2, v;
+};
 
 static BGRPixel yuv2bgr(const YUVPixel &in);
 static void convertFrame(BGRPixel *frame, const YUYV *yuyv, int length);
@@ -80,7 +77,6 @@ V4LCapture::~V4LCapture() {
 	ioctl(fd, VIDIOC_STREAMOFF);
 	close(fd);
 }
-
 		
 void V4LCapture::readFrame(Mat &mat) {
 	struct v4l2_buffer buf;
