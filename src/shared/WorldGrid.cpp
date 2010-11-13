@@ -38,8 +38,23 @@ void WorldGrid::fillLine(Pos start, Pos end, GridSquare square) {
 			set(x, y, square);
 			
 		error += derror;
-		if (error >= 0.5) {
-			y += (start.y < end.y ? 1 : -1);	
+		if (error >= 0.5) {		
+			if (x+1 <= end.x) {
+				if (steep) // small tweak, make sure there are no diagonal holes for it to pathfind through
+					set(y, x+1, square);
+				else
+					set(x+1, y, square);
+			}
+           
+			y += (start.y < end.y ? 1 : -1);
+
+			if (x+1 <= end.x) {
+				if (steep)
+					set(y, x, square);
+				else
+					set(x, y, square);
+			}
+			
 			error -= 1;
 		}
 	}
