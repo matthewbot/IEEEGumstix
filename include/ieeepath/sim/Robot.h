@@ -7,7 +7,7 @@
 #include "ieeepath/shared/types.h"
 #include <vector>
 
-namespace ieeepath {
+namespace ieee {
 	class Robot {
 		public:
 			Robot(const Pos &startpos, const WorldGrid &grid);

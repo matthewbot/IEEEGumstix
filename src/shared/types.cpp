@@ -1,7 +1,7 @@
 #include "ieeepath/shared/types.h"
 #include <cmath>
 
-using namespace ieeepath;
+using namespace ieee;
 using namespace std;
 
 bool Pos::operator<(const Pos &pos) const {
@@ -13,11 +13,11 @@ bool Pos::operator<(const Pos &pos) const {
 		return y < pos.y;
 }
 
-ostream &ieeepath::operator<<(ostream &out, const Pos &pos) {
+ostream &ieee::operator<<(ostream &out, const Pos &pos) {
 	out << "(" << pos.x << ", " << pos.y << ")";
 }
 
-ostream &ieeepath::operator<<(ostream &out, Dir dir) {
+ostream &ieee::operator<<(ostream &out, Dir dir) {
 	static const char *dirstr[] = {"none", "E", "NE", "N", "NW", "W", "SW", "S", "SE"};
 	
 	if (dir < MAX_DIR && dir >= 0)
@@ -28,14 +28,14 @@ ostream &ieeepath::operator<<(ostream &out, Dir dir) {
 	return out;
 }
 
-Dir ieeepath::oppositeDir(Dir dir) {
+Dir ieee::oppositeDir(Dir dir) {
 	int newdir = dir + 4;
 	if (newdir >= MAX_DIR)
 		newdir -= MAX_DIR - 1; // -1 to skip DIR_NONE
 	return (Dir)newdir;
 }
 
-bool ieeepath::isDirDiagonal(Dir dir) {
+bool ieee::isDirDiagonal(Dir dir) {
 	switch (dir) {
 		case DIR_NE:
 		case DIR_NW:
@@ -48,7 +48,7 @@ bool ieeepath::isDirDiagonal(Dir dir) {
 	}
 }
 
-Pos ieeepath::advancePos(Pos pos, Dir dir) {
+Pos ieee::advancePos(Pos pos, Dir dir) {
 	if (dir == DIR_NE || dir == DIR_E || dir == DIR_SE)
 		pos.x += 1;
 	else if (dir == DIR_NW || dir == DIR_W || dir == DIR_SW)
@@ -62,7 +62,7 @@ Pos ieeepath::advancePos(Pos pos, Dir dir) {
 	return pos;
 }
 
-Dir ieeepath::getDirFromPoses(const Pos &start, const Pos &end) {
+Dir ieee::getDirFromPoses(const Pos &start, const Pos &end) {
 	int dx = end.x - start.x;
 	int dy = end.y - start.y;
 	if (dx > 0) {
@@ -89,7 +89,7 @@ Dir ieeepath::getDirFromPoses(const Pos &start, const Pos &end) {
 	}
 }
 
-int ieeepath::getDirDelta(Dir cur, Dir dest) {
+int ieee::getDirDelta(Dir cur, Dir dest) {
 	int delta = dest - cur;
 	if (delta >= 4)
 		delta -= 8;
@@ -98,7 +98,7 @@ int ieeepath::getDirDelta(Dir cur, Dir dest) {
 	return delta;
 }
 
-Dir ieeepath::getIntermediateDir(Dir cur, Dir dest) {
+Dir ieee::getIntermediateDir(Dir cur, Dir dest) {
 	int newdir;
 	
 	int delta = getDirDelta(cur, dest);
@@ -115,7 +115,7 @@ Dir ieeepath::getIntermediateDir(Dir cur, Dir dest) {
 	return (Dir)newdir;
 }
 
-float ieeepath::dirToRad(Dir dir) {
+float ieee::dirToRad(Dir dir) {
 	if (dir == DIR_NONE)
 		return 0;
 	else {

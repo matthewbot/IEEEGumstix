@@ -4,7 +4,7 @@
 #include <iostream>
 #include <list>
 
-using namespace ieeepath;
+using namespace ieee;
 using namespace std;
 
 AStarSearch::Square::Square()

@@ -3,7 +3,7 @@
 
 #include "WorldGrid.h"
 
-namespace ieeepath {
+namespace ieee {
 	class WorldObject {
 		public:
 			inline virtual ~WorldObject() { }

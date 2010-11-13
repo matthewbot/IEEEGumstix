@@ -6,7 +6,7 @@
 #include <boost/multi_array.hpp>
 #include <ostream>
 
-namespace ieeepath {
+namespace ieee {
 	class NodeGrid {
 		public:
 			NodeGrid(int width, int height);

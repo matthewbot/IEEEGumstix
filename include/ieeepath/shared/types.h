@@ -6,7 +6,7 @@
 #include <vector>
 #include <set>
 
-namespace ieeepath {
+namespace ieee {
 	struct Pos {
 		int x, y;
 		

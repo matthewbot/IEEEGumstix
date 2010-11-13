@@ -4,7 +4,7 @@
 #include <string>
 #include <opencv/cv.h>
 
-namespace ieeepath {
+namespace ieee {
 	class V4LCapture {
 		public:
 			V4LCapture(const std::string &filename, int width, int height);

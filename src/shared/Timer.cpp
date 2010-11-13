@@ -1,6 +1,6 @@
 #include "ieeepath/shared/Timer.h"
 
-using namespace ieeepath;
+using namespace ieee;
 
 Timer::Timer() {
 	clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &start);

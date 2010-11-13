@@ -3,7 +3,7 @@
 
 #include "WorldObject.h"
 
-namespace ieeepath {
+namespace ieee {
 	class ObstacleWorldObject : public WorldObject {
 		public:
 			ObstacleWorldObject(const Pos &start, const Pos &end, bool large);

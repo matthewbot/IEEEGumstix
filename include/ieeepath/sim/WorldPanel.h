@@ -5,7 +5,7 @@
 #include "ieeepath/sim/World.h"
 #include <wx/wx.h>
 
-namespace ieeepath {
+namespace ieee {
 	class WorldPanel : public wxPanel {
 		public:
 			struct Callbacks {

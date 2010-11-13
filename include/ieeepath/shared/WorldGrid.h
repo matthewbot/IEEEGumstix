@@ -4,7 +4,7 @@
 #include <boost/scoped_array.hpp>
 #include "types.h"
 
-namespace ieeepath {
+namespace ieee {
 	class WorldGrid {
 		public:
 			enum GridSquare {

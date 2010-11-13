@@ -4,7 +4,7 @@
 #include <string>
 #include <stdexcept>
 
-namespace ieeepath {
+namespace ieee {
 	class MouseSensor {
 		public:
 			class Error : public std::runtime_error {

@@ -1,7 +1,7 @@
 #include "ieeepath/planner/TelepathicSensorPredictor.h"
 #include <algorithm>
 
-using namespace ieeepath;
+using namespace ieee;
 using namespace std;
 
 TelepathicSensorPredictor::TelepathicSensorPredictor(int range) : range(range) { }

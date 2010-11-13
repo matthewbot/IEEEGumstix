@@ -3,7 +3,7 @@
 
 #include <ctime>
 
-namespace ieeepath {
+namespace ieee {
 	class Timer {
 		public:
 			Timer();

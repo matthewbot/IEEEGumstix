@@ -3,7 +3,7 @@
 
 #include "SensorPredictor.h"
 
-namespace ieeepath {
+namespace ieee {
 	class CameraSensorPredictor : public SensorPredictor {
 		public:
 			CameraSensorPredictor(int maxdistance, float fieldofview, float fovstep);

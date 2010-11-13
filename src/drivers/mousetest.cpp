@@ -2,7 +2,7 @@
 #include <boost/thread.hpp>
 #include <iostream>
 
-using namespace ieeepath;
+using namespace ieee;
 using namespace boost;
 using namespace std;
 

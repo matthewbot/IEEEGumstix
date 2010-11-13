@@ -2,7 +2,7 @@
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
 
-using namespace ieeepath;
+using namespace ieee;
 using namespace cv;
 using namespace std;
 

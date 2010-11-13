@@ -4,7 +4,7 @@
 #include "WorldObject.h"
 #include "types.h"
 
-namespace ieeepath {
+namespace ieee {
 	class VictimWorldObject : public WorldObject {
 		public:
 			VictimWorldObject(const Pos &pos);

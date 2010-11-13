@@ -4,7 +4,7 @@
 #include <iostream>
 #include <ctime>
 
-using namespace ieeepath;
+using namespace ieee;
 using namespace std;
 
 RoutePlanner::RoutePlanner(const SensorPredictor &sensorpred, const WorldGrid &worldmap, const Config &config)

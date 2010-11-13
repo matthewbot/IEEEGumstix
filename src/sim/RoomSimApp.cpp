@@ -4,7 +4,7 @@
 #include "ieeepath/shared/ObstacleWorldObject.h"
 #include <iostream>
 
-using namespace ieeepath;
+using namespace ieee;
 using namespace std;
 
 IMPLEMENT_APP(RoomSimApp)

@@ -1,6 +1,6 @@
 #include "ieeepath/planner/Node.h"
 
-using namespace ieeepath;
+using namespace ieee;
 using namespace std;
 
 Node::Node(Type type, Dir dir) : type(type), dir(dir) { }
@@ -30,7 +30,7 @@ static const struct victimcheck {
 	{0, 0, DIR_NONE}
 };
 
-Dir ieeepath::getVictimIDDir(const Pos &nodepos, const WorldGrid &grid) {
+Dir ieee::getVictimIDDir(const Pos &nodepos, const WorldGrid &grid) {
 	for (const victimcheck *check = victimchecks; check->dir != DIR_NONE; check++) {
 		Pos pos(nodepos.x + check->dx, nodepos.y + check->dy);
 		if (!grid.inBounds(pos))
@@ -43,7 +43,7 @@ Dir ieeepath::getVictimIDDir(const Pos &nodepos, const WorldGrid &grid) {
 	return DIR_NONE;
 }
 
-bool ieeepath::getVictimPos(const Pos &nodepos, const WorldGrid &grid, Dir dir, Pos &out) {
+bool ieee::getVictimPos(const Pos &nodepos, const WorldGrid &grid, Dir dir, Pos &out) {
 	for (const victimcheck *check = victimchecks; check->dir != DIR_NONE; check++) {
 		if (check->dir != dir)
 			continue;
@@ -61,7 +61,7 @@ bool ieeepath::getVictimPos(const Pos &nodepos, const WorldGrid &grid, Dir dir, 
 	return false;
 }
 
-std::ostream &ieeepath::operator<<(std::ostream &out, const Node &node) {
+std::ostream &ieee::operator<<(std::ostream &out, const Node &node) {
 	static const char typechars[] = " VCI-";
 	out << typechars[node.getType()];
 	return out;

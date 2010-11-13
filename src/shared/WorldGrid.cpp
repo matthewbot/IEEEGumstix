@@ -3,7 +3,7 @@
 #include <algorithm>
 
 using namespace boost;
-using namespace ieeepath;
+using namespace ieee;
 using namespace std;
 
 WorldGrid::WorldGrid(int w, int h, GridSquare clearsquare)

@@ -5,7 +5,7 @@
 #include "ieeepath/shared/WorldGrid.h"
 #include <ostream>
 
-namespace ieeepath {
+namespace ieee {
 	class Node {
 		public:
 			enum Type {

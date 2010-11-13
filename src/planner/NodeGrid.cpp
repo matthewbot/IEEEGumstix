@@ -1,6 +1,6 @@
 #include "ieeepath/planner/NodeGrid.h"
 
-using namespace ieeepath;
+using namespace ieee;
 using namespace boost;
 using namespace std;
 
@@ -40,7 +40,7 @@ NodeGrid NodeGrid::fromWorldGrid(const WorldGrid &grid) {
 	return nodes;
 }
 
-std::ostream &ieeepath::operator<<(std::ostream &out, const NodeGrid &grid) {
+std::ostream &ieee::operator<<(std::ostream &out, const NodeGrid &grid) {
 	for (int y=0; y<grid.getHeight(); y++) {
 		for (int x=0; x<grid.getWidth(); x++) {
 			out << grid[Pos(x, y)];

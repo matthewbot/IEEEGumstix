@@ -4,7 +4,7 @@
 #include <boost/ptr_container/ptr_vector.hpp>
 #include "ieeepath/shared/WorldObject.h"
 
-namespace ieeepath {
+namespace ieee {
 	class World {
 		typedef boost::ptr_vector<WorldObject> WorldObjectList;
 	

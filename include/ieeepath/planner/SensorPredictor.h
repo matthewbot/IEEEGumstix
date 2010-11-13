@@ -4,7 +4,7 @@
 #include "ieeepath/planner/NodeGrid.h"
 #include "ieeepath/shared/types.h"
 
-namespace ieeepath {
+namespace ieee {
 	class SensorPredictor {
 		public:
 			virtual PosSet predictVision(const Pos &curpos, Dir curdir, const WorldGrid &grid) const =0;

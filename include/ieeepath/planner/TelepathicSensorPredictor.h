@@ -3,7 +3,7 @@
 
 #include "ieeepath/planner/SensorPredictor.h"
 
-namespace ieeepath {
+namespace ieee {
 	class TelepathicSensorPredictor : public SensorPredictor {
 		public:
 			TelepathicSensorPredictor(int range);

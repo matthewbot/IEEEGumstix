@@ -8,7 +8,7 @@
 #include <sstream>
 #include <stdexcept>
 
-using namespace ieeepath;
+using namespace ieee;
 using namespace cv;
 using namespace std;
 

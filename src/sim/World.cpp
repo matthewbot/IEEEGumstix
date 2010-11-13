@@ -2,7 +2,7 @@
 #include <boost/bind.hpp>
 #include <algorithm>
 
-using namespace ieeepath;
+using namespace ieee;
 using namespace boost;
 using namespace std;
 

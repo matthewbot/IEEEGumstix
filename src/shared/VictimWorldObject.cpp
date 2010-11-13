@@ -1,6 +1,6 @@
 #include "ieeepath/shared/VictimWorldObject.h"
 
-using namespace ieeepath;
+using namespace ieee;
 
 VictimWorldObject::VictimWorldObject(const Pos &pos) : pos(pos) { }
 VictimWorldObject::~VictimWorldObject() { }

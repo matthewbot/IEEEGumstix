@@ -1,6 +1,6 @@
 #include "ieeepath/sim/SimFrame.h"
 
-using namespace ieeepath;
+using namespace ieee;
 using namespace std;
 
 enum { 

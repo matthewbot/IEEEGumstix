@@ -7,7 +7,7 @@
 #include <list>
 #include <boost/scoped_array.hpp>
 
-namespace ieeepath {
+namespace ieee {
 	class AStarSearch {
 		public:
 			struct Square {

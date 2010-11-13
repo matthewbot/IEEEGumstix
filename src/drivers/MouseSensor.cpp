@@ -6,7 +6,7 @@
 #include <cstring>
 #include <iostream>
 
-using namespace ieeepath;
+using namespace ieee;
 using namespace std;
 
 MouseSensor::MouseSensor(const string &path) {
