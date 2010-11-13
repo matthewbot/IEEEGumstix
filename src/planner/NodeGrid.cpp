@@ -21,6 +21,11 @@ NodeGrid NodeGrid::fromWorldGrid(const WorldGrid &grid) {
 				node = Node::IMPASSABLE;
 				continue;
 			}
+			
+			if (grid.unknownRect(pos)) {
+				node = Node::UNKNOWN;
+				continue;
+			}
 
 			Dir victimdir = getVictimIDDir(pos, grid);
 			if (victimdir != DIR_NONE) {
