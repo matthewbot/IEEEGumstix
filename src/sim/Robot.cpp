@@ -41,10 +41,10 @@ void Robot::moveStep() {
 		curdir = getIntermediateDir(curdir, route.facedirs[0]);
 	else if (route.path.size() > 1)
 		curpos = route.path[1];
-	
-	Pos facepos = advancePos(curpos, curdir);
-	if (grid.inBounds(facepos) && grid[facepos] == WorldGrid::VICTIM)
-		routeplanner.setVictimIdentified(facepos);
+	else if (route.identifyvictim)
+		routeplanner.setVictimIdentified(route.victimpos);
+	else
+		throw runtime_error("Do nothing route?");
 }
 
 void Robot::updateSensorsStep() {

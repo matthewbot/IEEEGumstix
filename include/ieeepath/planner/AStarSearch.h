@@ -1,7 +1,7 @@
 #ifndef ASTARSEARCH_H
 #define ASTARSEARCH_H
 
-#include "ieeepath/shared/WorldGrid.h"
+#include "ieeepath/planner/NodeGrid.h"
 #include "ieeepath/shared/types.h"
 #include <vector>
 #include <list>
@@ -19,7 +19,7 @@ namespace ieeepath {
 				Square();
 			};
 			
-			AStarSearch(const WorldGrid &grid, const Pos &start, const Pos &end);
+			AStarSearch(const NodeGrid &grid, const Pos &start, const Pos &end);
 			
 			inline const Path &getPath() const { return path; }
 			inline int getPathLength() const { return path.size(); }
@@ -34,9 +34,9 @@ namespace ieeepath {
 		
 			typedef std::list<Pos> OpenList;
 			void insertPosToOpenList(OpenList &openlist, const Pos &pos, int fscore);
-			int pathCost(Dir dir, const Pos &pos, const WorldGrid &grid);
+			int pathCost(Dir dir, const Pos &pos, const NodeGrid &grid);
 			int positionHeuristic(const Pos &pos, const Pos &end);
-			bool doSearch(const WorldGrid &grid, const Pos &start, const Pos &end);
+			bool doSearch(const NodeGrid &grid, const Pos &start, const Pos &end);
 		
 			int width, height;
 			boost::scoped_array<Square> squares;

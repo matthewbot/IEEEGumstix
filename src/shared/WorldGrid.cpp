@@ -38,18 +38,17 @@ void WorldGrid::fillLine(Pos start, Pos end, GridSquare square) {
 			set(x, y, square);
 			
 		error += derror;
-		if (error >= 0.5) {
-			const bool horizdiag = error - 0.5 <= derror/2;
-			if (horizdiag && x+1 <= end.x) {
+		if (error >= 0.5) {		
+			if (x+1 <= end.x) {
 				if (steep) // small tweak, make sure there are no diagonal holes for it to pathfind through
 					set(y, x+1, square);
 				else
 					set(x+1, y, square);
 			}
-			
+           
 			y += (start.y < end.y ? 1 : -1);
-			
-			if (!horizdiag) {
+
+			if (x+1 <= end.x) {
 				if (steep)
 					set(y, x, square);
 				else
@@ -59,6 +58,28 @@ void WorldGrid::fillLine(Pos start, Pos end, GridSquare square) {
 			error -= 1;
 		}
 	}
+}
+
+bool WorldGrid::passableRect(const Pos &pos, int w, int h) const {
+	for (int dx=0; dx<w; dx++) {
+		for (int dy=0; dy<h; dy++) {
+			if (!getPassable(Pos(pos.x + dx, pos.y + dy)))
+				return false;
+		}
+	}
+		
+	return true;	
+}
+
+bool WorldGrid::unknownRect(const Pos &pos, int w, int h) const {
+	for (int dx=0; dx<w; dx++) {
+		for (int dy=0; dy<h; dy++) {
+			if (get(pos.x + dx, pos.y + dy) != UNKNOWN)
+				return false;
+		}
+	}
+		
+	return true;	
 }
 
 int WorldGrid::countAdjacent(const Pos &pos, GridSquare square, int range) const {

@@ -15,7 +15,7 @@ namespace ieeepath {
 				UNKNOWN
 			};
 			
-			inline static bool passable(GridSquare square) { return square < VICTIM; }
+			inline static bool passable(GridSquare square) { return square != LARGE_OBSTACLE && square != VICTIM; }
 			inline static bool known(GridSquare square) { return square != UNKNOWN; }
 		
 			WorldGrid(int w, int h, GridSquare clearsquare=EMPTY);
@@ -51,6 +51,9 @@ namespace ieeepath {
 			void fillLine(Pos start, Pos end, GridSquare square);
 
 			inline bool getPassable(const Pos &pos) const { return passable((*this)[pos]); }
+			bool passableRect(const Pos &pos, int w=2, int h=2) const;
+			bool unknownRect(const Pos &pos, int w=2, int h=2) const;
+			
 			int countAdjacent(const Pos &pos, GridSquare square, int range=1) const;
 			bool getAdjacent(const Pos &pos, GridSquare square, Pos *out, int range=1) const;
 			
