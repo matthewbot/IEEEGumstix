@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 2.6)
-project(IEEEPathPlanner)
+project(Planner)
 
 file(GLOB sources "*.cpp")
 
-add_library(ieeepathplanner ${sources})
-target_link_libraries(ieeepathplanner ieeepathshared)
+add_library(ieeeplanner ${sources})
+target_link_libraries(ieeeplanner ieeeshared)
 
