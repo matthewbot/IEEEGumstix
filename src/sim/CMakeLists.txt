@@ -10,3 +10,5 @@ file(GLOB sources "*.cpp")
 add_executable(roomsim ${sources})
 target_link_libraries(roomsim ieeeshared ieeeplanner ${wxWidgets_LIBRARIES})
 
+install(TARGETS roomsim DESTINATION bin)
+

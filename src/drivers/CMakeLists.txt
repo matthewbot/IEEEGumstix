@@ -16,3 +16,5 @@ target_link_libraries(capturetest ieeedrivers ${Boost_LIBRARIES} ${OpenCV_LIBS})
 add_executable(mousetest mousetest.cpp)
 target_link_libraries(mousetest ieeedrivers ${Boost_LIBRARIES})
 
+install(TARGETS capturetest mousetest DESTINATION bin)
+
