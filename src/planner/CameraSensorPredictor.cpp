@@ -7,8 +7,8 @@ using namespace std;
 CameraSensorPredictor::CameraSensorPredictor(int maxdistance, float fieldofview, float fovstep) 
 : maxdistance(maxdistance), fieldofview(fieldofview), fovstep(fovstep) { }
 
-PosSet CameraSensorPredictor::predictVision(const Pos &curpos, Dir curdir, const WorldGrid &grid) const {
-	const float startrad = dirToRad(curdir) - fieldofview/2;
+PosSet CameraSensorPredictor::predictVision(const Coord &curpos, float curdir, const WorldGrid &grid) const {
+	const float startrad = curdir - fieldofview/2;
 	const float endrad = startrad + fieldofview;
 	
 	PosSet seen;

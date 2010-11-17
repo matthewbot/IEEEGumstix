@@ -10,14 +10,14 @@
 namespace ieee {
 	class Robot {
 		public:
-			Robot(const Pos &startpos, const WorldGrid &grid);
+			Robot(const Coord &startpos, const WorldGrid &grid);
 			
-			void reset(const Pos &pos, Dir dir=DIR_E);
+			void reset(const Coord &pos, float dir=0);
 			void step();
 			
 			inline bool isVictimIdentified(const Pos &pos) const { return routeplanner.isVictimIdentified(pos); }
-			inline const Pos &getPosition() const { return curpos; }
-			inline Dir getDirection() const { return curdir; }
+			inline const Coord &getPosition() const { return curpos; }
+			inline float getDirection() const { return curdir; }
 			inline const Pos &getDestination() const { return route.path.back(); }
 			inline const RouteEvaluator::Route &getRoute() const { return route; }
 			inline const WorldGrid &getMap() const { return map; }
@@ -30,8 +30,8 @@ namespace ieee {
 		
 			CameraSensorPredictor sensorpred;
 		
-			Pos curpos;
-			Dir curdir;
+			Coord curpos;
+			float curdir;
 			const WorldGrid &grid;
 			
 			WorldGrid map;

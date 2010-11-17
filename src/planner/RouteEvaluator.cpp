@@ -103,7 +103,7 @@ const PosSet &RouteEvaluator::getUnknownRevealedFrom(const Pos &pos, Dir dir) co
 	i = unknownposes_cache.insert(make_pair(key, PosSet())).first;
 	PosSet &unknownposes = i->second;
 
-	PosSet poses = sensorpred.predictVision(pos, dir, worldmap);
+	PosSet poses = sensorpred.predictVision(Coord(pos), dirToRad(dir), worldmap);
 	for (PosSet::const_iterator i = poses.begin(); i != poses.end(); ++i) {
 		if (worldmap[*i] == WorldGrid::UNKNOWN)
 			unknownposes.insert(*i);

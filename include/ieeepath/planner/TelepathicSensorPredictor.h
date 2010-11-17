@@ -6,11 +6,12 @@
 namespace ieee {
 	class TelepathicSensorPredictor : public SensorPredictor {
 		public:
-			TelepathicSensorPredictor(int range);
+			TelepathicSensorPredictor(float range);
 			
-			virtual PosSet predictVision(const Pos &curpos, Dir curdir, const WorldGrid &grid) const;
+			virtual PosSet predictVision(const Coord &curpos, float curdir, const WorldGrid &grid) const;
+			
 		private:
-			int range;
+			float range;
 	};
 }
 

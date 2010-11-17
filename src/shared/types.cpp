@@ -123,4 +123,13 @@ float ieee::dirToRad(Dir dir) {
 	}
 }
 
+Dir ieee::radToNearestDir(float rad) {
+	int i = (int)round(rad / (M_PI/4));
+	while (i < 0)
+		i += 8;
+	while (i >= 8)
+		i -= 8;
+		
+	return (Dir)(i + DIR_E);
+}
 

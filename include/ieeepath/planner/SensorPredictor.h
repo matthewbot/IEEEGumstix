@@ -7,7 +7,7 @@
 namespace ieee {
 	class SensorPredictor {
 		public:
-			virtual PosSet predictVision(const Pos &curpos, Dir curdir, const WorldGrid &grid) const =0;
+			virtual PosSet predictVision(const Coord &curpos, float curdir, const WorldGrid &grid) const =0;
 	};
 }
 

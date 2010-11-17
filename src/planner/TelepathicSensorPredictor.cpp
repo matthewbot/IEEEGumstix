@@ -4,13 +4,13 @@
 using namespace ieee;
 using namespace std;
 
-TelepathicSensorPredictor::TelepathicSensorPredictor(int range) : range(range) { }
+TelepathicSensorPredictor::TelepathicSensorPredictor(float range) : range(range) { }
 
-PosSet TelepathicSensorPredictor::predictVision(const Pos &curpos, Dir curdir, const WorldGrid &grid) const {
-	const int minx = max(curpos.x-range, 0);
-	const int maxx = min(curpos.x+range, grid.getWidth()-1);
-	const int miny = max(curpos.y-range, 0);
-	const int maxy = min(curpos.y+range, grid.getHeight()-1);
+PosSet TelepathicSensorPredictor::predictVision(const Coord &curpos, float curdir, const WorldGrid &grid) const {
+	const int minx = max((int)(curpos.x-range), 0);
+	const int maxx = min((int)(curpos.x+range), grid.getWidth()-1);
+	const int miny = max((int)(curpos.y-range), 0);
+	const int maxy = min((int)(curpos.y+range), grid.getHeight()-1);
 	
 	PosSet poses;
 	

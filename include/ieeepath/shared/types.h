@@ -49,6 +49,17 @@ namespace ieee {
 	int getDirDelta(Dir cur, Dir dest);
 	Dir getIntermediateDir(Dir cur, Dir dest);
 	float dirToRad(Dir dir);
+	Dir radToNearestDir(float rad);
+	
+	struct Coord {
+		float x, y;
+		
+		inline Coord() { }
+		inline Coord(float x, float y) : x(x), y(y) { }
+		explicit inline Coord(const Pos &pos) : x(pos.x), y(pos.y) { }
+		
+		inline bool operator<(const Pos &pos) const;
+	};
 }
 
 #endif

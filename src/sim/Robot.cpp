@@ -5,7 +5,7 @@
 using namespace ieee;
 using namespace std;
 
-Robot::Robot(const Pos &startpos, const WorldGrid &grid) 
+Robot::Robot(const Coord &startpos, const WorldGrid &grid) 
 : sensorpred(7, M_PI/4, .15),
   grid(grid), 
   map(grid.getWidth(), grid.getHeight()),
@@ -20,7 +20,7 @@ Robot::RouteEvaluatorConfig::RouteEvaluatorConfig() {
 	revealedScoreFactor = 6;
 }
 
-void Robot::reset(const Pos &pos, Dir dir) {
+void Robot::reset(const Coord &pos, float dir) {
 	curpos = pos;
 	curdir = dir;
 	map.clear(WorldGrid::UNKNOWN);
@@ -37,10 +37,12 @@ void Robot::step() {
 }
 
 void Robot::moveStep() {
-	if (curdir != route.facedirs[0])
-		curdir = getIntermediateDir(curdir, route.facedirs[0]);
+	float facedirrad = dirToRad(route.facedirs[0]);
+	
+	if (abs(curdir - facedirrad) > .1)
+		curdir = facedirrad;
 	else if (route.path.size() > 1)
-		curpos = route.path[1];
+		curpos = Coord(route.path[1]);
 	else if (route.identifyvictim)
 		routeplanner.setVictimIdentified(route.victimpos);
 	else
@@ -56,6 +58,6 @@ void Robot::updateSensorsStep() {
 }
 
 void Robot::updatePathStep() {
-	route = routeplanner.planRoute(curpos, curdir);
+	route = routeplanner.planRoute(Pos((int)floor(curpos.x), (int)(curpos.y)), radToNearestDir(curdir));
 }
 

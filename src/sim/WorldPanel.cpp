@@ -131,7 +131,7 @@ void WorldPanel::paintRobot(wxPaintDC &dc) {
 	const float startx = squarew*(robot.getPosition().x + 1);
 	const float starty = squareh*(robot.getPosition().y + 1);
 	const float thickness = min(squarew, squareh) * .3;
-	const float dir = dirToRad(robot.getDirection());
+	const float dir = robot.getDirection();
 	
 	wxPoint points[3];
 	points[0].x = (int)(startx + thickness*cos(dir));
