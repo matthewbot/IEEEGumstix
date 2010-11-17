@@ -9,7 +9,7 @@
 #include <boost/unordered_map.hpp>
 
 namespace ieee {
-	class RoutePlanner {
+	class RouteEvaluator {
 		public:
 			struct Route {
 				Path path;
@@ -25,7 +25,7 @@ namespace ieee {
 				int revealedScoreFactor; // scale factor for a route's revealed squares score (or negative cost)
 			};
 			
-			RoutePlanner(const SensorPredictor &sensorpred, const WorldGrid &worldmap, const Config &config);
+			RouteEvaluator(const SensorPredictor &sensorpred, const WorldGrid &worldmap, const Config &config);
 			
 			Route planRoute(const Pos &curpos, Dir curdir) const;
 			

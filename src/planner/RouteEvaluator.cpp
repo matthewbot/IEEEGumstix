@@ -1,4 +1,4 @@
-#include "ieeepath/planner/RoutePlanner.h"
+#include "ieeepath/planner/RouteEvaluator.h"
 #include "ieeepath/shared/Timer.h"
 #include <algorithm>
 #include <iostream>
@@ -7,10 +7,10 @@
 using namespace ieee;
 using namespace std;
 
-RoutePlanner::RoutePlanner(const SensorPredictor &sensorpred, const WorldGrid &worldmap, const Config &config)
+RouteEvaluator::RouteEvaluator(const SensorPredictor &sensorpred, const WorldGrid &worldmap, const Config &config)
 : sensorpred(sensorpred), worldmap(worldmap), map(worldmap.getWidth()-1, worldmap.getHeight()-1), config(config) { }
 
-RoutePlanner::Route RoutePlanner::planRoute(const Pos &curpos, Dir curdir) const {
+RouteEvaluator::Route RouteEvaluator::planRoute(const Pos &curpos, Dir curdir) const {
 	Timer tim;
 	
 	map = NodeGrid::fromWorldGrid(worldmap);
@@ -63,7 +63,7 @@ RoutePlanner::Route RoutePlanner::planRoute(const Pos &curpos, Dir curdir) const
 	return route;
 }
 
-int RoutePlanner::scorePath(const AStarSearch &search, Dir curdir, DirVec &bestdirs, bool destvictim) const {
+int RouteEvaluator::scorePath(const AStarSearch &search, Dir curdir, DirVec &bestdirs, bool destvictim) const {
 	const Pos &dest = search.getPath().back();
 	int score=0;
 	
@@ -94,7 +94,7 @@ int RoutePlanner::scorePath(const AStarSearch &search, Dir curdir, DirVec &bestd
 	return score;
 }
 
-const PosSet &RoutePlanner::getUnknownRevealedFrom(const Pos &pos, Dir dir) const {
+const PosSet &RouteEvaluator::getUnknownRevealedFrom(const Pos &pos, Dir dir) const {
 	UnknownPosCacheMap::key_type key = make_pair(pos, dir);
 	UnknownPosCacheMap::iterator i = unknownposes_cache.find(key);
 	if (i != unknownposes_cache.end())
@@ -112,7 +112,7 @@ const PosSet &RoutePlanner::getUnknownRevealedFrom(const Pos &pos, Dir dir) cons
 	return unknownposes;
 }
 
-bool RoutePlanner::canSeeUnknownInAnyDirFrom(const Pos &pos) const {
+bool RouteEvaluator::canSeeUnknownInAnyDirFrom(const Pos &pos) const {
 	for (Dir dir=DIR_E; dir<MAX_DIR; dir=(Dir)(dir+1)) {
 		if (getUnknownRevealedFrom(pos, dir).size() > 0)
 			return true;
@@ -121,7 +121,7 @@ bool RoutePlanner::canSeeUnknownInAnyDirFrom(const Pos &pos) const {
 	return false;
 }
 
-PosSet RoutePlanner::getBestUnknownRevealedFrom(const Pos &pos, Dir prevdir, Dir &bestdir, const PosSet &revealed, bool mustsee) const {
+PosSet RouteEvaluator::getBestUnknownRevealedFrom(const Pos &pos, Dir prevdir, Dir &bestdir, const PosSet &revealed, bool mustsee) const {
 	PosSet bestset;
 	int bestscore=999;
 	
@@ -149,19 +149,19 @@ PosSet RoutePlanner::getBestUnknownRevealedFrom(const Pos &pos, Dir prevdir, Dir
 	return bestset;
 }
 
-void RoutePlanner::clearSensorCache() const {
+void RouteEvaluator::clearSensorCache() const {
 	unknownposes_cache.clear();
 }
 
-bool RoutePlanner::isVictimIdentified(const Pos &pos) const {
+bool RouteEvaluator::isVictimIdentified(const Pos &pos) const {
 	return identifiedvictims.find(pos) != identifiedvictims.end();
 }
 
-void RoutePlanner::setVictimIdentified(const Pos &pos) {
+void RouteEvaluator::setVictimIdentified(const Pos &pos) {
 	identifiedvictims.insert(pos);
 }
 
-void RoutePlanner::resetVictims() {
+void RouteEvaluator::resetVictims() {
 	identifiedvictims.clear();
 }
 

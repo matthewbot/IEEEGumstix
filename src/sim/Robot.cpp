@@ -13,7 +13,7 @@ Robot::Robot(const Pos &startpos, const WorldGrid &grid)
 	reset(startpos);
 }
 
-Robot::RoutePlannerConfig::RoutePlannerConfig() {
+Robot::RouteEvaluatorConfig::RouteEvaluatorConfig() {
 	unknownPruneDist = 2;
 	pathCostFactor = 1;
 	pathCostFactorVictim = 3;

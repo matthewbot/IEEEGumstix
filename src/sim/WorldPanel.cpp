@@ -143,7 +143,7 @@ void WorldPanel::paintRobot(wxPaintDC &dc) {
 	dc.DrawPolygon(3, points);
 	
 	const float radius = max(min(squarew, squareh)*.1f, 3.0f);
-	const RoutePlanner::Route &route = robot.getRoute();
+	const RouteEvaluator::Route &route = robot.getRoute();
 	
 	for (int i = 0; i != route.path.size(); ++i) {
 		const Pos &pos = route.path[i];

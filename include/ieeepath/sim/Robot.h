@@ -1,7 +1,7 @@
 #ifndef ROBOT_H
 #define ROBOT_H
 
-#include "ieeepath/planner/RoutePlanner.h"
+#include "ieeepath/planner/RouteEvaluator.h"
 #include "ieeepath/planner/CameraSensorPredictor.h"
 #include "ieeepath/shared/WorldGrid.h"
 #include "ieeepath/shared/types.h"
@@ -19,7 +19,7 @@ namespace ieee {
 			inline const Pos &getPosition() const { return curpos; }
 			inline Dir getDirection() const { return curdir; }
 			inline const Pos &getDestination() const { return route.path.back(); }
-			inline const RoutePlanner::Route &getRoute() const { return route; }
+			inline const RouteEvaluator::Route &getRoute() const { return route; }
 			inline const WorldGrid &getMap() const { return map; }
 			
 		private:
@@ -35,14 +35,14 @@ namespace ieee {
 			const WorldGrid &grid;
 			
 			WorldGrid map;
-			RoutePlanner::Route route;
+			RouteEvaluator::Route route;
 			
-			struct RoutePlannerConfig : public RoutePlanner::Config {
-				RoutePlannerConfig();
+			struct RouteEvaluatorConfig : public RouteEvaluator::Config {
+				RouteEvaluatorConfig();
 			};
 			
-			RoutePlannerConfig routeplannerconfig;
-			RoutePlanner routeplanner;
+			RouteEvaluatorConfig routeplannerconfig;
+			RouteEvaluator routeplanner;
 	};
 }
 
