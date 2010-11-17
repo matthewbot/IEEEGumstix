@@ -2,11 +2,10 @@
 #define ROUTEPLANNER_H
 
 #include "ieeepath/planner/AStarSearch.h"
-#include "ieeepath/planner/SensorPredictor.h"
+#include "ieeepath/planner/SensorPredictorCache.h"
 #include "ieeepath/planner/NodeGrid.h"
 #include "ieeepath/shared/types.h"
 #include <vector>
-#include <boost/unordered_map.hpp>
 
 namespace ieee {
 	class RouteEvaluator {
@@ -22,7 +21,7 @@ namespace ieee {
 				DirVec facedirs;
 			};
 			
-			RouteEvaluator(const SensorPredictor &sensorpred, const NodeGrid &map, const WorldGrid &worldgrid, const Config &config);
+			RouteEvaluator(const SensorPredictorCache &pred, const NodeGrid &map, const Config &config);
 			
 			void addDestination(const Pos &pos);
 			
@@ -30,21 +29,13 @@ namespace ieee {
 			
 		private:
 			int scorePath(const AStarSearch &search, Dir curdir, DirVec &bestdirs) const;
-			const PosSet &getUnknownRevealedFrom(const Pos &pos, Dir dir) const;
-			bool canSeeUnknownInAnyDirFrom(const Pos &pos) const;
-			PosSet getBestUnknownRevealedFrom(const Pos &pos, Dir prevdir, Dir &bestdir, const PosSet &revealed, bool mustsee) const;			
+			PosSet getBestUnknownRevealedFrom(const Pos &pos, Dir prevdir, Dir &bestdir, const PosSet &revealed, bool mustsee) const;	
 		
-			void clearSensorCache() const;
-		
-			const SensorPredictor &sensorpred;
+			const SensorPredictorCache &pred;
 			const NodeGrid &map;
-			const WorldGrid &worldgrid;
 			const Config &config;
 			
 			PosList destinations;
-			
-			typedef boost::unordered_map<std::pair<Pos, Dir>, PosSet> UnknownPosCacheMap;
-			mutable UnknownPosCacheMap unknownposes_cache;
 	};
 }
 

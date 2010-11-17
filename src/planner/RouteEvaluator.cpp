@@ -4,16 +4,14 @@
 using namespace ieee;
 using namespace std;
 
-RouteEvaluator::RouteEvaluator(const SensorPredictor &sensorpred, const NodeGrid &map, const WorldGrid &worldgrid, const Config &config)
-: sensorpred(sensorpred), map(map), worldgrid(worldgrid), config(config) { }
+RouteEvaluator::RouteEvaluator(const SensorPredictorCache &pred, const NodeGrid &map, const Config &config)
+: pred(pred), map(map), config(config) { }
 
 void RouteEvaluator::addDestination(const Pos &pos) {
 	destinations.push_back(pos);
 }
 
 RouteEvaluator::NodeRoute RouteEvaluator::planRoute(const Pos &curpos, Dir curdir) const {
-	clearSensorCache();
-	
 	NodeRoute route;
 	
 	int bestscore = 9999;
@@ -63,33 +61,6 @@ int RouteEvaluator::scorePath(const AStarSearch &search, Dir curdir, DirVec &bes
 	return score;
 }
 
-const PosSet &RouteEvaluator::getUnknownRevealedFrom(const Pos &pos, Dir dir) const {
-	UnknownPosCacheMap::key_type key = make_pair(pos, dir);
-	UnknownPosCacheMap::iterator i = unknownposes_cache.find(key);
-	if (i != unknownposes_cache.end())
-		return i->second;
-	
-	i = unknownposes_cache.insert(make_pair(key, PosSet())).first;
-	PosSet &unknownposes = i->second;
-
-	PosSet poses = sensorpred.predictVision(Coord(pos), dirToRad(dir), worldgrid);
-	for (PosSet::const_iterator i = poses.begin(); i != poses.end(); ++i) {
-		if (worldgrid[*i] == WorldGrid::UNKNOWN)
-			unknownposes.insert(*i);
-	}
-	
-	return unknownposes;
-}
-
-bool RouteEvaluator::canSeeUnknownInAnyDirFrom(const Pos &pos) const {
-	for (Dir dir=DIR_E; dir<MAX_DIR; dir=(Dir)(dir+1)) {
-		if (getUnknownRevealedFrom(pos, dir).size() > 0)
-			return true;
-	}
-	
-	return false;
-}
-
 PosSet RouteEvaluator::getBestUnknownRevealedFrom(const Pos &pos, Dir prevdir, Dir &bestdir, const PosSet &revealed, bool mustsee) const {
 	PosSet bestset;
 	int bestscore=999;
@@ -99,7 +70,7 @@ PosSet RouteEvaluator::getBestUnknownRevealedFrom(const Pos &pos, Dir prevdir, D
 		
 		score += 2*abs(getDirDelta(prevdir, dir)); // TODO changeable
 		
-		PosSet set = getUnknownRevealedFrom(pos, dir);
+		PosSet set = pred.getUnknownRevealedFrom(pos, dir);
 		for (PosSet::const_iterator i = revealed.begin(); i != revealed.end(); ++i)
 			set.erase(*i);
 		
@@ -116,9 +87,5 @@ PosSet RouteEvaluator::getBestUnknownRevealedFrom(const Pos &pos, Dir prevdir, D
 	}
 	
 	return bestset;
-}
-
-void RouteEvaluator::clearSensorCache() const {
-	unknownposes_cache.clear();
 }
 

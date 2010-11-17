@@ -11,7 +11,8 @@ RoomPlanner::RoomPlanner(const SensorPredictor &sensorpred, const WorldGrid &wor
 RoomPlanner::Plan RoomPlanner::planRoute(const Pos &curpos, Dir curdir) {
 	NodeGrid map = NodeGrid::fromWorldGrid(worldmap);
 	
-	RouteEvaluator routeeval(sensorpred, map, worldmap, config);
+	SensorPredictorCache pred(worldmap, sensorpred);
+	RouteEvaluator routeeval(pred, map, config);
 	
 	for (int x=0; x<map.getWidth(); x++) {
 		for (int y=0; y<map.getHeight(); y++) {
