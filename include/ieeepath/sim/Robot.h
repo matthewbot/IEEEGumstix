@@ -18,7 +18,7 @@ namespace ieee {
 			inline bool isVictimIdentified(const Pos &pos) const { return routeplanner.isVictimIdentified(pos); }
 			inline const Coord &getPosition() const { return curpos; }
 			inline float getDirection() const { return curdir; }
-			inline const Pos &getDestination() const { return route.path.back(); }
+			inline const Coord &getDestination() const { return route.coords.back(); }
 			inline const RouteEvaluator::Route &getRoute() const { return route; }
 			inline const WorldGrid &getMap() const { return map; }
 			

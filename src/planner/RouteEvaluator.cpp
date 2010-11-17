@@ -50,10 +50,15 @@ RouteEvaluator::Route RouteEvaluator::planRoute(const Pos &curpos, Dir curdir) c
 				continue;
 				
 			bestscore = score;
-			route.path = search.getPath();
 			route.facedirs = bestdirs;
 			route.identifyvictim = destvictim;
 			route.victimpos = victimpos;
+			
+			const Path &path = search.getPath();
+			route.coords.resize(path.size());
+			for (int i=0; i<path.size(); i++) {
+				route.coords[i] = Coord(path[i]);
+			}
 		}
 	}
 	

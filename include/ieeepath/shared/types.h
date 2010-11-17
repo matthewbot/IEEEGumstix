@@ -19,7 +19,7 @@ namespace ieee {
 	};
 	
 	inline size_t hash_value(const Pos &pos) { return (pos.x << 8) | pos.y; }
-	
+		
 	typedef std::vector<Pos> Path;
 	typedef boost::unordered_set<Pos> PosSet;
 	
@@ -60,6 +60,8 @@ namespace ieee {
 		
 		inline bool operator<(const Pos &pos) const;
 	};
+	
+	typedef std::vector<Coord> CoordList;
 }
 
 #endif

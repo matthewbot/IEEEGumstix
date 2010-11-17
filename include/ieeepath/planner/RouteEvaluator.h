@@ -12,7 +12,7 @@ namespace ieee {
 	class RouteEvaluator {
 		public:
 			struct Route {
-				Path path;
+				CoordList coords;
 				DirVec facedirs;
 				bool identifyvictim;
 				Pos victimpos;

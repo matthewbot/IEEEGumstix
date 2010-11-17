@@ -41,8 +41,8 @@ void Robot::moveStep() {
 	
 	if (abs(curdir - facedirrad) > .1)
 		curdir = facedirrad;
-	else if (route.path.size() > 1)
-		curpos = Coord(route.path[1]);
+	else if (route.coords.size() > 1)
+		curpos = route.coords[1];
 	else if (route.identifyvictim)
 		routeplanner.setVictimIdentified(route.victimpos);
 	else
