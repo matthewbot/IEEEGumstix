@@ -1,95 +1,59 @@
 #include "ieeepath/planner/RouteEvaluator.h"
-#include "ieeepath/shared/Timer.h"
 #include <algorithm>
-#include <iostream>
-#include <ctime>
 
 using namespace ieee;
 using namespace std;
 
-RouteEvaluator::RouteEvaluator(const SensorPredictor &sensorpred, const WorldGrid &worldmap, const Config &config)
-: sensorpred(sensorpred), worldmap(worldmap), map(worldmap.getWidth()-1, worldmap.getHeight()-1), config(config) { }
+RouteEvaluator::RouteEvaluator(const SensorPredictor &sensorpred, const NodeGrid &map, const WorldGrid &worldgrid, const Config &config)
+: sensorpred(sensorpred), map(map), worldgrid(worldgrid), config(config) { }
 
-RouteEvaluator::Route RouteEvaluator::planRoute(const Pos &curpos, Dir curdir) const {
-	Timer tim;
-	
-	map = NodeGrid::fromWorldGrid(worldmap);
+void RouteEvaluator::addDestination(const Pos &pos) {
+	destinations.push_back(pos);
+}
+
+RouteEvaluator::NodeRoute RouteEvaluator::planRoute(const Pos &curpos, Dir curdir) const {
 	clearSensorCache();
 	
-	Route route;
+	NodeRoute route;
 	
 	int bestscore = 9999;
-	for (int x=0; x<map.getWidth(); x++) {
-		for (int y=0; y<map.getHeight(); y++) {
-			Pos pos(x, y);
-			const Node &node = map[pos];
+	for (PosList::const_iterator i = destinations.begin(); i != destinations.end(); ++i) {
+		const Pos &pos = *i;
+		
+		AStarSearch search(map, curpos, pos);
+		if (!search.foundPath())
+			continue;
+		
+		DirVec bestdirs;
+		bestdirs.resize(search.getPathLength());
+		
+		int score = scorePath(search, curdir, bestdirs);
+		if (score >= bestscore)
+			continue;
 			
-			Pos victimpos;
-			bool destvictim = false;
-			if (node.getType() == Node::VICTIM_ID) {
-				if (!getVictimPos(pos, worldmap, node.getDir(), victimpos))
-					throw runtime_error("Bad VICTIM_ID node?");
-					
-				if (!isVictimIdentified(victimpos))
-					destvictim = true; 
-			} else if (node.getType() != Node::OPEN)
-				continue;
-			
-			if (!destvictim && !canSeeUnknownInAnyDirFrom(pos))
-				continue;
-			
-			AStarSearch search(map, curpos, pos);
-			if (!search.foundPath())
-				continue;
-			
-			DirVec bestdirs;
-			bestdirs.resize(search.getPathLength());
-			
-			int score = scorePath(search, curdir, bestdirs, destvictim);
-			if (score >= bestscore)
-				continue;
-				
-			bestscore = score;
-			route.facedirs = bestdirs;
-			route.identifyvictim = destvictim;
-			route.victimpos = victimpos;
-			
-			const Path &path = search.getPath();
-			route.coords.resize(path.size());
-			for (int i=0; i<path.size(); i++) {
-				route.coords[i] = Coord(path[i]);
-			}
-		}
+		bestscore = score;
+		route.poses = search.getPath();
+		route.facedirs = bestdirs;
 	}
-	
-	
-	cout << "Route planned in " << tim.getSeconds() * 1000 << " ms" << endl;
 	
 	return route;
 }
 
-int RouteEvaluator::scorePath(const AStarSearch &search, Dir curdir, DirVec &bestdirs, bool destvictim) const {
+int RouteEvaluator::scorePath(const AStarSearch &search, Dir curdir, DirVec &bestdirs) const {
 	const Pos &dest = search.getPath().back();
 	int score=0;
 	
-	if (destvictim)
-		score -= 500;
-	score += search.getPathCost() * (destvictim ? config.pathCostFactorVictim : config.pathCostFactor);
+	score += search.getPathCost() * config.pathCostFactor;
 	
 	PosSet revealed;
-	for (int i=0; i < search.getPathLength(); ++i) {
-		if (destvictim && i == search.getPathLength()-1) {
-			bestdirs[i] = map[dest].getDir();
-			continue;
-		}
-		
+	for (int i=0; i < search.getPathLength(); ++i) {		
 		Dir prevdir;
 		if (i == 0)
 			prevdir = curdir;
 		else
 			prevdir = bestdirs[i-1];
 		
-		bool mustsee = (i == search.getPathLength() - 1) && (revealed.size() == 0) && !destvictim;
+		bool mustsee = (i == search.getPathLength() - 1) && (revealed.size() == 0);
 		PosSet newseen = getBestUnknownRevealedFrom(search.getPath()[i], prevdir, bestdirs[i], revealed, mustsee);
 		revealed.insert(newseen.begin(), newseen.end());	
 	}	
@@ -108,9 +72,9 @@ const PosSet &RouteEvaluator::getUnknownRevealedFrom(const Pos &pos, Dir dir) co
 	i = unknownposes_cache.insert(make_pair(key, PosSet())).first;
 	PosSet &unknownposes = i->second;
 
-	PosSet poses = sensorpred.predictVision(Coord(pos), dirToRad(dir), worldmap);
+	PosSet poses = sensorpred.predictVision(Coord(pos), dirToRad(dir), worldgrid);
 	for (PosSet::const_iterator i = poses.begin(); i != poses.end(); ++i) {
-		if (worldmap[*i] == WorldGrid::UNKNOWN)
+		if (worldgrid[*i] == WorldGrid::UNKNOWN)
 			unknownposes.insert(*i);
 	}
 	
@@ -156,17 +120,5 @@ PosSet RouteEvaluator::getBestUnknownRevealedFrom(const Pos &pos, Dir prevdir, D
 
 void RouteEvaluator::clearSensorCache() const {
 	unknownposes_cache.clear();
-}
-
-bool RouteEvaluator::isVictimIdentified(const Pos &pos) const {
-	return identifiedvictims.find(pos) != identifiedvictims.end();
-}
-
-void RouteEvaluator::setVictimIdentified(const Pos &pos) {
-	identifiedvictims.insert(pos);
-}
-
-void RouteEvaluator::resetVictims() {
-	identifiedvictims.clear();
 }
 

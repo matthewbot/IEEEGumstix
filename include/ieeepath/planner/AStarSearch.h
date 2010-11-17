@@ -21,7 +21,7 @@ namespace ieee {
 			
 			AStarSearch(const NodeGrid &grid, const Pos &start, const Pos &end);
 			
-			inline const Path &getPath() const { return path; }
+			inline const PosList &getPath() const { return path; }
 			inline int getPathLength() const { return path.size(); }
 			inline bool foundPath() const { return path.size() > 0; }
 			inline int getPathCost() const { return getSquare(path.back()).cost; }
@@ -40,7 +40,7 @@ namespace ieee {
 		
 			int width, height;
 			boost::scoped_array<Square> squares;
-			Path path;
+			PosList path;
 	};
 }
 

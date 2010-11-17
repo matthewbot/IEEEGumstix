@@ -143,11 +143,11 @@ void WorldPanel::paintRobot(wxPaintDC &dc) {
 	dc.DrawPolygon(3, points);
 	
 	const float radius = max(min(squarew, squareh)*.1f, 3.0f);
-	const RouteEvaluator::Route &route = robot.getRoute();
+	const RoomPlanner::Plan &plan = robot.getPlan();
 	
-	for (int i = 0; i != route.coords.size(); ++i) {
-		const Coord &c = route.coords[i];
-		Dir dir = route.facedirs[i];
+	for (int i = 0; i != plan.coords.size(); ++i) {
+		const Coord &c = plan.coords[i];
+		Dir dir = plan.facedirs[i];
 		float dirrad = dirToRad(dir);
 		
 		const float centerx = squarew*(c.x + 1);

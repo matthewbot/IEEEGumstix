@@ -9,14 +9,13 @@ Robot::Robot(const Coord &startpos, const WorldGrid &grid)
 : sensorpred(7, M_PI/4, .15),
   grid(grid), 
   map(grid.getWidth(), grid.getHeight()),
-  routeplanner(sensorpred, map, routeplannerconfig) {
+  roomplanner(sensorpred, map, routeplannerconfig) {
 	reset(startpos);
 }
 
 Robot::RouteEvaluatorConfig::RouteEvaluatorConfig() {
 	unknownPruneDist = 2;
 	pathCostFactor = 1;
-	pathCostFactorVictim = 3;
 	revealedScoreFactor = 6;
 }
 
@@ -24,7 +23,7 @@ void Robot::reset(const Coord &pos, float dir) {
 	curpos = pos;
 	curdir = dir;
 	map.clear(WorldGrid::UNKNOWN);
-	routeplanner.resetVictims();
+	roomplanner.resetVictims();
 	
 	updateSensorsStep();
 	updatePathStep();
@@ -37,14 +36,14 @@ void Robot::step() {
 }
 
 void Robot::moveStep() {
-	float facedirrad = dirToRad(route.facedirs[0]);
+	float facedirrad = dirToRad(plan.facedirs[0]);
 	
 	if (abs(curdir - facedirrad) > .1)
 		curdir = facedirrad;
-	else if (route.coords.size() > 1)
-		curpos = route.coords[1];
-	else if (route.identifyvictim)
-		routeplanner.setVictimIdentified(route.victimpos);
+	else if (plan.coords.size() > 1)
+		curpos = plan.coords[1];
+	else if (plan.identifyvictim)
+		roomplanner.setVictimIdentified(plan.victimpos);
 	else
 		throw runtime_error("Do nothing route?");
 }
@@ -58,6 +57,6 @@ void Robot::updateSensorsStep() {
 }
 
 void Robot::updatePathStep() {
-	route = routeplanner.planRoute(Pos((int)floor(curpos.x), (int)(curpos.y)), radToNearestDir(curdir));
+	plan = roomplanner.planRoute(Pos((int)floor(curpos.x), (int)(curpos.y)), radToNearestDir(curdir));
 }
 

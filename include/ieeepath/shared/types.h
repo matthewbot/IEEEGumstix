@@ -19,8 +19,8 @@ namespace ieee {
 	};
 	
 	inline size_t hash_value(const Pos &pos) { return (pos.x << 8) | pos.y; }
-		
-	typedef std::vector<Pos> Path;
+	
+	typedef std::vector<Pos> PosList;
 	typedef boost::unordered_set<Pos> PosSet;
 	
 	std::ostream &operator<<(std::ostream &stream, const Pos &pos);
@@ -62,6 +62,11 @@ namespace ieee {
 	};
 	
 	typedef std::vector<Coord> CoordList;
+	
+	struct CoordRoute {
+		CoordList coords;
+		DirVec facedirs;
+	};
 }
 
 #endif
