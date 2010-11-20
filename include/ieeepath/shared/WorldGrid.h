@@ -14,9 +14,6 @@ namespace ieee {
 				LARGE_OBSTACLE,
 				UNKNOWN
 			};
-			
-			inline static bool passable(GridSquare square) { return square != LARGE_OBSTACLE && square != VICTIM; }
-			inline static bool known(GridSquare square) { return square != UNKNOWN; }
 		
 			WorldGrid(int w, int h, GridSquare clearsquare=EMPTY);
 			void clear(GridSquare square=EMPTY);
@@ -40,22 +37,6 @@ namespace ieee {
 				assert(inBounds(pos));
 				return squares[pos.x + pos.y*width];
 			}
-			inline GridSquare &operator()(int x, int y) { return (*this)[Pos(x, y)]; }
-			inline GridSquare operator()(int x, int y) const { return (*this)[Pos(x, y)]; }
-			
-			inline GridSquare get(const Pos &pos) const { return (*this)[pos]; }
-			inline void set(const Pos &pos, GridSquare square) { (*this)[pos] = square; }
-			inline GridSquare get(int x, int y) const { return get(Pos(x, y)); }
-			inline void set(int x, int y, GridSquare square) { set(Pos(x, y), square); }
-			
-			void fillLine(Pos start, Pos end, GridSquare square);
-
-			inline bool getPassable(const Pos &pos) const { return passable((*this)[pos]); }
-			bool passableRect(const Pos &pos, int w=2, int h=2) const;
-			bool unknownRect(const Pos &pos, int w=2, int h=2) const;
-			
-			int countAdjacent(const Pos &pos, GridSquare square, int range=1) const;
-			bool getAdjacent(const Pos &pos, GridSquare square, Pos *out, int range=1) const;
 			
 		private:
 			int width, height;

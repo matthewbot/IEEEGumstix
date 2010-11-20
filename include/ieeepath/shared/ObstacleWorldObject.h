@@ -19,9 +19,12 @@ namespace ieee {
 			
 			inline void setStartPos(const Pos &startpos) { this->startpos = startpos; }
 			inline void setEndPos(const Pos &endpos) { this->endpos = endpos; };
+			
 		private:
 			Pos startpos, endpos;
 			bool large;
+			
+			static void fillLine(WorldGrid &grid, Pos start, Pos end, WorldGrid::GridSquare square);
 	};
 }
 

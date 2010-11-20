@@ -23,6 +23,10 @@ namespace ieee {
 			
 		private:
 			boost::multi_array<Node, 2> array;
+			
+			static bool passableRect(const WorldGrid &grid, const Pos &pos, int w=2, int h=2);
+			static bool unknownRect(const WorldGrid &grid, const Pos &pos, int w=2, int h=2);
+			static bool passable(WorldGrid::GridSquare square);
 	
 	};
 	

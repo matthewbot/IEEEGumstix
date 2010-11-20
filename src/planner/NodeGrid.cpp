@@ -17,12 +17,12 @@ NodeGrid NodeGrid::fromWorldGrid(const WorldGrid &grid) {
 			Node &node = nodes[pos];
 			
 			// determine if passable
-			if (!grid.passableRect(pos)) {
+			if (!passableRect(grid, pos)) {
 				node = Node::IMPASSABLE;
 				continue;
 			}
 			
-			if (grid.unknownRect(pos)) {
+			if (unknownRect(grid, pos)) {
 				node = Node::UNKNOWN;
 				continue;
 			}
@@ -38,6 +38,34 @@ NodeGrid NodeGrid::fromWorldGrid(const WorldGrid &grid) {
 	}
 	
 	return nodes;
+}
+
+bool NodeGrid::passableRect(const WorldGrid &grid, const Pos &pos, int w, int h) {
+	for (int dx=0; dx<w; dx++) {
+		for (int dy=0; dy<h; dy++) {
+			Pos p(pos.x + dx, pos.y + dy);
+			if (!passable(grid[p]))
+				return false;
+		}
+	}
+		
+	return true;	
+}
+
+bool NodeGrid::unknownRect(const WorldGrid &grid, const Pos &pos, int w, int h) {
+	for (int dx=0; dx<w; dx++) {
+		for (int dy=0; dy<h; dy++) {
+			Pos p(pos.x + dx, pos.y + dy);
+			if (grid[p] == WorldGrid::UNKNOWN)
+				return true;
+		}
+	}
+		
+	return false;	
+}
+
+bool NodeGrid::passable(WorldGrid::GridSquare square) {
+	return square != WorldGrid::LARGE_OBSTACLE && square != WorldGrid::VICTIM;
 }
 
 std::ostream &ieee::operator<<(std::ostream &out, const NodeGrid &grid) {
