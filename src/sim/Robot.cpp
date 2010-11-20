@@ -23,6 +23,18 @@ void Robot::reset(const Coord &pos, float dir) {
 	curpos = pos;
 	curdir = dir;
 	map.clear(WorldGrid::UNKNOWN);
+	
+	Pos givenposes[] = { 
+		Pos((int)pos.x, (int)pos.y),
+		Pos((int)(pos.x+1), (int)pos.y),
+		Pos((int)pos.x, (int)(pos.y+1)),
+		Pos((int)(pos.x+1), (int)(pos.y+1))
+	};
+	
+	for (int i=0; i<4; i++) {
+		map[givenposes[i]] = grid[givenposes[i]];
+	}
+	
 	roomplanner.resetVictims();
 	
 	updateSensorsStep();

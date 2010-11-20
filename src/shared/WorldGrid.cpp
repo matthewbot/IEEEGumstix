@@ -74,12 +74,12 @@ bool WorldGrid::passableRect(const Pos &pos, int w, int h) const {
 bool WorldGrid::unknownRect(const Pos &pos, int w, int h) const {
 	for (int dx=0; dx<w; dx++) {
 		for (int dy=0; dy<h; dy++) {
-			if (get(pos.x + dx, pos.y + dy) != UNKNOWN)
-				return false;
+			if (get(Pos(pos.x + dx, pos.y + dy)) == UNKNOWN)
+				return true;
 		}
 	}
 		
-	return true;	
+	return false;	
 }
 
 int WorldGrid::countAdjacent(const Pos &pos, GridSquare square, int range) const {
