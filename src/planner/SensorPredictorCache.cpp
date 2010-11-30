@@ -3,8 +3,8 @@
 using namespace ieee;
 using namespace std;
 
-SensorPredictorCache::SensorPredictorCache(const WorldGrid &grid, const SensorPredictor &sensorpred)
-: grid(grid), sensorpred(sensorpred) { }
+SensorPredictorCache::SensorPredictorCache(const WorldGrid &grid, const CoordScale &scale, const SensorPredictor &sensorpred)
+: grid(grid), scale(scale), sensorpred(sensorpred) { }
 
 const PosSet &SensorPredictorCache::getUnknownRevealedFrom(const Pos &pos, Dir dir) const {
 	UnknownPosCacheMap::key_type key = make_pair(pos, dir);
@@ -15,7 +15,7 @@ const PosSet &SensorPredictorCache::getUnknownRevealedFrom(const Pos &pos, Dir d
 	i = unknownposes_cache.insert(make_pair(key, PosSet())).first;
 	PosSet &unknownposes = i->second;
 
-	PosSet poses = sensorpred.predictVision(Coord(pos), dirToRad(dir), grid);
+	PosSet poses = sensorpred.predictVision(Coord(pos), dirToRad(dir), grid, scale);
 	for (PosSet::const_iterator i = poses.begin(); i != poses.end(); ++i) {
 		if (grid[*i] == WorldGrid::UNKNOWN)
 			unknownposes.insert(*i);

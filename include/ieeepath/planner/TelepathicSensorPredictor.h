@@ -8,7 +8,7 @@ namespace ieee {
 		public:
 			TelepathicSensorPredictor(float range);
 			
-			virtual PosSet predictVision(const Coord &curpos, float curdir, const WorldGrid &grid) const;
+			virtual PosSet predictVision(const Coord &curpos, float curdir, const WorldGrid &grid, const CoordScale &scale) const;
 			
 		private:
 			float range;

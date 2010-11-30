@@ -64,7 +64,8 @@ void Robot::moveStep() {
 }
 
 void Robot::updateSensorsStep() {
-	PosSet seenset = sensorpred.predictVision(curpos, curdir, grid);
+    CoordScale scale(1, 1, .5, .5); // TODO shouldn't have these constants here after refactoring some more stuff
+	PosSet seenset = sensorpred.predictVision(curpos, curdir, grid, scale);
 	
 	for (PosSet::const_iterator i = seenset.begin(); i != seenset.end(); ++i) {
 		map[*i] = grid[*i];

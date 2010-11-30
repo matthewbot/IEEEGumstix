@@ -67,6 +67,24 @@ namespace ieee {
 		CoordList coords;
 		DirVec facedirs;
 	};
+	
+	struct CoordScale {
+	    float sx, sy;
+	    float xoff, yoff;
+	    
+	    CoordScale() { }
+	    CoordScale(float sx, float sy, float xoff=0, float yoff=0) : sx(sx), sy(sy), xoff(xoff), yoff(yoff) { }
+
+        inline static CoordScale identity() { return CoordScale(1, 1); }
+        
+        inline Pos coordToPos(const Coord &c) const { 
+            return Pos((int)round(c.x*sx + xoff), (int)round(c.y*sy + yoff));
+        }
+        
+        inline Coord posToCoord(const Pos &p) const {
+            return Coord(((float)p.x - xoff) / sx, ((float)p.y - yoff) / sy);
+        }
+    };
 }
 
 #endif

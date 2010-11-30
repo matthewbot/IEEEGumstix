@@ -7,7 +7,7 @@ using namespace std;
 CameraSensorPredictor::CameraSensorPredictor(int maxdistance, float fieldofview, float fovstep) 
 : maxdistance(maxdistance), fieldofview(fieldofview), fovstep(fovstep) { }
 
-PosSet CameraSensorPredictor::predictVision(const Coord &curpos, float curdir, const WorldGrid &grid) const {
+PosSet CameraSensorPredictor::predictVision(const Coord &curpos, float curdir, const WorldGrid &grid, const CoordScale &scale) const {
 	const float startrad = curdir - fieldofview/2;
 	const float endrad = startrad + fieldofview;
 	
@@ -23,7 +23,7 @@ PosSet CameraSensorPredictor::predictVision(const Coord &curpos, float curdir, c
 		float x = startx;
 		float y = starty;
 		for (int dist=0; dist<=maxdistance; dist++, x+=dx, y+=dy) {
-			Pos pos((int)x, (int)y);
+			Pos pos = scale.coordToPos(Coord(x, y));
 			
 			if (!grid.inBounds(pos))
 				break;
