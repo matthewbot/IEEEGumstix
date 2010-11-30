@@ -48,6 +48,9 @@ void Robot::step() {
 }
 
 void Robot::moveStep() {
+    if (plan.coords.size() == 0)
+        return;
+        
 	float facedirrad = dirToRad(plan.facedirs[0]);
 	
 	if (abs(curdir - facedirrad) > .1)
