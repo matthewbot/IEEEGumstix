@@ -6,19 +6,21 @@
 using namespace ieee;
 using namespace std;
 
-RoomPlanner::RoomPlanner(const SensorPredictor &sensorpred, const WorldGrid &worldmap, const RouteEvaluator::Config &config)
+RoomPlanner::RoomPlanner(const SensorPredictor &sensorpred, const WorldGrid &worldmap, const Config &config)
 : sensorpred(sensorpred), worldmap(worldmap), config(config) { }
 
-RoomPlanner::Plan RoomPlanner::planRoute(const Pos &curpos, Dir curdir) {
-	CoordScale gridscale(1, 1, -.5, -.5);
-	CoordScale nodescale(1, 1, 0, 0);
+RoomPlanner::Plan RoomPlanner::planRoute(const Coord &curcoord, Dir curdir) {
+	CoordScale gridscale(worldmap.getWidth() / config.roomwidth, worldmap.getHeight() / config.roomheight, -.5, -.5);
+	CoordScale nodescale(config.nodewidth / config.roomwidth, config.nodeheight / config.roomheight, config.nodeoffsetx, config.nodeoffsety);
+
+    Pos curpos = gridscale.coordToPos(curcoord);
 
 	NodeGrid map = NodeGrid::fromWorldGrid(worldmap, gridscale, nodescale);
 
     cout << map << endl;
 
 	SensorPredictorCache pred(worldmap, gridscale, sensorpred);
-	RouteEvaluator routeeval(pred, map, config);
+	RouteEvaluator routeeval(pred, map, config.routeevalconfig);
 	
 	for (int x=0; x<map.getWidth(); x++) {
 		for (int y=0; y<map.getHeight(); y++) {
@@ -38,7 +40,7 @@ RoomPlanner::Plan RoomPlanner::planRoute(const Pos &curpos, Dir curdir) {
 	plan.facedirs = noderoute.facedirs;
 	plan.coords.resize(noderoute.poses.size());
 	for (int i=0; i<plan.coords.size(); i++) {
-		plan.coords[i] = Coord(noderoute.poses[i]);
+		plan.coords[i] = nodescale.posToCoord(noderoute.poses[i]);
 	}
 	
 	return plan;

@@ -37,11 +37,11 @@ namespace ieee {
 			WorldGrid map;
 			RoomPlanner::Plan plan;
 			
-			struct RouteEvaluatorConfig : public RouteEvaluator::Config {
-				RouteEvaluatorConfig();
+			struct RoomPlannerConfig : public RoomPlanner::Config {
+				RoomPlannerConfig();
 			};
 			
-			RouteEvaluatorConfig routeplannerconfig;
+			RoomPlannerConfig roomplannerconfig;
 			RoomPlanner roomplanner;
 	};
 }

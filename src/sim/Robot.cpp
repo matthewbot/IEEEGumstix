@@ -6,30 +6,34 @@ using namespace ieee;
 using namespace std;
 
 Robot::Robot(const Coord &startpos, const WorldGrid &grid) 
-: sensorpred(7, M_PI/4, .15),
+: sensorpred(70, M_PI/4, .15),
   grid(grid), 
   map(grid.getWidth(), grid.getHeight()),
-  roomplanner(sensorpred, map, routeplannerconfig) {
+  roomplanner(sensorpred, map, roomplannerconfig) {
 	reset(startpos);
 }
 
-Robot::RouteEvaluatorConfig::RouteEvaluatorConfig() {
-	unknownPruneDist = 2;
-	pathCostFactor = 1;
-	revealedScoreFactor = 6;
+Robot::RoomPlannerConfig::RoomPlannerConfig() {
+    roomwidth = roomheight = 100;
+    nodewidth = nodeheight = 10;
+    nodeoffsetx = nodeoffsety = 0;
+
+	routeevalconfig.unknownPruneDist = 2;
+	routeevalconfig.pathCostFactor = 1;
+	routeevalconfig.revealedScoreFactor = 6;
 }
 
 void Robot::reset(const Coord &pos, float dir) {
-    CoordScale gridscale(1, 1, -.5, -.5); // TODO shouldn't have these constants here after refactoring some more stuff
+    CoordScale gridscale(.1, .1, -.5, -.5); // TODO shouldn't have these constants here after refactoring some more stuff
 	curpos = pos;
 	curdir = dir;
 	map.clear(WorldGrid::UNKNOWN);
 	
 	Pos givenposes[] = { 
-		gridscale.coordToPos(Coord(pos.x-.5, pos.y-.5)),
-		gridscale.coordToPos(Coord(pos.x-.5, pos.y+.5)),
-		gridscale.coordToPos(Coord(pos.x+.5, pos.y-.5)),
-		gridscale.coordToPos(Coord(pos.x+.5, pos.y+.5)),
+		gridscale.coordToPos(Coord(pos.x-5, pos.y-5)),
+		gridscale.coordToPos(Coord(pos.x-5, pos.y+5)),
+		gridscale.coordToPos(Coord(pos.x+5, pos.y-5)),
+		gridscale.coordToPos(Coord(pos.x+5, pos.y+5)),
 	};
 	
 	for (int i=0; i<4; i++) {
@@ -65,7 +69,7 @@ void Robot::moveStep() {
 }
 
 void Robot::updateSensorsStep() {
-    CoordScale gridscale(1, 1, -.5, -.5); // TODO shouldn't have these constants here after refactoring some more stuff
+    CoordScale gridscale(.1, .1, -.5, -.5); // TODO shouldn't have these constants here after refactoring some more stuff
 	PosSet seenset = sensorpred.predictVision(curpos, curdir, grid, gridscale);
 	
 	for (PosSet::const_iterator i = seenset.begin(); i != seenset.end(); ++i) {
@@ -74,6 +78,6 @@ void Robot::updateSensorsStep() {
 }
 
 void Robot::updatePathStep() {
-	plan = roomplanner.planRoute(Pos((int)floor(curpos.x), (int)(curpos.y)), radToNearestDir(curdir));
+	plan = roomplanner.planRoute(curpos, radToNearestDir(curdir));
 }
 

@@ -128,8 +128,8 @@ void WorldPanel::paintRobot(wxPaintDC &dc) {
 	const float squarew = (float)dispw/grid.getWidth();
 	const float squareh = (float)disph/grid.getHeight();
 	
-	const float startx = squarew*robot.getPosition().x;
-	const float starty = squareh*robot.getPosition().y;
+	const float startx = squarew*robot.getPosition().x/10; // TODO don't hard-code room width
+	const float starty = squareh*robot.getPosition().y/10;
 	const float thickness = min(squarew, squareh) * .3;
 	const float dir = robot.getDirection();
 	
@@ -150,8 +150,8 @@ void WorldPanel::paintRobot(wxPaintDC &dc) {
 		Dir dir = plan.facedirs[i];
 		float dirrad = dirToRad(dir);
 		
-		const float centerx = squarew*c.x;
-		const float centery = squareh*c.y;
+		const float centerx = squarew*c.x/10; // TODO don't hardcode room width
+		const float centery = squareh*c.y/10;
 		dc.DrawCircle(centerx, centery, radius);
 		
 		const float len = min(squarew, squareh)*0.3;

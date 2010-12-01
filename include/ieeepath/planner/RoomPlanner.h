@@ -15,17 +15,25 @@ namespace ieee {
 				bool identifyvictim;
 				Pos victimpos;
 			};
+			
+			struct Config {
+			    float roomwidth, roomheight;
+			    int nodewidth, nodeheight;
+			    float nodeoffsetx, nodeoffsety;
+			    
+			    RouteEvaluator::Config routeevalconfig;
+			};
 		
-			RoomPlanner(const SensorPredictor &sensorpred, const WorldGrid &worldmap, const RouteEvaluator::Config &config);
+			RoomPlanner(const SensorPredictor &sensorpred, const WorldGrid &worldmap, const Config &config);
 		
-			Plan planRoute(const Pos &curpos, Dir curdir);
+			Plan planRoute(const Coord &curcoord, Dir curdir);
 		
 			inline bool isVictimIdentified(const Pos &pos) const { return false; }
 			inline void setVictimIdentified(const Pos &pos) { }
 			inline void resetVictims() { }
 		
 		private:
-			const RouteEvaluator::Config &config;
+			const Config &config;
 			const SensorPredictor &sensorpred;
 			const WorldGrid &worldmap;
 	

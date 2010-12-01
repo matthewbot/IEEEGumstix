@@ -22,7 +22,7 @@ RoomSimApp::SimWorld::SimWorld()
 }
 
 RoomSimApp::RoomSimApp()
-: robot(Coord(1, 1), world.getGrid()) {
+: robot(Coord(10, 10), world.getGrid()) {
 }
 
 bool RoomSimApp::OnInit() {
