@@ -5,9 +5,9 @@
 using namespace ieee;
 using namespace std;
 
-Robot::Robot(const Coord &startpos, const WorldGrid &grid) 
+Robot::Robot(const Coord &startpos, const WorldGrid &grid)
 : sensorpred(70, M_PI/4, .15),
-  grid(grid), 
+  grid(grid),
   map(grid.getWidth(), grid.getHeight()),
   roomplanner(sensorpred, map, roomplannerconfig) {
 	reset(startpos);
@@ -24,24 +24,24 @@ Robot::RoomPlannerConfig::RoomPlannerConfig() {
 }
 
 void Robot::reset(const Coord &pos, float dir) {
-    CoordScale gridscale(.1, .1, -.5, -.5); // TODO shouldn't have these constants here after refactoring some more stuff
+    const CoordScale &gridscale = roomplanner.getGridScale();
 	curpos = pos;
 	curdir = dir;
 	map.clear(WorldGrid::UNKNOWN);
-	
-	Pos givenposes[] = { 
+
+	Pos givenposes[] = {
 		gridscale.coordToPos(Coord(pos.x-5, pos.y-5)),
 		gridscale.coordToPos(Coord(pos.x-5, pos.y+5)),
 		gridscale.coordToPos(Coord(pos.x+5, pos.y-5)),
 		gridscale.coordToPos(Coord(pos.x+5, pos.y+5)),
 	};
-	
+
 	for (int i=0; i<4; i++) {
 		map[givenposes[i]] = grid[givenposes[i]];
 	}
-	
+
 	roomplanner.resetVictims();
-	
+
 	updateSensorsStep();
 	updatePathStep();
 }
@@ -55,9 +55,9 @@ void Robot::step() {
 void Robot::moveStep() {
     if (plan.coords.size() == 0)
         return;
-        
+
 	float facedirrad = dirToRad(plan.facedirs[0]);
-	
+
 	if (abs(curdir - facedirrad) > .1)
 		curdir = facedirrad;
 	else if (plan.coords.size() > 1)
@@ -69,9 +69,9 @@ void Robot::moveStep() {
 }
 
 void Robot::updateSensorsStep() {
-    CoordScale gridscale(.1, .1, -.5, -.5); // TODO shouldn't have these constants here after refactoring some more stuff
+    const CoordScale &gridscale = roomplanner.getGridScale();
 	PosSet seenset = sensorpred.predictVision(curpos, curdir, grid, gridscale);
-	
+
 	for (PosSet::const_iterator i = seenset.begin(); i != seenset.end(); ++i) {
 		map[*i] = grid[*i];
 	}
