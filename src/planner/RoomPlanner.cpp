@@ -1,18 +1,23 @@
 #include "ieeepath/planner/RoomPlanner.h"
 #include "ieeepath/planner/RouteEvaluator.h"
 #include "ieeepath/shared/Timer.h"
-#include <algorithm>
+#include <iostream>
 
 using namespace ieee;
+using namespace std;
 
 RoomPlanner::RoomPlanner(const SensorPredictor &sensorpred, const WorldGrid &worldmap, const RouteEvaluator::Config &config)
 : sensorpred(sensorpred), worldmap(worldmap), config(config) { }
 
 RoomPlanner::Plan RoomPlanner::planRoute(const Pos &curpos, Dir curdir) {
-	NodeGrid map = NodeGrid::fromWorldGrid(worldmap);
-	
-	CoordScale scale(1, 1, .5, .5);
-	SensorPredictorCache pred(worldmap, scale, sensorpred);
+	CoordScale gridscale(1, 1, -.5, -.5);
+	CoordScale nodescale(1, 1, 0, 0);
+
+	NodeGrid map = NodeGrid::fromWorldGrid(worldmap, gridscale, nodescale);
+
+    cout << map << endl;
+
+	SensorPredictorCache pred(worldmap, gridscale, sensorpred);
 	RouteEvaluator routeeval(pred, map, config);
 	
 	for (int x=0; x<map.getWidth(); x++) {

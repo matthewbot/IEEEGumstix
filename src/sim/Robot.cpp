@@ -20,15 +20,16 @@ Robot::RouteEvaluatorConfig::RouteEvaluatorConfig() {
 }
 
 void Robot::reset(const Coord &pos, float dir) {
+    CoordScale gridscale(1, 1, -.5, -.5); // TODO shouldn't have these constants here after refactoring some more stuff
 	curpos = pos;
 	curdir = dir;
 	map.clear(WorldGrid::UNKNOWN);
 	
 	Pos givenposes[] = { 
-		Pos((int)pos.x, (int)pos.y),
-		Pos((int)(pos.x+1), (int)pos.y),
-		Pos((int)pos.x, (int)(pos.y+1)),
-		Pos((int)(pos.x+1), (int)(pos.y+1))
+		gridscale.coordToPos(Coord(pos.x-.5, pos.y-.5)),
+		gridscale.coordToPos(Coord(pos.x-.5, pos.y+.5)),
+		gridscale.coordToPos(Coord(pos.x+.5, pos.y-.5)),
+		gridscale.coordToPos(Coord(pos.x+.5, pos.y+.5)),
 	};
 	
 	for (int i=0; i<4; i++) {
@@ -64,8 +65,8 @@ void Robot::moveStep() {
 }
 
 void Robot::updateSensorsStep() {
-    CoordScale scale(1, 1, .5, .5); // TODO shouldn't have these constants here after refactoring some more stuff
-	PosSet seenset = sensorpred.predictVision(curpos, curdir, grid, scale);
+    CoordScale gridscale(1, 1, -.5, -.5); // TODO shouldn't have these constants here after refactoring some more stuff
+	PosSet seenset = sensorpred.predictVision(curpos, curdir, grid, gridscale);
 	
 	for (PosSet::const_iterator i = seenset.begin(); i != seenset.end(); ++i) {
 		map[*i] = grid[*i];

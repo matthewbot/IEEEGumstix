@@ -19,13 +19,13 @@ namespace ieee {
 			inline const Node &operator[](const Pos &pos) const { assert(inBounds(pos)); return array[pos.x][pos.y]; }
 			inline Node &operator[](const Pos &pos) { assert(inBounds(pos)); return array[pos.x][pos.y]; }	
 			
-			static NodeGrid fromWorldGrid(const WorldGrid &grid);
+			static NodeGrid fromWorldGrid(const WorldGrid &grid, const CoordScale &gridscale, const CoordScale &nodescale);
 			
 		private:
 			boost::multi_array<Node, 2> array;
 			
-			static bool passableRect(const WorldGrid &grid, const Pos &pos, int w=2, int h=2);
-			static bool unknownRect(const WorldGrid &grid, const Pos &pos, int w=2, int h=2);
+			static bool passableRect(const WorldGrid &grid, const Pos &start, const Pos &end);
+			static bool unknownRect(const WorldGrid &grid, const Pos &pos, const Pos &end);
 			static bool passable(WorldGrid::GridSquare square);
 	
 	};

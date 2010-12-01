@@ -39,7 +39,7 @@ void SimFrame::onStepPressed(wxCommandEvent &evt) {
 }
 
 void SimFrame::onResetPressed(wxCommandEvent &evt) {
-	robot.reset(Coord(0, 0));
+	robot.reset(Coord(1, 1));
 	worldpanel.Refresh();
 }
 

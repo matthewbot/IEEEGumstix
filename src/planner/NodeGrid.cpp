@@ -8,21 +8,28 @@ NodeGrid::NodeGrid(int width, int height) : array(extents[width][height]) { }
 
 static Dir getVictimIDDir(const Pos &pos, const WorldGrid &grid);
 
-NodeGrid NodeGrid::fromWorldGrid(const WorldGrid &grid) {
-	NodeGrid nodes(grid.getWidth()-1, grid.getHeight()-1);
+NodeGrid NodeGrid::fromWorldGrid(const WorldGrid &grid, const CoordScale &gridscale, const CoordScale &nodescale) {
+    Pos gridendpos(grid.getWidth(), grid.getHeight());
+    Pos nodeendpos = nodescale.coordToPos(gridscale.posToCoord(gridendpos));
+
+	NodeGrid nodes(nodeendpos.x, nodeendpos.y);
 	
 	for (int x=0; x<nodes.getWidth(); x++) {
 		for (int y=0; y<nodes.getHeight(); y++) {
 			Pos pos(x, y);
+			Coord coord = nodescale.posToCoord(pos);
 			Node &node = nodes[pos];
 			
+			Pos mingridpos = gridscale.coordToPos(Coord(coord.x-.5, coord.y-.5));
+			Pos maxgridpos = gridscale.coordToPos(Coord(coord.x+.5, coord.y+.5));
+			
 			// determine if passable
-			if (!passableRect(grid, pos)) {
+			if (!passableRect(grid, mingridpos, maxgridpos)) {
 				node = Node::IMPASSABLE;
 				continue;
 			}
 			
-			if (unknownRect(grid, pos)) {
+			if (unknownRect(grid, mingridpos, maxgridpos)) {
 				node = Node::UNKNOWN;
 				continue;
 			}
@@ -40,11 +47,15 @@ NodeGrid NodeGrid::fromWorldGrid(const WorldGrid &grid) {
 	return nodes;
 }
 
-bool NodeGrid::passableRect(const WorldGrid &grid, const Pos &pos, int w, int h) {
-	for (int dx=0; dx<w; dx++) {
-		for (int dy=0; dy<h; dy++) {
-			Pos p(pos.x + dx, pos.y + dy);
-			if (!passable(grid[p]))
+bool NodeGrid::passableRect(const WorldGrid &grid, const Pos &start, const Pos &end) {
+	for (int x=start.x; x<=end.x; x++) {
+		for (int y=start.y; y<=end.y; y++) {
+			Pos pos(x, y);
+			
+			if (!grid.inBounds(pos))
+			    return false;
+			
+			if (!passable(grid[pos]))
 				return false;
 		}
 	}
@@ -52,11 +63,15 @@ bool NodeGrid::passableRect(const WorldGrid &grid, const Pos &pos, int w, int h)
 	return true;	
 }
 
-bool NodeGrid::unknownRect(const WorldGrid &grid, const Pos &pos, int w, int h) {
-	for (int dx=0; dx<w; dx++) {
-		for (int dy=0; dy<h; dy++) {
-			Pos p(pos.x + dx, pos.y + dy);
-			if (grid[p] == WorldGrid::UNKNOWN)
+bool NodeGrid::unknownRect(const WorldGrid &grid, const Pos &start, const Pos &end) {
+	for (int x=start.x; x<=end.x; x++) {
+		for (int y=start.y; y<=end.y; y++) {
+			Pos pos(x, y);
+			
+			if (!grid.inBounds(pos))
+			    continue;
+			    
+			if (grid[pos] == WorldGrid::UNKNOWN)
 				return true;
 		}
 	}
