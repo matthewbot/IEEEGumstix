@@ -15,7 +15,7 @@ const PosSet &SensorPredictorCache::getUnknownRevealedFrom(const Pos &pos, Dir d
 	i = unknownposes_cache.insert(make_pair(key, PosSet())).first;
 	PosSet &unknownposes = i->second;
 
-	PosSet poses = sensorpred.predictVision(Coord(pos), dirToRad(dir), grid, scale);
+	PosSet poses = sensorpred.predictVision(scale.posToCoord(pos), dirToRad(dir), grid, scale);
 	for (PosSet::const_iterator i = poses.begin(); i != poses.end(); ++i) {
 		if (grid[*i] == WorldGrid::UNKNOWN)
 			unknownposes.insert(*i);
