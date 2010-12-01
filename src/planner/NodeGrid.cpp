@@ -33,12 +33,6 @@ NodeGrid NodeGrid::fromWorldGrid(const WorldGrid &grid, const CoordScale &gridsc
 				node = Node::UNKNOWN;
 				continue;
 			}
-
-			Dir victimdir = getVictimIDDir(pos, grid);
-			if (victimdir != DIR_NONE) {
-				node = Node(Node::VICTIM_ID, victimdir);
-				continue;
-			}
 			
 			nodes[pos] = Node::OPEN;
 		}

@@ -10,7 +10,6 @@ namespace ieee {
 		public:
 			enum Type {
 				OPEN,
-				VICTIM_ID,
 				CLIMB,
 				IMPASSABLE,
 				UNKNOWN
@@ -30,9 +29,6 @@ namespace ieee {
 			Type type;
 			Dir dir;
 	};
-	
-	Dir getVictimIDDir(const Pos &nodepos, const WorldGrid &grid);
-	bool getVictimPos(const Pos &nodepos, const WorldGrid &grid, Dir dir, Pos &out);
 	
 	std::ostream &operator<<(std::ostream &out, const Node &node);
 }
