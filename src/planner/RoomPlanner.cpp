@@ -18,7 +18,7 @@ RoomPlanner::Plan RoomPlanner::planRoute(const Coord &curcoord, Dir curdir) {
 
     cout << map << endl;
 
-	SensorPredictorCache pred(worldmap, gridscale, sensorpred);
+	SensorPredictorCache pred(worldmap, gridscale, nodescale, sensorpred);
 	RouteEvaluator routeeval(pred, map, config.routeevalconfig);
 
 	for (int x=0; x<map.getWidth(); x++) {

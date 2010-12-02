@@ -9,16 +9,17 @@
 namespace ieee {
 	class SensorPredictorCache {
 		public:
-			SensorPredictorCache(const WorldGrid &grid, const CoordScale &scale, const SensorPredictor &sensorpred);
-			
+			SensorPredictorCache(const WorldGrid &grid, const CoordScale &gridscale, const CoordScale &nodescale, const SensorPredictor &sensorpred);
+
 			const PosSet &getUnknownRevealedFrom(const Pos &pos, Dir dir) const;
 			bool canSeeUnknownInAnyDirFrom(const Pos &pos) const;
-			
+
 		private:
 			const WorldGrid &grid;
-			const CoordScale &scale;
+			const CoordScale &gridscale;
+			const CoordScale &nodescale;
 			const SensorPredictor &sensorpred;
-			
+
 			typedef boost::unordered_map<std::pair<Pos, Dir>, PosSet> UnknownPosCacheMap;
 			mutable UnknownPosCacheMap unknownposes_cache;
 	};
