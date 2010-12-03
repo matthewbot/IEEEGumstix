@@ -2,7 +2,7 @@
 #define ROBOT_H
 
 #include "ieeepath/planner/RoomPlanner.h"
-#include "ieeepath/planner/CameraSensorPredictor.h"
+#include "ieeepath/planner/LaserSensorPredictor.h"
 #include "ieeepath/shared/WorldGrid.h"
 #include "ieeepath/shared/types.h"
 #include <vector>
@@ -29,7 +29,7 @@ namespace ieee {
 			void computeDestStep();
 			void updatePathStep();
 
-			CameraSensorPredictor sensorpred;
+			LaserSensorPredictor sensorpred;
 
 			Coord curpos;
 			float curdir;

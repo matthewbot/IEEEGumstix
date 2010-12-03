@@ -1,14 +1,15 @@
-#ifndef CAMERASENSORPREDICTOR_H
-#define CAMERASENSORPREDICTOR_H
+#ifndef LASERSENSORPREDICTOR_H
+#define LASERSENSORPREDICTOR_H
 
 #include "SensorPredictor.h"
 
 namespace ieee {
-	class CameraSensorPredictor : public SensorPredictor {
+	class LaserSensorPredictor : public SensorPredictor {
 		public:
-			CameraSensorPredictor(float maxdistance, float fieldofview, float fovstep);
+			LaserSensorPredictor(float maxdistance, float fieldofview, float fovstep);
 
 			virtual PosSet predictVision(const Coord &curpos, float curdir, const WorldGrid &grid, const CoordScale &scale) const;
+
 		private:
 			float maxdistance;
 			float fovstep;

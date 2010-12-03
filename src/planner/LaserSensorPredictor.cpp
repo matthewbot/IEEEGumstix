@@ -1,13 +1,13 @@
-#include "ieeepath/planner/CameraSensorPredictor.h"
+#include "ieeepath/planner/LaserSensorPredictor.h"
 #include <cmath>
 
 using namespace ieee;
 using namespace std;
 
-CameraSensorPredictor::CameraSensorPredictor(float maxdistance, float fieldofview, float fovstep)
+LaserSensorPredictor::LaserSensorPredictor(float maxdistance, float fieldofview, float fovstep)
 : maxdistance(maxdistance), fieldofview(fieldofview), fovstep(fovstep) { }
 
-PosSet CameraSensorPredictor::predictVision(const Coord &curpos, float curdir, const WorldGrid &grid, const CoordScale &scale) const {
+PosSet LaserSensorPredictor::predictVision(const Coord &curpos, float curdir, const WorldGrid &grid, const CoordScale &scale) const {
 	const float startrad = curdir - fieldofview/2;
 	const float endrad = startrad + fieldofview;
 
@@ -19,7 +19,6 @@ PosSet CameraSensorPredictor::predictVision(const Coord &curpos, float curdir, c
 		const float dx = cos(rad);
 		const float dy = -sin(rad);
 
-		int deadspotheight = 0;
 		float x = startx;
 		float y = starty;
 		for (int dist=0; dist<=maxdistance; dist++, x+=dx, y+=dy) {
@@ -28,20 +27,10 @@ PosSet CameraSensorPredictor::predictVision(const Coord &curpos, float curdir, c
 			if (!grid.inBounds(pos))
 				break;
 
-			int height=0;
-			WorldGrid::GridSquare square = grid[pos];
-			if (square == WorldGrid::LARGE_OBSTACLE)
-				height = dist*3;
-			else if (square == WorldGrid::VICTIM)
-				height = dist;
-
-			if (height < deadspotheight) {
-				deadspotheight--;
-				continue;
-			}
-
-			deadspotheight = height;
 			seen.insert(pos);
+
+			if (grid[pos] == WorldGrid::LARGE_OBSTACLE)
+				break;
 		}
 	}
 
