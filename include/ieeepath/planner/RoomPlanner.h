@@ -10,6 +10,8 @@ namespace ieee {
 	class RoomPlanner {
 		public:
 			struct Plan {
+				Plan();
+
 				CoordList coords;
 				DirVec facedirs;
 				bool identifyvictim;
@@ -46,7 +48,7 @@ namespace ieee {
 			PosSet identifiedvictims;
 
 			PosList findUnidentifiedVictimPoses() const;
-			Plan planIdentifyNearestVictim(const PosList &victimposes, const Pos &curpos, Dir curdir, const NodeGrid &map) const;
+			Plan planIdentifyNearestVictim(const Pos &curpos, Dir curdir, const NodeGrid &map) const;
 			Plan planFromPosList(const PosList &path, Dir facedir, Pos *victimpos=NULL) const;
 
 			Plan planSearchUnknown(const Pos &curpos, Dir curdir, const NodeGrid &map) const;

@@ -13,13 +13,12 @@ RoomPlanner::RoomPlanner(const SensorPredictor &sensorpred, const WorldGrid &wor
   victimscale(10 / config.roomwidth, 10 / config.roomheight, -.5, -.5) { }
 
 RoomPlanner::Plan RoomPlanner::planRoute(const Coord &curcoord, Dir curdir) const {
-	PosList victimposes = findUnidentifiedVictimPoses();
-
 	Pos curpos = nodescale.coordToPos(curcoord);
 	NodeGrid map = NodeGrid::fromWorldGrid(worldmap, gridscale, nodescale);
 
-	if (victimposes.size() > 0)
-		return planIdentifyNearestVictim(victimposes, curpos, curdir, map);
+	Plan victimplan = planIdentifyNearestVictim(curpos, curdir, map);
+	if (victimplan.coords.size() > 0)
+		return victimplan;
 	else
 		return planSearchUnknown(curpos, curdir, map);
 }
@@ -54,11 +53,12 @@ PosList RoomPlanner::findUnidentifiedVictimPoses() const {
 	return victimposes;
 }
 
-RoomPlanner::Plan RoomPlanner::planIdentifyNearestVictim(const PosList &victimposes, const Pos &curpos, Dir curdir, const NodeGrid &map) const {
+RoomPlanner::Plan RoomPlanner::planIdentifyNearestVictim(const Pos &curpos, Dir curdir, const NodeGrid &map) const {
 	PosList bestpath;
 	Pos bestvictimpos;
 	int bestcost=9999;
 
+	PosList victimposes = findUnidentifiedVictimPoses();
 	for (PosList::const_iterator victimpos = victimposes.begin(); victimpos != victimposes.end(); ++victimpos) {
 		Coord victimcoord = victimscale.posToCoord(*victimpos);
 		Pos upperleft = nodescale.coordToPos(Coord(victimcoord.x-15,victimcoord.y-15));
@@ -87,6 +87,9 @@ RoomPlanner::Plan RoomPlanner::planIdentifyNearestVictim(const PosList &victimpo
 			}
 		}
 	}
+
+	if (bestpath.size() == 0)
+		return Plan();
 
 	Coord bestvictimcoord = victimscale.posToCoord(bestvictimpos);
 	Coord pathendcoord = nodescale.posToCoord(bestpath.back());
@@ -163,4 +166,6 @@ bool RoomPlanner::unknownAdjacent(const NodeGrid &map, const Pos &pos) {
 
 	return false;
 }
+
+RoomPlanner::Plan::Plan() : identifyvictim(false) { }
 
