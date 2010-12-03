@@ -146,6 +146,11 @@ void WorldPanel::paintRobot(wxPaintDC &dc) {
 	const float radius = max(min(squarew, squareh)*.1f, 3.0f);
 	const RoomPlanner::Plan &plan = robot.getPlan();
 
+
+	wxBrush victimbrush(wxColour(150, 200, 130));
+	if (plan.identifyvictim)
+		dc.SetBrush(victimbrush);
+
 	for (int i = 0; i != plan.coords.size(); ++i) {
 		const Coord &c = plan.coords[i];
 		Dir dir = plan.facedirs[i];
@@ -153,6 +158,7 @@ void WorldPanel::paintRobot(wxPaintDC &dc) {
 
 		const float centerx = squarew*c.x/10; // TODO don't hardcode room width
 		const float centery = squareh*c.y/10;
+
 		dc.DrawCircle(centerx, centery, radius);
 
 		const float len = min(squarew, squareh)*0.3;
@@ -161,6 +167,8 @@ void WorldPanel::paintRobot(wxPaintDC &dc) {
 		dc.DrawLine(centerx, centery, finalx, finaly);
 		dc.DrawCircle(finalx, finaly, 1);
 	}
+
+	dc.SetBrush(*wxWHITE_BRUSH);
 }
 
 void WorldPanel::OnLeftDown(wxMouseEvent &event) {

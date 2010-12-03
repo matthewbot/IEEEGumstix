@@ -15,7 +15,7 @@ namespace ieee {
 			void reset(const Coord &pos, float dir=0);
 			void step();
 
-			inline bool isVictimIdentified(const Pos &pos) const { return false; }
+			inline bool isVictimIdentified(const Pos &pos) const { return roomplanner.isVictimIdentified(pos); }
 			inline const Coord &getPosition() const { return curpos; }
 			inline float getDirection() const { return curdir; }
 			inline const Coord &getDestination() const { return plan.coords.back(); }

@@ -6,7 +6,7 @@ using namespace ieee;
 using namespace std;
 
 Robot::Robot(const Coord &startpos, const WorldGrid &grid)
-: sensorpred(70, M_PI/4, .15),
+: sensorpred(55, M_PI/4, .15),
   grid(grid),
   map(grid.getWidth(), grid.getHeight()),
   roomplanner(sensorpred, map, roomplannerconfig) {
