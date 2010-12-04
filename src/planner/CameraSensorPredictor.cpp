@@ -23,7 +23,7 @@ PosSet CameraSensorPredictor::predictVision(const Coord &curpos, float curdir, c
 		float x = startx;
 		float y = starty;
 		for (int dist=0; dist<=maxdistance; dist++, x+=dx, y+=dy) {
-			Pos pos = scale.coordToPos(Coord(x, y));
+			Pos pos = scale.coordToPos(x, y);
 
 			if (!grid.inBounds(pos))
 				break;

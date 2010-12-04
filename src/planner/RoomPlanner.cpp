@@ -34,8 +34,8 @@ PosList RoomPlanner::findUnidentifiedVictimPoses() const {
 				continue;
 
 			Coord center = victimscale.posToCoord(pos);
-			Pos topleft = gridscale.coordToPos(Coord(center.x - config.victimradius, center.y - config.victimradius));
-			Pos bottomright = gridscale.coordToPos(Coord(center.x + config.victimradius, center.y + config.victimradius));
+			Pos topleft = gridscale.coordToPos(center.x - config.victimradius, center.y - config.victimradius);
+			Pos bottomright = gridscale.coordToPos(center.x + config.victimradius, center.y + config.victimradius);
 
 			int count=0;
 			for (int x=topleft.x; x<=bottomright.x; x++) {
@@ -65,8 +65,8 @@ RoomPlanner::Plan RoomPlanner::planIdentifyNearestVictim(const Pos &curpos, Dir 
 	for (PosList::const_iterator victimpos = victimposes.begin(); victimpos != victimposes.end(); ++victimpos) {
 		Coord victimcoord = victimscale.posToCoord(*victimpos);
 
-		Pos upperleft = nodescale.coordToPos(Coord(victimcoord.x - config.victimidentifyradius, victimcoord.y - config.victimidentifyradius));
-		Pos lowerright = nodescale.coordToPos(Coord(victimcoord.x + config.victimidentifyradius, victimcoord.y + config.victimidentifyradius));
+		Pos upperleft = nodescale.coordToPos(victimcoord.x - config.victimidentifyradius, victimcoord.y - config.victimidentifyradius);
+		Pos lowerright = nodescale.coordToPos(victimcoord.x + config.victimidentifyradius, victimcoord.y + config.victimidentifyradius);
 
 		for (int x=upperleft.x; x<=lowerright.x; x++) {
 			for (int y=upperleft.y; y<=lowerright.y; y++) {

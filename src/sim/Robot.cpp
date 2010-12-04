@@ -36,10 +36,10 @@ void Robot::reset(const Coord &pos, float dir) {
 	map.clear(WorldGrid::UNKNOWN);
 
 	Pos givenposes[] = {
-		gridscale.coordToPos(Coord(pos.x-5, pos.y-5)),
-		gridscale.coordToPos(Coord(pos.x-5, pos.y+5)),
-		gridscale.coordToPos(Coord(pos.x+5, pos.y-5)),
-		gridscale.coordToPos(Coord(pos.x+5, pos.y+5)),
+		gridscale.coordToPos(pos.x-5, pos.y-5),
+		gridscale.coordToPos(pos.x-5, pos.y+5),
+		gridscale.coordToPos(pos.x+5, pos.y-5),
+		gridscale.coordToPos(pos.x+5, pos.y+5),
 	};
 
 	for (int i=0; i<4; i++) {

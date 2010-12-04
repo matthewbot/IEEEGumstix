@@ -13,31 +13,31 @@ NodeGrid NodeGrid::fromWorldGrid(const WorldGrid &grid, const CoordScale &gridsc
     Pos nodeendpos = nodescale.coordToPos(gridscale.posToCoord(gridendpos));
 
 	NodeGrid nodes(nodeendpos.x, nodeendpos.y);
-	
+
 	for (int x=0; x<nodes.getWidth(); x++) {
 		for (int y=0; y<nodes.getHeight(); y++) {
 			Pos pos(x, y);
 			Coord coord = nodescale.posToCoord(pos);
 			Node &node = nodes[pos];
-			
-			Pos mingridpos = gridscale.coordToPos(Coord(coord.x-.5, coord.y-.5));
-			Pos maxgridpos = gridscale.coordToPos(Coord(coord.x+.5, coord.y+.5));
-			
+
+			Pos mingridpos = gridscale.coordToPos(coord.x-.5, coord.y-.5); // TODO should somehow compute width of a node from CoordScale
+			Pos maxgridpos = gridscale.coordToPos(coord.x+.5, coord.y+.5);
+
 			// determine if passable
 			if (!passableRect(grid, mingridpos, maxgridpos)) {
 				node = Node::IMPASSABLE;
 				continue;
 			}
-			
+
 			if (unknownRect(grid, mingridpos, maxgridpos)) {
 				node = Node::UNKNOWN;
 				continue;
 			}
-			
+
 			nodes[pos] = Node::OPEN;
 		}
 	}
-	
+
 	return nodes;
 }
 
@@ -45,32 +45,32 @@ bool NodeGrid::passableRect(const WorldGrid &grid, const Pos &start, const Pos &
 	for (int x=start.x; x<=end.x; x++) {
 		for (int y=start.y; y<=end.y; y++) {
 			Pos pos(x, y);
-			
+
 			if (!grid.inBounds(pos))
 			    return false;
-			
+
 			if (!passable(grid[pos]))
 				return false;
 		}
 	}
-		
-	return true;	
+
+	return true;
 }
 
 bool NodeGrid::unknownRect(const WorldGrid &grid, const Pos &start, const Pos &end) {
 	for (int x=start.x; x<=end.x; x++) {
 		for (int y=start.y; y<=end.y; y++) {
 			Pos pos(x, y);
-			
+
 			if (!grid.inBounds(pos))
 			    continue;
-			    
+
 			if (grid[pos] == WorldGrid::UNKNOWN)
 				return true;
 		}
 	}
-		
-	return false;	
+
+	return false;
 }
 
 bool NodeGrid::passable(WorldGrid::GridSquare square) {
@@ -82,10 +82,10 @@ std::ostream &ieee::operator<<(std::ostream &out, const NodeGrid &grid) {
 		for (int x=0; x<grid.getWidth(); x++) {
 			out << grid[Pos(x, y)];
 		}
-		
+
 		out << endl;
 	}
-	
+
 	return out;
 }
 

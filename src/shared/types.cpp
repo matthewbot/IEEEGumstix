@@ -19,12 +19,12 @@ ostream &ieee::operator<<(ostream &out, const Pos &pos) {
 
 ostream &ieee::operator<<(ostream &out, Dir dir) {
 	static const char *dirstr[] = {"none", "E", "NE", "N", "NW", "W", "SW", "S", "SE"};
-	
+
 	if (dir < MAX_DIR && dir >= 0)
 		out << dirstr[dir];
 	else
 		out << "(BAD DIR)";
-		
+
 	return out;
 }
 
@@ -42,7 +42,7 @@ bool ieee::isDirDiagonal(Dir dir) {
 		case DIR_SW:
 		case DIR_SE:
 			return true;
-			
+
 		default:
 			return false;
 	}
@@ -53,12 +53,12 @@ Pos ieee::advancePos(Pos pos, Dir dir) {
 		pos.x += 1;
 	else if (dir == DIR_NW || dir == DIR_W || dir == DIR_SW)
 		pos.x -= 1;
-	
+
 	if (dir == DIR_NW || dir == DIR_N || dir == DIR_NE)
 		pos.y -= 1;
 	else if (dir == DIR_SW || dir == DIR_S || dir == DIR_SE)
 		pos.y += 1;
-		
+
 	return pos;
 }
 
@@ -85,7 +85,7 @@ Dir ieee::getDirFromPoses(const Pos &start, const Pos &end) {
 		else if (dy < 0)
 			return DIR_N;
 		else
-			return DIR_NONE;	
+			return DIR_NONE;
 	}
 }
 
@@ -100,18 +100,18 @@ int ieee::getDirDelta(Dir cur, Dir dest) {
 
 Dir ieee::getIntermediateDir(Dir cur, Dir dest) {
 	int newdir;
-	
+
 	int delta = getDirDelta(cur, dest);
 	if (delta > 0)
 		newdir = cur + 1;
 	else if (delta < 0)
 		newdir = cur - 1;
-		
+
 	if (newdir >= MAX_DIR)
 		newdir -= MAX_DIR - 1;
 	else if (newdir <= DIR_NONE)
 		newdir += MAX_DIR - 1;
-	
+
 	return (Dir)newdir;
 }
 
@@ -129,7 +129,15 @@ Dir ieee::radToNearestDir(float rad) {
 		i += 8;
 	while (i >= 8)
 		i -= 8;
-		
+
 	return (Dir)(i + DIR_E);
+}
+
+Pos CoordScale::coordToPos(float x, float y) const {
+    return Pos((int)round(x*sx + xoff), (int)round(y*sy + yoff));
+}
+
+Coord CoordScale::posToCoord(int x, int y) const {
+    return Coord(((float)x - xoff) / sx, ((float)y - yoff) / sy);
 }
 

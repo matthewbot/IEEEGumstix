@@ -7,9 +7,9 @@ using namespace std;
 TelepathicSensorPredictor::TelepathicSensorPredictor(float range) : range(range) { }
 
 PosSet TelepathicSensorPredictor::predictVision(const Coord &curpos, float curdir, const WorldGrid &grid, const CoordScale &scale) const {
-    Pos minpos = scale.coordToPos(Coord(curpos.x - range, curpos.y - range));
-    Pos maxpos = scale.coordToPos(Coord(curpos.x + range, curpos.y + range));
-	
+    Pos minpos = scale.coordToPos(curpos.x - range, curpos.y - range);
+    Pos maxpos = scale.coordToPos(curpos.x + range, curpos.y + range);
+
 	PosSet poses;
 	for (int x=minpos.x; x<=maxpos.x; x++) {
 		for (int y=minpos.y; y<=maxpos.y; y++) {
@@ -18,7 +18,7 @@ PosSet TelepathicSensorPredictor::predictVision(const Coord &curpos, float curdi
 			    poses.insert(p);
 		}
 	}
-	
+
 	return poses;
 }
 
