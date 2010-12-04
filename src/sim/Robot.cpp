@@ -15,8 +15,14 @@ Robot::Robot(const Coord &startpos, const WorldGrid &grid)
 
 Robot::RoomPlannerConfig::RoomPlannerConfig() {
     roomwidth = roomheight = 100;
+
     nodewidth = nodeheight = 10;
     nodeoffsetx = nodeoffsety = 0;
+
+	victimwidth = victimheight = 10;
+	victimoffsetx = victimoffsety = -.5;
+	victimradius = 4;
+	victimidentifyradius = 14;
 
 	routeevalconfig.unknownPruneDist = 2;
 	routeevalconfig.pathCostFactor = 1;

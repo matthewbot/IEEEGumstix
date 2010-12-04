@@ -10,7 +10,7 @@ RoomPlanner::RoomPlanner(const SensorPredictor &sensorpred, const WorldGrid &wor
 : sensorpred(sensorpred), worldmap(worldmap), config(config),
   gridscale(worldmap.getWidth() / config.roomwidth, worldmap.getHeight() / config.roomheight, -.5, -.5),
   nodescale(config.nodewidth / config.roomwidth, config.nodeheight / config.roomheight, config.nodeoffsetx, config.nodeoffsety),
-  victimscale(10 / config.roomwidth, 10 / config.roomheight, -.5, -.5) { }
+  victimscale(config.victimwidth / config.roomwidth, config.victimheight / config.roomheight, config.victimoffsetx, config.victimoffsety) { }
 
 RoomPlanner::Plan RoomPlanner::planRoute(const Coord &curcoord, Dir curdir) const {
 	Pos curpos = nodescale.coordToPos(curcoord);
@@ -26,21 +26,24 @@ RoomPlanner::Plan RoomPlanner::planRoute(const Coord &curcoord, Dir curdir) cons
 PosList RoomPlanner::findUnidentifiedVictimPoses() const {
 	PosList victimposes;
 
-	for (int xpos=0; xpos<10; xpos++) {
-		for (int ypos=0; ypos<10; ypos++) {
+	for (int xpos=0; xpos<config.victimwidth; xpos++) {
+		for (int ypos=0; ypos<config.victimheight; ypos++) {
 			Pos pos(xpos, ypos);
 
 			if (identifiedvictims.find(pos) != identifiedvictims.end())
 				continue;
 
 			Coord center = victimscale.posToCoord(pos);
-			Pos topleft = gridscale.coordToPos(Coord(center.x - 4, center.y - 4));
-			Pos bottomright = gridscale.coordToPos(Coord(center.x + 4, center.y + 4));
+			Pos topleft = gridscale.coordToPos(Coord(center.x - config.victimradius, center.y - config.victimradius));
+			Pos bottomright = gridscale.coordToPos(Coord(center.x + config.victimradius, center.y + config.victimradius));
 
 			int count=0;
 			for (int x=topleft.x; x<=bottomright.x; x++) {
 				for (int y=topleft.y; y<=bottomright.y; y++) {
-					if (worldmap[Pos(x,y)] == WorldGrid::VICTIM)
+					Pos p(x, y);
+					if (!worldmap.inBounds(p))
+						continue;
+					if (worldmap[p] == WorldGrid::VICTIM)
 						count++;
 				}
 			}
@@ -61,8 +64,9 @@ RoomPlanner::Plan RoomPlanner::planIdentifyNearestVictim(const Pos &curpos, Dir 
 	PosList victimposes = findUnidentifiedVictimPoses();
 	for (PosList::const_iterator victimpos = victimposes.begin(); victimpos != victimposes.end(); ++victimpos) {
 		Coord victimcoord = victimscale.posToCoord(*victimpos);
-		Pos upperleft = nodescale.coordToPos(Coord(victimcoord.x-15,victimcoord.y-15));
-		Pos lowerright = nodescale.coordToPos(Coord(victimcoord.x+15,victimcoord.y+15));
+
+		Pos upperleft = nodescale.coordToPos(Coord(victimcoord.x - config.victimidentifyradius, victimcoord.y - config.victimidentifyradius));
+		Pos lowerright = nodescale.coordToPos(Coord(victimcoord.x + config.victimidentifyradius, victimcoord.y + config.victimidentifyradius));
 
 		for (int x=upperleft.x; x<=lowerright.x; x++) {
 			for (int y=upperleft.y; y<=lowerright.y; y++) {

@@ -20,8 +20,13 @@ namespace ieee {
 
 			struct Config {
 				float roomwidth, roomheight;
+
 				int nodewidth, nodeheight;
 				float nodeoffsetx, nodeoffsety;
+
+				int victimwidth, victimheight;
+				float victimoffsetx, victimoffsety;
+				float victimradius, victimidentifyradius;
 
 				RouteEvaluator::Config routeevalconfig;
 			};
