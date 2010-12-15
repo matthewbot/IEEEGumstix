@@ -1,4 +1,4 @@
-#include "ieeepath/shared/ObstacleWorldObject.h"
+#include "ieeepath/sim/ObstacleWorldObject.h"
 #include <algorithm>
 
 using namespace ieee;
@@ -40,9 +40,9 @@ void ObstacleWorldObject::fillLine(WorldGrid &grid, Pos start, Pos end, WorldGri
 		swap(start.x, end.x);
 		swap(start.y, end.y);
 	}
-	
+
 	const float derror = (float)abs(end.y - start.y) / (end.x - start.x);
-	
+
 	float error = 0;
 	int y = start.y;
 	for (int x=start.x; x<=end.x; x++) {
@@ -50,16 +50,16 @@ void ObstacleWorldObject::fillLine(WorldGrid &grid, Pos start, Pos end, WorldGri
 			grid[Pos(y, x)] = square;
 		else
 			grid[Pos(x, y)] = square;
-			
+
 		error += derror;
-		if (error >= 0.5) {		
+		if (error >= 0.5) {
 			if (x+1 <= end.x) {
 				if (steep) // small tweak, make sure there are no diagonal holes for it to pathfind through
 					grid[Pos(y, x+1)] = square;
 				else
 					grid[Pos(x+1, y)] = square;
 			}
-           
+
 			y += (start.y < end.y ? 1 : -1);
 
 			if (x+1 <= end.x) {
@@ -68,7 +68,7 @@ void ObstacleWorldObject::fillLine(WorldGrid &grid, Pos start, Pos end, WorldGri
 				else
 					grid[Pos(x, y)] = square;
 			}
-			
+
 			error -= 1;
 		}
 	}

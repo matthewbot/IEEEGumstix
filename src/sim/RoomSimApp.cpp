@@ -1,7 +1,7 @@
 #include "ieeepath/sim/RoomSimApp.h"
 #include "ieeepath/sim/SimFrame.h"
-#include "ieeepath/shared/VictimWorldObject.h"
-#include "ieeepath/shared/ObstacleWorldObject.h"
+#include "ieeepath/sim/VictimWorldObject.h"
+#include "ieeepath/sim/ObstacleWorldObject.h"
 #include <iostream>
 
 using namespace ieee;
