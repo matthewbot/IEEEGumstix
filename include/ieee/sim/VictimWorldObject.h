@@ -1,8 +1,8 @@
 #ifndef VICTIMWORLDOBJECT_H
 #define VICTIMWORLDOBJECT_H
 
-#include "ieeepath/sim/WorldObject.h"
-#include "ieeepath/shared/types.h"
+#include "ieee/sim/WorldObject.h"
+#include "ieee/shared/types.h"
 
 namespace ieee {
 	class VictimWorldObject : public WorldObject {

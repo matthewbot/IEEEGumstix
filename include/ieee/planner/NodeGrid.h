@@ -1,8 +1,8 @@
 #ifndef NODEGRID_H
 #define NODEGRID_H
 
-#include "ieeepath/planner/Node.h"
-#include "ieeepath/shared/WorldGrid.h"
+#include "ieee/planner/Node.h"
+#include "ieee/shared/WorldGrid.h"
 #include <boost/multi_array.hpp>
 #include <ostream>
 

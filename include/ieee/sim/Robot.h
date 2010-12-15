@@ -1,10 +1,10 @@
 #ifndef ROBOT_H
 #define ROBOT_H
 
-#include "ieeepath/planner/RoomPlanner.h"
-#include "ieeepath/planner/LaserSensorPredictor.h"
-#include "ieeepath/shared/WorldGrid.h"
-#include "ieeepath/shared/types.h"
+#include "ieee/planner/RoomPlanner.h"
+#include "ieee/planner/LaserSensorPredictor.h"
+#include "ieee/shared/WorldGrid.h"
+#include "ieee/shared/types.h"
 #include <vector>
 
 namespace ieee {

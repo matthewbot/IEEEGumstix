@@ -1,9 +1,9 @@
 #ifndef SENSORPREDICTORCACHE_H
 #define SENSORPREDICTORCACHE_H
 
-#include "ieeepath/planner/SensorPredictor.h"
-#include "ieeepath/shared/WorldGrid.h"
-#include "ieeepath/shared/types.h"
+#include "ieee/planner/SensorPredictor.h"
+#include "ieee/shared/WorldGrid.h"
+#include "ieee/shared/types.h"
 #include <boost/unordered_map.hpp>
 
 namespace ieee {

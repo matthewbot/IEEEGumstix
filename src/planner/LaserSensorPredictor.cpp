@@ -1,4 +1,4 @@
-#include "ieeepath/planner/LaserSensorPredictor.h"
+#include "ieee/planner/LaserSensorPredictor.h"
 #include <cmath>
 
 using namespace ieee;

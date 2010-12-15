@@ -1,4 +1,4 @@
-#include "ieeepath/shared/WorldGrid.h"
+#include "ieee/shared/WorldGrid.h"
 #include <cassert>
 #include <algorithm>
 

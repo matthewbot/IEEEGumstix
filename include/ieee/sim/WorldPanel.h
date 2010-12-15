@@ -1,8 +1,8 @@
 #ifndef WORLDCANVAS_H
 #define WORLDCANVAS_H
 
-#include "ieeepath/sim/Robot.h"
-#include "ieeepath/sim/World.h"
+#include "ieee/sim/Robot.h"
+#include "ieee/sim/World.h"
 #include <wx/wx.h>
 
 namespace ieee {

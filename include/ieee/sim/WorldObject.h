@@ -1,7 +1,7 @@
 #ifndef WORLDOBJECT_H
 #define WORLDOBJECT_H
 
-#include "ieeepath/shared/WorldGrid.h"
+#include "ieee/shared/WorldGrid.h"
 
 namespace ieee {
 	class WorldObject {

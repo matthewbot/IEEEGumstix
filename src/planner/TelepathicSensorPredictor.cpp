@@ -1,4 +1,4 @@
-#include "ieeepath/planner/TelepathicSensorPredictor.h"
+#include "ieee/planner/TelepathicSensorPredictor.h"
 #include <algorithm>
 
 using namespace ieee;

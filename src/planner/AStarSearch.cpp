@@ -1,4 +1,4 @@
-#include "ieeepath/planner/AStarSearch.h"
+#include "ieee/planner/AStarSearch.h"
 #include <algorithm>
 #include <cstring>
 #include <iostream>

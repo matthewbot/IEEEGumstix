@@ -1,8 +1,8 @@
 #ifndef SENSORPREDICTOR_H
 #define SENSORPREDICTOR_H
 
-#include "ieeepath/planner/NodeGrid.h"
-#include "ieeepath/shared/types.h"
+#include "ieee/planner/NodeGrid.h"
+#include "ieee/shared/types.h"
 
 namespace ieee {
 	class SensorPredictor {

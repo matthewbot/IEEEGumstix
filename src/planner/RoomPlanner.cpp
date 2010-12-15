@@ -1,6 +1,6 @@
-#include "ieeepath/planner/RoomPlanner.h"
-#include "ieeepath/planner/RouteEvaluator.h"
-#include "ieeepath/shared/Timer.h"
+#include "ieee/planner/RoomPlanner.h"
+#include "ieee/planner/RouteEvaluator.h"
+#include "ieee/shared/Timer.h"
 
 using namespace ieee;
 using namespace std;

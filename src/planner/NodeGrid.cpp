@@ -1,4 +1,4 @@
-#include "ieeepath/planner/NodeGrid.h"
+#include "ieee/planner/NodeGrid.h"
 
 using namespace ieee;
 using namespace boost;

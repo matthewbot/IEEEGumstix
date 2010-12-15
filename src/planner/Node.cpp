@@ -1,4 +1,4 @@
-#include "ieeepath/planner/Node.h"
+#include "ieee/planner/Node.h"
 
 using namespace ieee;
 using namespace std;

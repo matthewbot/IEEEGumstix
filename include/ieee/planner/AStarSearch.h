@@ -1,8 +1,8 @@
 #ifndef ASTARSEARCH_H
 #define ASTARSEARCH_H
 
-#include "ieeepath/planner/NodeGrid.h"
-#include "ieeepath/shared/types.h"
+#include "ieee/planner/NodeGrid.h"
+#include "ieee/shared/types.h"
 #include <vector>
 #include <list>
 #include <boost/scoped_array.hpp>

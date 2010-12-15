@@ -1,10 +1,10 @@
 #ifndef ROUTEPLANNER_H
 #define ROUTEPLANNER_H
 
-#include "ieeepath/planner/AStarSearch.h"
-#include "ieeepath/planner/SensorPredictorCache.h"
-#include "ieeepath/planner/NodeGrid.h"
-#include "ieeepath/shared/types.h"
+#include "ieee/planner/AStarSearch.h"
+#include "ieee/planner/SensorPredictorCache.h"
+#include "ieee/planner/NodeGrid.h"
+#include "ieee/shared/types.h"
 #include <vector>
 
 namespace ieee {

@@ -1,4 +1,4 @@
-#include "ieeepath/drivers/MouseSensor.h"
+#include "ieee/drivers/MouseSensor.h"
 #include <sstream>
 #include <linux/input.h>
 #include <fcntl.h>

@@ -1,8 +1,8 @@
 #ifndef NODE_H
 #define NODE_H
 
-#include "ieeepath/shared/types.h"
-#include "ieeepath/shared/WorldGrid.h"
+#include "ieee/shared/types.h"
+#include "ieee/shared/WorldGrid.h"
 #include <ostream>
 
 namespace ieee {

@@ -1,10 +1,10 @@
 #ifndef ROOMPLANNER_H
 #define ROOMPLANNER_H
 
-#include "ieeepath/planner/SensorPredictor.h"
-#include "ieeepath/planner/NodeGrid.h"
-#include "ieeepath/planner/RouteEvaluator.h"
-#include "ieeepath/shared/types.h"
+#include "ieee/planner/SensorPredictor.h"
+#include "ieee/planner/NodeGrid.h"
+#include "ieee/planner/RouteEvaluator.h"
+#include "ieee/shared/types.h"
 
 namespace ieee {
 	class RoomPlanner {
