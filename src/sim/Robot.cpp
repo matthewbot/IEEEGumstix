@@ -24,9 +24,11 @@ Robot::RoomPlannerConfig::RoomPlannerConfig() {
 	victimradius = 4;
 	victimidentifyradius = 14;
 
-	routeevalconfig.unknownPruneDist = 2;
-	routeevalconfig.pathCostFactor = 1;
-	routeevalconfig.revealedScoreFactor = 6;
+	routeevalconfig.pathcostfactor = 1;
+	routeevalconfig.revealedscorefactor = 6;
+	routeevalconfig.turncostconstant = 4;
+	routeevalconfig.turncostfactor = 1;
+	routeevalconfig.turncostdivider = 1;
 }
 
 void Robot::reset(const Coord &pos, float dir) {

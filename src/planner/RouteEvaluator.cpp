@@ -41,7 +41,7 @@ int RouteEvaluator::scorePath(const AStarSearch &search, Dir curdir, DirVec &bes
 	const Pos &dest = search.getPath().back();
 	int score=0;
 
-	score += search.getPathCost() * config.pathCostFactor;
+	score += search.getPathCost() * config.pathcostfactor;
 
 	PosSet revealed;
 	for (int i=0; i < search.getPathLength(); ++i) {
@@ -70,7 +70,7 @@ int RouteEvaluator::scorePath(const AStarSearch &search, Dir curdir, DirVec &bes
 		}
 	}
 
-	score -= revealed.size() * config.revealedScoreFactor;
+	score -= revealed.size() * config.revealedscorefactor;
 
 	return score;
 }
@@ -82,8 +82,10 @@ PosSet RouteEvaluator::getBestUnknownRevealedFrom(const Pos &pos, Dir prevdir, D
 	for (Dir dir=DIR_E; dir<MAX_DIR; dir=(Dir)(dir+1)) {
 		int score=0;
 
-		if (dir != prevdir)
-			score += 3 + 3*abs(getDirDelta(prevdir, dir))/2; // TODO changeable
+		if (dir != prevdir) {
+			int turnamt = abs(getDirDelta(prevdir, dir));
+			score += config.turncostconstant + config.turncostfactor*turnamt/config.turncostdivider;
+		}
 
 		PosSet set = pred.getUnknownRevealedFrom(pos, dir);
 		for (PosSet::const_iterator i = revealed.begin(); i != revealed.end(); ++i)
