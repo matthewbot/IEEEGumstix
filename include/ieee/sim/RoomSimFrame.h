@@ -5,29 +5,33 @@
 #include "ieee/sim/WorldPanel.h"
 
 namespace ieee {
-	class SimFrame : public wxFrame, public WorldPanel::Callbacks {
+	class RoomSimFrame : public wxFrame, public WorldPanel::Callbacks {
 		public:
-			SimFrame(World &world, Robot &robot);
-			
+			RoomSimFrame();
+
 			// WorldPanel::Callbacks
 			virtual bool onWorldClicked(const Pos &pos);
 			virtual void onWorldDragged(const Pos &pos);
-			
+
 		private:
-			World &world;
-			Robot &robot;
+			struct SimWorld : World {
+				SimWorld();
+			};
+
+			SimWorld world;
+			Robot robot;
 			WorldPanel worldpanel;
-			
+
 			World::iterator selectedobj;
 			int selectedid;
-			
+
 			wxPanel buttonpanel;
 			wxButton stepbutton;
 			wxButton resetbutton;
-			
+
 			void onStepPressed(wxCommandEvent &event);
 			void onResetPressed(wxCommandEvent &event);
-			
+
 			DECLARE_EVENT_TABLE()
 	};
 }

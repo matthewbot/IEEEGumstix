@@ -28,7 +28,7 @@ Robot::RoomPlannerConfig::RoomPlannerConfig() {
 	routeevalconfig.revealedscorefactor = 6;
 	routeevalconfig.turncostconstant = 4;
 	routeevalconfig.turncostfactor = 1;
-	routeevalconfig.turncostdivider = 1;
+	routeevalconfig.turncostdivider = 2;
 }
 
 void Robot::reset(const Coord &pos, float dir) {
