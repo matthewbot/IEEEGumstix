@@ -6,14 +6,11 @@ using namespace ieee;
 using namespace std;
 
 RoomPlanner::RoomPlanner(const SensorPredictor &sensorpred, const WorldGrid &worldmap, const Config &config)
-: sensorpred(sensorpred), worldmap(worldmap), config(config),
-  gridscale(worldmap.getWidth() / config.roomwidth, worldmap.getHeight() / config.roomheight, -.5, -.5),
-  nodescale(config.nodewidth / config.roomwidth, config.nodeheight / config.roomheight, config.nodeoffsetx, config.nodeoffsety),
-  victimscale(config.victimwidth / config.roomwidth, config.victimheight / config.roomheight, config.victimoffsetx, config.victimoffsety) { }
+: sensorpred(sensorpred), worldmap(worldmap), config(config) { }
 
 RoomPlanner::Plan RoomPlanner::planRoute(const Coord &curcoord, Dir curdir) const {
-	Pos curpos = nodescale.coordToPos(curcoord);
-	NodeGrid map = NodeGrid::fromWorldGrid(worldmap, gridscale, nodescale);
+	Pos curpos = config.nodescale.coordToPos(curcoord);
+	NodeGrid map = NodeGrid::fromWorldGrid(worldmap, config.gridscale, config.nodescale);
 
 	Plan victimplan = planIdentifyNearestVictim(curpos, curdir, map);
 	if (victimplan.coords.size() > 0)
@@ -24,17 +21,18 @@ RoomPlanner::Plan RoomPlanner::planRoute(const Coord &curcoord, Dir curdir) cons
 
 PosList RoomPlanner::findUnidentifiedVictimPoses() const {
 	PosList victimposes;
+	Pos victimgridsize = config.victimscale.coordToPos(config.nodescale.posToCoord(worldmap.getWidth(), worldmap.getHeight()));
 
-	for (int xpos=0; xpos<config.victimwidth; xpos++) {
-		for (int ypos=0; ypos<config.victimheight; ypos++) {
+	for (int xpos=0; xpos<victimgridsize.x; xpos++) {
+		for (int ypos=0; ypos<victimgridsize.y; ypos++) {
 			Pos pos(xpos, ypos);
 
 			if (identifiedvictims.find(pos) != identifiedvictims.end())
 				continue;
 
-			Coord center = victimscale.posToCoord(pos);
-			Pos topleft = gridscale.coordToPos(center.x - config.victimradius, center.y - config.victimradius);
-			Pos bottomright = gridscale.coordToPos(center.x + config.victimradius, center.y + config.victimradius);
+			Coord center = config.victimscale.posToCoord(pos);
+			Pos topleft = config.gridscale.coordToPos(center.x - config.victimradius, center.y - config.victimradius);
+			Pos bottomright = config.gridscale.coordToPos(center.x + config.victimradius, center.y + config.victimradius);
 
 			int count=0;
 			for (int x=topleft.x; x<=bottomright.x; x++) {
@@ -62,10 +60,10 @@ RoomPlanner::Plan RoomPlanner::planIdentifyNearestVictim(const Pos &curpos, Dir 
 
 	PosList victimposes = findUnidentifiedVictimPoses();
 	for (PosList::const_iterator victimpos = victimposes.begin(); victimpos != victimposes.end(); ++victimpos) {
-		Coord victimcoord = victimscale.posToCoord(*victimpos);
+		Coord victimcoord = config.victimscale.posToCoord(*victimpos);
 
-		Pos upperleft = nodescale.coordToPos(victimcoord.x - config.victimidentifyradius, victimcoord.y - config.victimidentifyradius);
-		Pos lowerright = nodescale.coordToPos(victimcoord.x + config.victimidentifyradius, victimcoord.y + config.victimidentifyradius);
+		Pos upperleft = config.nodescale.coordToPos(victimcoord.x - config.victimidentifyradius, victimcoord.y - config.victimidentifyradius);
+		Pos lowerright = config.nodescale.coordToPos(victimcoord.x + config.victimidentifyradius, victimcoord.y + config.victimidentifyradius);
 
 		for (int x=upperleft.x; x<=lowerright.x; x++) {
 			for (int y=upperleft.y; y<=lowerright.y; y++) {
@@ -94,8 +92,8 @@ RoomPlanner::Plan RoomPlanner::planIdentifyNearestVictim(const Pos &curpos, Dir 
 	if (bestpath.size() == 0)
 		return Plan();
 
-	Coord bestvictimcoord = victimscale.posToCoord(bestvictimpos);
-	Coord pathendcoord = nodescale.posToCoord(bestpath.back());
+	Coord bestvictimcoord = config.victimscale.posToCoord(bestvictimpos);
+	Coord pathendcoord = config.nodescale.posToCoord(bestpath.back());
 	Dir identifydir = radToNearestDir(atan2(-(bestvictimcoord.y - pathendcoord.y), bestvictimcoord.x - pathendcoord.x));
 
 	return planFromPosList(bestpath, identifydir, &bestvictimpos);
@@ -112,7 +110,7 @@ RoomPlanner::Plan RoomPlanner::planFromPosList(const PosList &path, Dir facedir,
 
 	plan.coords.resize(path.size());
 	for (int i=0; i<path.size(); i++) {
-		plan.coords[i] = nodescale.posToCoord(path[i]);
+		plan.coords[i] = config.nodescale.posToCoord(path[i]);
 	}
 
 	plan.facedirs.resize(path.size(), facedir);
@@ -121,7 +119,7 @@ RoomPlanner::Plan RoomPlanner::planFromPosList(const PosList &path, Dir facedir,
 }
 
 RoomPlanner::Plan RoomPlanner::planSearchUnknown(const Pos &curpos, Dir curdir, const NodeGrid &map) const {
-	SensorPredictorCache pred(worldmap, gridscale, nodescale, sensorpred);
+	SensorPredictorCache pred(worldmap, config.gridscale, config.nodescale, sensorpred);
 	RouteEvaluator routeeval(pred, map, config.routeevalconfig);
 
 	for (int x=0; x<map.getWidth(); x++) {
@@ -146,7 +144,7 @@ RoomPlanner::Plan RoomPlanner::planFromNodeRoute(const RouteEvaluator::NodeRoute
 
 	plan.coords.resize(noderoute.poses.size());
 	for (int i=0; i<plan.coords.size(); i++) {
-		plan.coords[i] = nodescale.posToCoord(noderoute.poses[i]);
+		plan.coords[i] = config.nodescale.posToCoord(noderoute.poses[i]);
 	}
 
 	return plan;

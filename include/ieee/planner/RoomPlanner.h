@@ -19,13 +19,9 @@ namespace ieee {
 			};
 
 			struct Config {
-				float roomwidth, roomheight;
-
-				int nodewidth, nodeheight;
-				float nodeoffsetx, nodeoffsety;
-
-				int victimwidth, victimheight;
-				float victimoffsetx, victimoffsety;
+				CoordScale gridscale;
+				CoordScale nodescale;
+				CoordScale victimscale;
 				float victimradius, victimidentifyradius;
 
 				RouteEvaluator::Config routeevalconfig;
@@ -33,8 +29,8 @@ namespace ieee {
 
 			RoomPlanner(const SensorPredictor &sensorpred, const WorldGrid &worldmap, const Config &config);
 
-			inline const CoordScale &getGridScale() const { return gridscale; }
-			inline const CoordScale &getNodeScale() const { return nodescale; }
+			inline const CoordScale &getGridScale() const { return config.gridscale; }
+			inline const CoordScale &getNodeScale() const { return config.nodescale; }
 
 			Plan planRoute(const Coord &curcoord, Dir curdir) const;
 
@@ -46,9 +42,6 @@ namespace ieee {
 			const Config &config;
 			const SensorPredictor &sensorpred;
 			const WorldGrid &worldmap;
-			const CoordScale gridscale;
-			const CoordScale nodescale;
-			const CoordScale victimscale;
 
 			PosSet identifiedvictims;
 

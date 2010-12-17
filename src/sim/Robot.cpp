@@ -14,13 +14,24 @@ Robot::Robot(const Coord &startpos, const WorldGrid &grid)
 }
 
 Robot::RoomPlannerConfig::RoomPlannerConfig() {
-    roomwidth = roomheight = 100;
+	static const float roomwidth = 100, roomheight = 100;
+	static const float gridwidth = 10, gridheight = 10;
 
-    nodewidth = nodeheight = 10;
-    nodeoffsetx = nodeoffsety = 0;
+	gridscale.sx = gridwidth/roomwidth;
+	gridscale.sy = gridheight/roomheight;
+    gridscale.xoff = gridscale.yoff = -.5;
 
-	victimwidth = victimheight = 10;
-	victimoffsetx = victimoffsety = -.5;
+	static const float nodegridwidth = 10, nodegridheight = 10;
+
+	nodescale.sx = nodegridwidth/roomwidth;
+	nodescale.sy = nodegridheight/roomheight;
+    nodescale.xoff = nodescale.yoff = 0;
+
+	static const int victimgridwidth = 10, victimgridheight = 10;
+
+	victimscale.sx = victimgridwidth/roomwidth;
+	victimscale.sy = victimgridheight/roomheight;
+	victimscale.xoff = victimscale.yoff = -.5;
 	victimradius = 4;
 	victimidentifyradius = 14;
 
