@@ -13,203 +13,71 @@ BEGIN_EVENT_TABLE(WorldPanel, wxPanel)
 	EVT_PAINT(WorldPanel::OnPaint)
 END_EVENT_TABLE()
 
-WorldPanel::WorldPanel(wxWindow *parent, Callbacks &callbacks, const World &world, const Robot &robot)
-: wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE),
-  callbacks(callbacks),
-  world(world),
-  robot(robot) { }
+WorldPanel::WorldPanel(wxWindow *parent)
+: wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE) { }
+
+void WorldPanel::addLayer(WorldPanelLayer *layer) {
+	int newweight = layer->getWeight();
+
+	LayerVec::iterator i;
+	for (i = layers.begin(); i != layers.end(); ++i) {
+		if ((*i)->getWeight() < newweight)
+			break;
+	}
+
+	layers.insert(i, layer);
+}
+
+void WorldPanel::removeLayer(WorldPanelLayer *layer) {
+	LayerVec::iterator i = find(layers.begin(), layers.end(), layer);
+	if (i != layers.end())
+		layers.erase(i);
+}
 
 void WorldPanel::OnPaint(wxPaintEvent &event) {
 	wxPaintDC dc(this);
 
-	paintGrid(dc);
-	paintObjects(dc);
-	paintRobot(dc);
-}
+	wxCoord w, h;
+	GetSize(&w, &h);
 
-void WorldPanel::paintGrid(wxPaintDC &dc) {
-	const WorldGrid &grid = world.getGrid();
+	CoordScale drawscale(w/100.0f, h/100.0f);
 
-	wxCoord dispw, disph;
-	dc.GetSize(&dispw, &disph);
-
-	const float squarew = (float)dispw/grid.getWidth();
-	const float squareh = (float)disph/grid.getHeight();
-
-	wxBrush brush;
-
-	for (int x=0; x<grid.getWidth(); x++) {
-		for (int y=0; y<grid.getHeight(); y++) {
-			Pos pos(x, y);
-			float squarex = x * squarew;
-			float squarey = y * squareh;
-
-			switch (grid[pos]) {
-				case WorldGrid::EMPTY:
-					brush.SetColour(255, 255, 255);
-					break;
-
-				case WorldGrid::SMALL_OBSTACLE:
-					brush.SetColour(240, 240, 80);
-					break;
-
-				case WorldGrid::VICTIM:
-					brush.SetColour(150, 200, 130);
-					break;
-
-				case WorldGrid::LARGE_OBSTACLE:
-					brush.SetColour(250, 100, 100);
-					break;
-			}
-
-			if (robot.getMap()[pos] == WorldGrid::UNKNOWN) {
-				wxColour color = brush.GetColour();
-				brush.SetColour(color.Red()/2, color.Green()/2, color.Blue()/2);
-			}
-
-			dc.SetBrush(brush);
-			dc.DrawRectangle(floor(squarex), floor(squarey), ceil(squarew)+1, ceil(squareh)+1);
-		}
+	for (LayerVec::iterator i = layers.begin(); i != layers.end(); ++i) {
+		(*i)->render(dc, drawscale);
+		dc.SetBrush(*wxWHITE_BRUSH);
 	}
-
-	dc.SetBrush(*wxWHITE_BRUSH);
-}
-
-void WorldPanel::paintObjects(wxPaintDC &dc) {
-	const WorldGrid &grid = world.getGrid();
-
-	wxCoord dispw, disph;
-	dc.GetSize(&dispw, &disph);
-
-	const float squarew = (float)dispw/grid.getWidth();
-	const float squareh = (float)disph/grid.getHeight();
-
-	for (World::const_iterator i = world.begin(); i != world.end(); ++i) {
-		if (const VictimWorldObject *victim = dynamic_cast<const VictimWorldObject *>(&*i)) {
-			const float centerx = (victim->getPos().x+0.5f)*squarew;
-			const float centery = (victim->getPos().y+0.5)*squareh;
-			const float radius = min(squarew, squareh)*0.4f;
-			dc.DrawCircle(centerx, centery, radius);
-
-			if (robot.isVictimIdentified(victim->getPos())) {
-				const float crossdelta = radius*0.3f;
-				dc.DrawLine(centerx-crossdelta, centery-crossdelta, centerx+crossdelta, centery+crossdelta);
-				dc.DrawLine(centerx-crossdelta, centery+crossdelta, centerx+crossdelta, centery-crossdelta);
-			}
-
-		} else if (const ObstacleWorldObject *obstacle = dynamic_cast<const ObstacleWorldObject *>(&*i)) {
-			const float startx = (obstacle->getStartPos().x+0.5f)*squarew;
-			const float starty = (obstacle->getStartPos().y+0.5f)*squareh;
-			const float endx = (obstacle->getEndPos().x+0.5f)*squarew;
-			const float endy = (obstacle->getEndPos().y+0.5f)*squareh;
-			const float dir = atan2(endy-starty, endx - startx);
-
-			const float thickness = (obstacle->isLarge() ? 0.3 : 0.1) * min(squarew, squareh);
-			wxPoint points[4]; // points are counter-clockwise from top left of starting position
-			points[0].x = (int)(startx + thickness*cos(dir + 3*M_PI/4));
-			points[0].y = (int)(starty + thickness*sin(dir + 3*M_PI/4));
-			points[1].x = (int)(startx + thickness*cos(dir - 3*M_PI/4));
-			points[1].y = (int)(starty + thickness*sin(dir - 3*M_PI/4));
-			points[2].x = (int)(endx + thickness*cos(dir - M_PI/4));
-			points[2].y = (int)(endy + thickness*sin(dir - M_PI/4));
-			points[3].x = (int)(endx + thickness*cos(dir + M_PI/4));
-			points[3].y = (int)(endy + thickness*sin(dir + M_PI/4));
-			dc.DrawPolygon(4, points);
-		}
-	}
-}
-
-void WorldPanel::paintRobot(wxPaintDC &dc) {
-	const WorldGrid &grid = world.getGrid();
-
-	wxCoord dispw, disph;
-	dc.GetSize(&dispw, &disph);
-
-	const float squarew = (float)dispw/grid.getWidth();
-	const float squareh = (float)disph/grid.getHeight();
-
-	Pos robotpos = robot.getGridScale().coordToPos(robot.getPosition());
-	const float startx = squarew*robotpos.x;
-	const float starty = squareh*robotpos.y;
-	const float thickness = min(squarew, squareh) * .3;
-	const float dir = robot.getDirection();
-
-	wxPoint points[3];
-	points[0].x = (int)(startx + thickness*cos(dir));
-	points[0].y = (int)(starty - thickness*sin(dir));
-	points[1].x = (int)(startx + thickness*cos(dir + 5*M_PI/4));
-	points[1].y = (int)(starty - thickness*sin(dir + 5*M_PI/4));
-	points[2].x = (int)(startx + thickness*cos(dir - 5*M_PI/4));
-	points[2].y = (int)(starty - thickness*sin(dir - 5*M_PI/4));
-	dc.DrawPolygon(3, points);
-
-	const float radius = max(min(squarew, squareh)*.1f, 3.0f);
-	const RoomPlanner::Plan &plan = robot.getPlan();
-
-
-	wxBrush victimbrush(wxColour(150, 200, 130));
-	if (plan.identifyvictim)
-		dc.SetBrush(victimbrush);
-
-	for (int i = 0; i != plan.coords.size(); ++i) {
-		const Coord &c = plan.coords[i];
-		Dir dir = plan.facedirs[i];
-		float dirrad = dirToRad(dir);
-
-		const float centerx = squarew*c.x/10; // TODO don't hardcode room width
-		const float centery = squareh*c.y/10;
-
-		dc.DrawCircle(centerx, centery, radius);
-
-		const float len = min(squarew, squareh)*0.3;
-		const float finalx = centerx+len*cos(dirrad);
-		const float finaly = centery-len*sin(dirrad);
-		dc.DrawLine(centerx, centery, finalx, finaly);
-		dc.DrawCircle(finalx, finaly, 1);
-	}
-
-	dc.SetBrush(*wxWHITE_BRUSH);
 }
 
 void WorldPanel::OnLeftDown(wxMouseEvent &event) {
-	const WorldGrid &grid = world.getGrid();
-	wxSize size = GetSize();
-	const int gridx = event.GetX()*grid.getWidth()/size.GetWidth();
-	const int gridy = event.GetY()*grid.getHeight()/size.GetHeight();
+	wxCoord w, h;
+	GetSize(&w, &h);
 
-	Pos pos(gridx, gridy);
-	dragging = callbacks.onWorldClicked(pos);
-	if (dragging)
-		lastdragpos = pos;
+	CoordScale drawscale(w/100.0f, h/100.0f);
+
+	Coord coord = drawscale.posToCoord(event.GetX(), event.GetY());
+
+	for (LayerVec::iterator i = layers.begin(); i != layers.end(); ++i) {
+		if ((*i)->leftDown(coord))
+			break;
+	}
 }
 
 void WorldPanel::OnLeftUp(wxMouseEvent &event) {
-	dragging = false;
+	for (LayerVec::iterator i = layers.begin(); i != layers.end(); ++i) {
+		(*i)->leftUp();
+	}
 }
 
 void WorldPanel::OnMotion(wxMouseEvent &event) {
-	if (!dragging)
-		return;
+	wxCoord w, h;
+	GetSize(&w, &h);
 
-	const WorldGrid &grid = world.getGrid();
-	wxSize size = GetSize();
-	int gridx = event.GetX()*grid.getWidth()/size.GetWidth();
-	int gridy = event.GetY()*grid.getHeight()/size.GetHeight();
+	CoordScale drawscale(w/100.0f, h/100.0f);
 
-	if (gridx < 0)
-		gridx = 0;
-	else if (gridx >= grid.getWidth())
-		gridx = grid.getWidth()-1;
+	Coord coord = drawscale.posToCoord(event.GetX(), event.GetY());
 
-	if (gridy < 0)
-		gridy = 0;
-	else if (gridy >= grid.getHeight())
-		gridy = grid.getHeight()-1;
-
-	Pos pos(gridx, gridy);
-	if (lastdragpos != pos) {
-		callbacks.onWorldDragged(pos);
-		lastdragpos = pos;
+	for (LayerVec::iterator i = layers.begin(); i != layers.end(); ++i) {
+		(*i)->mouseMotion(coord);
 	}
 }
 

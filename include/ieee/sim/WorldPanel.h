@@ -1,37 +1,26 @@
-#ifndef WORLDCANVAS_H
-#define WORLDCANVAS_H
+#ifndef WORLDPANEL_H
+#define WORLDPANEL_H
 
-#include "ieee/sim/Robot.h"
-#include "ieee/sim/World.h"
+#include "ieee/sim/WorldPanelLayer.h"
 #include <wx/wx.h>
 
 namespace ieee {
 	class WorldPanel : public wxPanel {
 		public:
-			struct Callbacks {
-				public:
-					virtual bool onWorldClicked(const Pos &pos) =0; // return true to begin dragging
-					virtual void onWorldDragged(const Pos &pos) =0;
-			};
-		
-			WorldPanel(wxWindow *parent, Callbacks &callbacks, const World &world, const Robot &robot);
-			
-		private:		
-			Callbacks &callbacks;
-			const Robot &robot;
-			const World &world;
-		
+			WorldPanel(wxWindow *parent);
+
+			void addLayer(WorldPanelLayer *layer); // WorldPanel doesn't take ownership
+			void removeLayer(WorldPanelLayer *layer);
+
+		private:
+			typedef std::vector<WorldPanelLayer *> LayerVec;
+			LayerVec layers;
+
 			void OnPaint(wxPaintEvent &event);
-			void paintGrid(wxPaintDC &dc);
-			void paintObjects(wxPaintDC &dc);
-			void paintRobot(wxPaintDC &dc);
-		
 			void OnLeftDown(wxMouseEvent &event);
 			void OnLeftUp(wxMouseEvent &event);
 			void OnMotion(wxMouseEvent &event);
-			bool dragging;
-			Pos lastdragpos;
-			
+
 			DECLARE_EVENT_TABLE()
 	};
 }

@@ -30,11 +30,18 @@ RoomSimFrame::SimWorld::SimWorld()
 RoomSimFrame::RoomSimFrame()
 : wxFrame(NULL, -1, _("Hello World"), wxDefaultPosition, wxSize(400, 400)),
   robot(Coord(10, 10), world.getGrid()),
-  worldpanel(this, *this, world, robot),
+  gridlayer(robot.getMap(), robot.getGridScale()),
+  objectlayer(world, robot.getGridScale(), *this),
+  robotlayer(robot, robot.getGridScale()),
+  worldpanel(this),
   selectedid(-1),
   buttonpanel(this),
   stepbutton(&buttonpanel, STEP_BUTTON, _("Step")),
   resetbutton(&buttonpanel, RESET_BUTTON, _("Reset")) {
+  	worldpanel.addLayer(&gridlayer);
+  	worldpanel.addLayer(&objectlayer);
+  	worldpanel.addLayer(&robotlayer);
+
 	wxBoxSizer *buttonpanelsizer = new wxBoxSizer(wxHORIZONTAL);
 	buttonpanelsizer->Add(&stepbutton, 0, 0);
 	buttonpanelsizer->Add(&resetbutton, 0, 0);
@@ -73,5 +80,9 @@ void RoomSimFrame::onWorldDragged(const Pos &pos) {
 	selectedobj->selectionMoved(selectedid, pos);
 	world.updateGrid();
 	worldpanel.Refresh();
+}
+
+bool RoomSimFrame::isVictimIdentified(const Pos &pos) {
+	return robot.isVictimIdentified(pos);
 }
 
