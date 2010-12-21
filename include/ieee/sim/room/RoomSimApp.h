@@ -13,8 +13,6 @@ namespace ieee {
 
 		private:
 			virtual bool OnInit();
-
-			RoomSimFrame *frame;
 	};
 }
 

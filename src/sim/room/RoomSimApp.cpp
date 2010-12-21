@@ -10,7 +10,7 @@ IMPLEMENT_APP(RoomSimApp)
 RoomSimApp::RoomSimApp() { }
 
 bool RoomSimApp::OnInit() {
-	frame = new RoomSimFrame();
+	RoomSimFrame *frame = new RoomSimFrame();
 	frame->Show(true);
 	SetTopWindow(frame);
 	return true;
