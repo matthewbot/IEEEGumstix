@@ -39,6 +39,12 @@ namespace ieee {
 
 			void onStepPressed(wxCommandEvent &event);
 			void onResetPressed(wxCommandEvent &event);
+			void onMenuOpen(wxCommandEvent &event);
+			void onMenuSave(wxCommandEvent &event);
+			void onMenuQuit(wxCommandEvent &event);
+			void onMenuObjects(wxCommandEvent &event);
+			void onMenuWorldGrid(wxCommandEvent &event);
+			void onMenuMapGrid(wxCommandEvent &event);
 
 			DECLARE_EVENT_TABLE()
 	};

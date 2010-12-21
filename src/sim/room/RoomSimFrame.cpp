@@ -8,11 +8,20 @@ using namespace std;
 enum {
 	STEP_BUTTON,
 	RESET_BUTTON,
+	OBJECTS_MENU,
+	WORLDGRID_MENU,
+	MAPGRID_MENU
 };
 
 BEGIN_EVENT_TABLE(RoomSimFrame, wxFrame)
 	EVT_BUTTON(STEP_BUTTON, RoomSimFrame::onStepPressed)
 	EVT_BUTTON(RESET_BUTTON, RoomSimFrame::onResetPressed)
+	EVT_MENU(wxID_OPEN, RoomSimFrame::onMenuOpen)
+	EVT_MENU(wxID_SAVE, RoomSimFrame::onMenuSave)
+	EVT_MENU(wxID_EXIT, RoomSimFrame::onMenuQuit)
+	EVT_MENU(OBJECTS_MENU, RoomSimFrame::onMenuObjects)
+	EVT_MENU(WORLDGRID_MENU, RoomSimFrame::onMenuWorldGrid)
+	EVT_MENU(MAPGRID_MENU, RoomSimFrame::onMenuMapGrid)
 END_EVENT_TABLE()
 
 RoomSimFrame::SimWorld::SimWorld()
@@ -51,6 +60,24 @@ RoomSimFrame::RoomSimFrame()
 	sizer->Add(&worldpanel, 1, wxEXPAND);
 	sizer->Add(&buttonpanel, 0, wxEXPAND);
 	SetSizer(sizer);
+
+	wxMenu *file = new wxMenu();
+	file->Append(wxID_OPEN, _T("&Open layout"));
+	file->Append(wxID_SAVE, _T("&Save layout"));
+	file->AppendSeparator();
+	file->Append(wxID_EXIT, _T("&Quit"));
+
+	wxMenu *view = new wxMenu();
+	view->AppendCheckItem(OBJECTS_MENU, _T("&Objects"))->Check();
+	view->AppendSeparator();
+	view->AppendRadioItem(MAPGRID_MENU, _T("&Map Grid"));
+	view->AppendRadioItem(WORLDGRID_MENU, _T("&World Grid"));
+
+	wxMenuBar *menubar = new wxMenuBar();
+	menubar->Append(file, _T("&File"));
+	menubar->Append(view, _T("&View"));
+
+	SetMenuBar(menubar);
 }
 
 void RoomSimFrame::onStepPressed(wxCommandEvent &evt) {
@@ -61,6 +88,25 @@ void RoomSimFrame::onStepPressed(wxCommandEvent &evt) {
 void RoomSimFrame::onResetPressed(wxCommandEvent &evt) {
 	robot.reset(Coord(10, 10));
 	worldpanel.Refresh();
+}
+
+void RoomSimFrame::onMenuOpen(wxCommandEvent &evt) {
+}
+
+void RoomSimFrame::onMenuSave(wxCommandEvent &evt) {
+}
+
+void RoomSimFrame::onMenuQuit(wxCommandEvent &evt) {
+	Close(false);
+}
+
+void RoomSimFrame::onMenuObjects(wxCommandEvent &evt) {
+}
+
+void RoomSimFrame::onMenuWorldGrid(wxCommandEvent &evt) {
+}
+
+void RoomSimFrame::onMenuMapGrid(wxCommandEvent &evt) {
 }
 
 bool RoomSimFrame::onWorldClicked(const Pos &pos) {
