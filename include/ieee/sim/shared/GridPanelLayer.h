@@ -1,7 +1,7 @@
 #ifndef GRIDPANELLAYER_H
 #define GRIDPANELLAYER_H
 
-#include "ieee/sim/WorldPanelLayer.h"
+#include "ieee/sim/shared/WorldPanelLayer.h"
 #include "ieee/shared/WorldGrid.h"
 
 namespace ieee {

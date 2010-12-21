@@ -1,4 +1,4 @@
-#include "ieee/sim/VictimWorldObject.h"
+#include "ieee/sim/shared/VictimWorldObject.h"
 
 using namespace ieee;
 

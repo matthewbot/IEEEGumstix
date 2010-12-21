@@ -1,4 +1,4 @@
-#include "ieee/sim/ObstacleWorldObject.h"
+#include "ieee/sim/shared/ObstacleWorldObject.h"
 #include <algorithm>
 
 using namespace ieee;

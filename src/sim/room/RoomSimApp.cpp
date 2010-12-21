@@ -1,5 +1,5 @@
-#include "ieee/sim/RoomSimApp.h"
-#include "ieee/sim/RoomSimFrame.h"
+#include "ieee/sim/room/RoomSimApp.h"
+#include "ieee/sim/room/RoomSimFrame.h"
 #include <iostream>
 
 using namespace ieee;

@@ -1,8 +1,8 @@
 #ifndef OBJECTPANELLAYER_H
 #define OBJECTPANELLAYER_H
 
-#include "ieee/sim/World.h"
-#include "ieee/sim/WorldPanelLayer.h"
+#include "ieee/sim/shared/World.h"
+#include "ieee/sim/shared/WorldPanelLayer.h"
 
 namespace ieee {
 	class ObjectPanelLayer : public WorldPanelLayer {

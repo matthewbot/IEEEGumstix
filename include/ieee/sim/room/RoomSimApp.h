@@ -2,9 +2,9 @@
 #define ROOMSIMAPP_H
 
 #include <wx/wx.h>
-#include "RoomSimFrame.h"
-#include "World.h"
-#include "Robot.h"
+#include "ieee/sim/room/Robot.h"
+#include "ieee/sim/room/RoomSimFrame.h"
+#include "ieee/sim/shared/World.h"
 
 namespace ieee {
 	class RoomSimApp : public wxApp {

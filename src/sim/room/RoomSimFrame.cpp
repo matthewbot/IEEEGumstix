@@ -1,6 +1,6 @@
-#include "ieee/sim/RoomSimFrame.h"
-#include "ieee/sim/VictimWorldObject.h"
-#include "ieee/sim/ObstacleWorldObject.h"
+#include "ieee/sim/room/RoomSimFrame.h"
+#include "ieee/sim/shared/VictimWorldObject.h"
+#include "ieee/sim/shared/ObstacleWorldObject.h"
 
 using namespace ieee;
 using namespace std;

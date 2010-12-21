@@ -1,7 +1,7 @@
 #ifndef VICTIMWORLDOBJECT_H
 #define VICTIMWORLDOBJECT_H
 
-#include "ieee/sim/WorldObject.h"
+#include "ieee/sim/shared/WorldObject.h"
 #include "ieee/shared/types.h"
 
 namespace ieee {

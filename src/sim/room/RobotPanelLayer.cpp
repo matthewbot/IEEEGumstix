@@ -1,4 +1,4 @@
-#include "ieee/sim/RobotPanelLayer.h"
+#include "ieee/sim/room/RobotPanelLayer.h"
 #include <algorithm>
 
 using namespace ieee;

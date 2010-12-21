@@ -1,6 +1,6 @@
-#include "ieee/sim/ObjectPanelLayer.h"
-#include "ieee/sim/VictimWorldObject.h"
-#include "ieee/sim/ObstacleWorldObject.h"
+#include "ieee/sim/shared/ObjectPanelLayer.h"
+#include "ieee/sim/shared/VictimWorldObject.h"
+#include "ieee/sim/shared/ObstacleWorldObject.h"
 #include <algorithm>
 
 using namespace ieee;

@@ -1,4 +1,4 @@
-#include "ieee/sim/GridPanelLayer.h"
+#include "ieee/sim/shared/GridPanelLayer.h"
 
 using namespace ieee;
 

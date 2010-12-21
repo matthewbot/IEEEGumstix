@@ -1,4 +1,4 @@
-#include "ieee/sim/World.h"
+#include "ieee/sim/shared/World.h"
 #include <boost/bind.hpp>
 #include <algorithm>
 

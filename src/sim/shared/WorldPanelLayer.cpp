@@ -1,4 +1,4 @@
-#include "ieee/sim/WorldPanelLayer.h"
+#include "ieee/sim/shared/WorldPanelLayer.h"
 
 using namespace ieee;
 

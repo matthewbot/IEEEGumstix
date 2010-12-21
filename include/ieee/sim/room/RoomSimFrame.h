@@ -2,10 +2,10 @@
 #define SIMFRAME_H
 
 #include <wx/wx.h>
-#include "ieee/sim/WorldPanel.h"
-#include "ieee/sim/GridPanelLayer.h"
-#include "ieee/sim/ObjectPanelLayer.h"
-#include "ieee/sim/RobotPanelLayer.h"
+#include "ieee/sim/room/RobotPanelLayer.h"
+#include "ieee/sim/shared/WorldPanel.h"
+#include "ieee/sim/shared/GridPanelLayer.h"
+#include "ieee/sim/shared/ObjectPanelLayer.h"
 
 namespace ieee {
 	class RoomSimFrame : public wxFrame, ObjectPanelLayer::Callbacks {

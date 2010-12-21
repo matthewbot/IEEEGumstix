@@ -1,8 +1,8 @@
 #ifndef ROBOTPANELLAYER_H
 #define ROBOTPANELLAYER_H
 
-#include "ieee/sim/WorldPanelLayer.h"
-#include "ieee/sim/Robot.h"
+#include "ieee/sim/room/Robot.h"
+#include "ieee/sim/shared/WorldPanelLayer.h"
 
 namespace ieee {
 	class RobotPanelLayer : public WorldPanelLayer {

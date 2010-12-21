@@ -1,7 +1,7 @@
 #ifndef WORLDPANEL_H
 #define WORLDPANEL_H
 
-#include "ieee/sim/WorldPanelLayer.h"
+#include "ieee/sim/shared/WorldPanelLayer.h"
 #include <wx/wx.h>
 
 namespace ieee {

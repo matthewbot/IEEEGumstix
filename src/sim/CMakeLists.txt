@@ -5,10 +5,6 @@ project(Sim)
 find_package(wxWidgets COMPONENTS core base REQUIRED)
 include(${wxWidgets_USE_FILE})
 
-# gather all the source files and build an executable
-file(GLOB sources "*.cpp")
-add_executable(roomsim ${sources})
-target_link_libraries(roomsim ieeeshared ieeeplanner ${wxWidgets_LIBRARIES})
-
-install(TARGETS roomsim DESTINATION bin)
+add_subdirectory(room)
+add_subdirectory(shared)
 
