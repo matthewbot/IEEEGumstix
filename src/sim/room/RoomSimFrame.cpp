@@ -39,7 +39,8 @@ RoomSimFrame::SimWorld::SimWorld()
 RoomSimFrame::RoomSimFrame()
 : wxFrame(NULL, -1, _("Hello World"), wxDefaultPosition, wxSize(400, 400)),
   robot(Coord(10, 10), world.getGrid()),
-  gridlayer(robot.getMap(), robot.getGridScale()),
+  worldgridlayer(world.getGrid(), robot.getGridScale()),
+  mapgridlayer(robot.getMap(), robot.getGridScale()),
   objectlayer(world, robot.getGridScale(), *this),
   robotlayer(robot, robot.getGridScale()),
   worldpanel(this),
@@ -47,7 +48,7 @@ RoomSimFrame::RoomSimFrame()
   buttonpanel(this),
   stepbutton(&buttonpanel, STEP_BUTTON, _("Step")),
   resetbutton(&buttonpanel, RESET_BUTTON, _("Reset")) {
-  	worldpanel.addLayer(&gridlayer);
+  	worldpanel.addLayer(&mapgridlayer);
   	worldpanel.addLayer(&objectlayer);
   	worldpanel.addLayer(&robotlayer);
 
@@ -101,12 +102,37 @@ void RoomSimFrame::onMenuQuit(wxCommandEvent &evt) {
 }
 
 void RoomSimFrame::onMenuObjects(wxCommandEvent &evt) {
+	if (evt.IsChecked() == worldpanel.hasLayer(&objectlayer))
+		return;
+
+	if (evt.IsChecked())
+		worldpanel.addLayer(&objectlayer);
+	else
+		worldpanel.removeLayer(&objectlayer);
+	worldpanel.Refresh();
 }
 
 void RoomSimFrame::onMenuWorldGrid(wxCommandEvent &evt) {
+	showGrid(false);
 }
 
 void RoomSimFrame::onMenuMapGrid(wxCommandEvent &evt) {
+	showGrid(true);
+}
+
+void RoomSimFrame::showGrid(bool mapgrid) {
+	if (mapgrid == worldpanel.hasLayer(&mapgridlayer))
+		return;
+
+	if (mapgrid) {
+		worldpanel.addLayer(&mapgridlayer);
+		worldpanel.removeLayer(&worldgridlayer);
+	} else {
+		worldpanel.addLayer(&worldgridlayer);
+		worldpanel.removeLayer(&mapgridlayer);
+	}
+
+	worldpanel.Refresh();
 }
 
 bool RoomSimFrame::onWorldClicked(const Pos &pos) {

@@ -10,6 +10,7 @@ namespace ieee {
 			WorldPanel(wxWindow *parent);
 
 			void addLayer(WorldPanelLayer *layer); // WorldPanel doesn't take ownership
+			bool hasLayer(WorldPanelLayer *layer);
 			void removeLayer(WorldPanelLayer *layer);
 
 		private:

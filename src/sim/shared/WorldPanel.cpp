@@ -32,6 +32,11 @@ void WorldPanel::removeLayer(WorldPanelLayer *layer) {
 		layers.erase(i);
 }
 
+bool WorldPanel::hasLayer(WorldPanelLayer *layer) {
+	LayerVec::iterator i = find(layers.begin(), layers.end(), layer);
+	return i != layers.end();
+}
+
 void WorldPanel::OnPaint(wxPaintEvent &event) {
 	wxPaintDC dc(this);
 

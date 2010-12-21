@@ -25,7 +25,8 @@ namespace ieee {
 			SimWorld world;
 			Robot robot;
 
-			GridPanelLayer gridlayer;
+			GridPanelLayer worldgridlayer;
+			GridPanelLayer mapgridlayer;
 			ObjectPanelLayer objectlayer;
 			RobotPanelLayer robotlayer;
 			WorldPanel worldpanel;
@@ -45,6 +46,8 @@ namespace ieee {
 			void onMenuObjects(wxCommandEvent &event);
 			void onMenuWorldGrid(wxCommandEvent &event);
 			void onMenuMapGrid(wxCommandEvent &event);
+
+			void showGrid(bool mapgrid);
 
 			DECLARE_EVENT_TABLE()
 	};
