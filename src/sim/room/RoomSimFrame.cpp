@@ -1,6 +1,8 @@
 #include "ieee/sim/room/RoomSimFrame.h"
 #include "ieee/sim/shared/VictimWorldObject.h"
 #include "ieee/sim/shared/ObstacleWorldObject.h"
+#include "ieee/sim/shared/WorldIO.h"
+#include <fstream>
 
 using namespace ieee;
 using namespace std;
@@ -92,9 +94,23 @@ void RoomSimFrame::onResetPressed(wxCommandEvent &evt) {
 }
 
 void RoomSimFrame::onMenuOpen(wxCommandEvent &evt) {
+	wxFileDialog opendialog(this, _("Open layout"), _(""), _(""), _("DAT files (*.dat)|*.dat"), wxFD_OPEN|wxFD_FILE_MUST_EXIST);
+	if (opendialog.ShowModal() == wxID_CANCEL)
+		return;
+
+	ifstream in(opendialog.GetPath().fn_str());
+	world.clear();
+	readWorldObjects(in, world);
+	worldpanel.Refresh();
 }
 
 void RoomSimFrame::onMenuSave(wxCommandEvent &evt) {
+	wxFileDialog savedialog(this, _("Save layout"), _(""), _("layout.dat"), _("DAT files (*.dat)|*.dat"), wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
+	if (savedialog.ShowModal() == wxID_CANCEL)
+		return;     // the user changed idea...
+
+	ofstream out(savedialog.GetPath().fn_str());
+	writeWorldObjects(out, world);
 }
 
 void RoomSimFrame::onMenuQuit(wxCommandEvent &evt) {

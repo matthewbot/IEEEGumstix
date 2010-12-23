@@ -20,6 +20,7 @@ namespace ieee {
 			inline const_iterator begin() const { return objects.begin(); }
 			inline const_iterator end() const { return objects.end(); }
 
+			inline void clear() { objects.clear(); updateGrid(); }
 			inline const WorldGrid &getGrid() const { return grid; }
 			void updateGrid();
 
