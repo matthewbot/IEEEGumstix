@@ -16,12 +16,14 @@ namespace ieee {
 			void step();
 
 			inline bool isVictimIdentified(const Pos &pos) const { return roomplanner.isVictimIdentified(pos); }
+			inline const PosSet &getIdentifiedVictims() const { return roomplanner.getIdentifiedVictims(); }
 			inline const Coord &getPosition() const { return curpos; }
 			inline float getDirection() const { return curdir; }
 			inline const Coord &getDestination() const { return plan.coords.back(); }
 			inline const RoomPlanner::Plan &getPlan() const { return plan; }
 			inline const WorldGrid &getMap() const { return map; }
 			inline const CoordScale &getGridScale() const { return roomplanner.getGridScale(); }
+			inline const CoordScale &getVictimScale() const { return roomplanner.getVictimScale(); }
 
 		private:
 			void moveStep();

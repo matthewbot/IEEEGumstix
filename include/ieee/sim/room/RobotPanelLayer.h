@@ -7,7 +7,7 @@
 namespace ieee {
 	class RobotPanelLayer : public WorldPanelLayer {
 		public:
-			RobotPanelLayer(const Robot &robot, const CoordScale &gridscale);
+			RobotPanelLayer(const Robot &robot, const CoordScale &gridscale, const CoordScale &victimscale);
 
 			static const int WEIGHT = 0;
 			virtual int getWeight() const;
@@ -16,6 +16,7 @@ namespace ieee {
 		private:
 			const Robot &robot;
 			const CoordScale &gridscale;
+			const CoordScale &victimscale;
 	};
 }
 

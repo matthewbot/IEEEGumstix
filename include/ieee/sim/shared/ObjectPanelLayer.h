@@ -11,8 +11,6 @@ namespace ieee {
 				public:
 					virtual bool onWorldClicked(const Pos &pos) =0; // return true to begin dragging
 					virtual void onWorldDragged(const Pos &pos) =0;
-
-					virtual bool isVictimIdentified(const Pos &pos) =0;
 			};
 
 			ObjectPanelLayer(const World &world, const CoordScale &gridscale, Callbacks &callbacks);

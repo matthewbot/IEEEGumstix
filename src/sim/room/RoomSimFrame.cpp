@@ -42,7 +42,7 @@ RoomSimFrame::RoomSimFrame()
   worldgridlayer(world.getGrid(), robot.getGridScale()),
   mapgridlayer(robot.getMap(), robot.getGridScale()),
   objectlayer(world, robot.getGridScale(), *this),
-  robotlayer(robot, robot.getGridScale()),
+  robotlayer(robot, robot.getGridScale(), robot.getVictimScale()),
   worldpanel(this),
   selectedid(-1),
   buttonpanel(this),
@@ -152,9 +152,5 @@ void RoomSimFrame::onWorldDragged(const Pos &pos) {
 	selectedobj->selectionMoved(selectedid, pos);
 	world.updateGrid();
 	worldpanel.Refresh();
-}
-
-bool RoomSimFrame::isVictimIdentified(const Pos &pos) {
-	return robot.isVictimIdentified(pos);
 }
 

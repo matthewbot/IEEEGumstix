@@ -22,13 +22,6 @@ void ObjectPanelLayer::render(wxPaintDC &dc, const CoordScale &drawscale) const 
 			Pos pos = drawscale.coordToPos(gridscale.posToCoord(victim->getPos()));
 			const float radius = minsize*0.4f;
 			dc.DrawCircle(pos.x, pos.y, radius);
-
-			if (callbacks.isVictimIdentified(victim->getPos())) {
-				const int crossdelta = (int)(radius*0.3f);
-				dc.DrawLine(pos.x-crossdelta, pos.y-crossdelta, pos.x+crossdelta+1, pos.y+crossdelta+1);
-				dc.DrawLine(pos.x-crossdelta, pos.y+crossdelta, pos.x+crossdelta+1, pos.y-crossdelta-1);
-			}
-
 		} else if (const ObstacleWorldObject *obstacle = dynamic_cast<const ObstacleWorldObject *>(&*i)) {
 			Pos startpos = drawscale.coordToPos(gridscale.posToCoord(obstacle->getStartPos()));
 			Pos endpos = drawscale.coordToPos(gridscale.posToCoord(obstacle->getEndPos()));

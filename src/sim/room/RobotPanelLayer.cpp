@@ -4,9 +4,10 @@
 using namespace ieee;
 using namespace std;
 
-RobotPanelLayer::RobotPanelLayer(const Robot &robot, const CoordScale &gridscale)
+RobotPanelLayer::RobotPanelLayer(const Robot &robot, const CoordScale &gridscale, const CoordScale &victimscale)
 : robot(robot),
-  gridscale(gridscale) { }
+  gridscale(gridscale),
+  victimscale(victimscale) { }
 
 int RobotPanelLayer::getWeight() const { return WEIGHT; }
 
@@ -43,6 +44,15 @@ void RobotPanelLayer::render(wxPaintDC &dc, const CoordScale &drawscale) const {
 		const float endy = p.y-len*sin(dirrad);
 		dc.DrawLine(p.x, p.y, endx, endy);
 		dc.DrawCircle(endx, endy, 1);
+	}
+
+	const int crossdelta = (int)(minsize*0.15f);
+	const PosSet &victims = robot.getIdentifiedVictims();
+	for (PosSet::const_iterator i = victims.begin(); i != victims.end(); ++i) {
+		Pos pos = drawscale.coordToPos(victimscale.posToCoord(*i));
+
+		dc.DrawLine(pos.x-crossdelta, pos.y-crossdelta, pos.x+crossdelta+1, pos.y+crossdelta+1);
+		dc.DrawLine(pos.x-crossdelta, pos.y+crossdelta, pos.x+crossdelta+1, pos.y-crossdelta-1);
 	}
 }
 

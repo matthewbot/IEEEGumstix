@@ -15,7 +15,6 @@ namespace ieee {
 			// WorldPanel::Callbacks
 			virtual bool onWorldClicked(const Pos &pos);
 			virtual void onWorldDragged(const Pos &pos);
-			virtual bool isVictimIdentified(const Pos &pos);
 
 		private:
 			struct SimWorld : World {
