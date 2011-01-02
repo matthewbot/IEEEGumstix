@@ -1,75 +1,101 @@
 #include "ieee/sim/shared/ObstacleWorldObject.h"
 #include <algorithm>
 
-using namespace ieee;
 using namespace std;
+using namespace ieee;
 
-ObstacleWorldObject::ObstacleWorldObject(const Pos &startpos, const Pos &endpos, bool large)
-: startpos(startpos), endpos(endpos), large(large) { }
+ObstacleWorldObject::ObstacleWorldObject(const Coord &startcoord, const Coord &endcoord, bool large)
+: startcoord(startcoord), endcoord(endcoord), large(large) { }
+
 ObstacleWorldObject::~ObstacleWorldObject() { }
 
-void ObstacleWorldObject::fillWorldGrid(WorldGrid &grid) const {
-	fillLine(grid, startpos, endpos, large ? WorldGrid::LARGE_OBSTACLE : WorldGrid::SMALL_OBSTACLE);
+void ObstacleWorldObject::fillWorldGrid(WorldGrid &grid, const CoordScale &gridscale) const {
+	const float thickness = getWidth()/2;
+	const float dir = atan2(endcoord.y-startcoord.y, endcoord.x - startcoord.x);
+
+	Coord coords[4];
+	coords[0].x = startcoord.x + thickness*cos(dir + 3*M_PI/4);
+	coords[0].y = startcoord.y + thickness*sin(dir + 3*M_PI/4);
+	coords[1].x = startcoord.x + thickness*cos(dir - 3*M_PI/4);
+	coords[1].y = startcoord.y + thickness*sin(dir - 3*M_PI/4);
+	coords[2].x = endcoord.x + thickness*cos(dir - M_PI/4);
+	coords[2].y = endcoord.y + thickness*sin(dir - M_PI/4);
+	coords[3].x = endcoord.x + thickness*cos(dir + M_PI/4);
+	coords[3].y = endcoord.y + thickness*sin(dir + M_PI/4);
+
+	Pos poses[4];
+	for (int i=0; i<4; i++)
+		poses[i] = gridscale.coordToPos(coords[i]);
+
+	const WorldGrid::GridSquare square = large ? WorldGrid::LARGE_OBSTACLE : WorldGrid::SMALL_OBSTACLE;
+	shadeQuad(poses, grid, square);
 }
 
-int ObstacleWorldObject::selectionTest(const Pos &selectpos) const {
-	if (selectpos == startpos)
+int ObstacleWorldObject::selectionTest(const Coord &selectcoord) const {
+	float rad = getWidth()/2;
+
+	if (distance(startcoord, selectcoord) <= rad)
 		return 1;
-	else if (selectpos == endpos)
+	else if (distance(endcoord, selectcoord) <= rad)
 		return 2;
 	else
 		return -1;
 }
 
-void ObstacleWorldObject::selectionMoved(int id, const Pos &newpos) {
+void ObstacleWorldObject::selectionMoved(int id, const Coord &newcoord) {
 	if (id == 1)
-		startpos = newpos;
+		startcoord = newcoord;
 	else if (id == 2)
-		endpos = newpos;
+		endcoord = newcoord;
 }
 
+float ObstacleWorldObject::getWidth() const {
+	return large ? LARGE_WIDTH : SMALL_WIDTH;
+}
 
-// based on bresenham's line algorithm
-void ObstacleWorldObject::fillLine(WorldGrid &grid, Pos start, Pos end, WorldGrid::GridSquare square) {
-	const bool steep = abs(end.y - start.y) > abs(end.x - start.x);
-	if (steep) {
-		swap(start.x, start.y);
-		swap(end.x, end.y);
-	}
-	if (start.x > end.x) {
-		swap(start.x, end.x);
-		swap(start.y, end.y);
-	}
+const float ObstacleWorldObject::LARGE_WIDTH;
+const float ObstacleWorldObject::SMALL_WIDTH;
 
-	const float derror = (float)abs(end.y - start.y) / (end.x - start.x);
+void ObstacleWorldObject::shadeQuad(const Pos (&poses)[4], WorldGrid &grid, WorldGrid::GridSquare square) {
+	pair<Pos, Pos> minmax = findMinMax<Pos>(&poses[0], &poses[4]);
+	const Pos &min = minmax.first;
+	const Pos &max = minmax.second;
 
-	float error = 0;
-	int y = start.y;
-	for (int x=start.x; x<=end.x; x++) {
-		if (steep)
-			grid[Pos(y, x)] = square;
-		else
-			grid[Pos(x, y)] = square;
+	for (int x=min.x; x<=max.x; x++) {
+		for (int y=min.y; y<=max.y; y++) {
+			Pos pos(x, y);
+			if (!grid.inBounds(pos))
+				continue;
 
-		error += derror;
-		if (error >= 0.5) {
-			if (x+1 <= end.x) {
-				if (steep) // small tweak, make sure there are no diagonal holes for it to pathfind through
-					grid[Pos(y, x+1)] = square;
-				else
-					grid[Pos(x+1, y)] = square;
+			bool inside;
+
+			for (int i=0; i<4; i++) {
+				const Pos &start = poses[i];
+				const Pos &end = poses[(i+1) % 4];
+
+				if (start.x != end.x) {
+					const float m = (float)(end.y - start.y) / (end.x - start.x);
+					float yvala = start.y + m*((x-.5f) - start.x);
+					float yvalb = start.y + m*((x+.5f) - start.x);
+
+					if (start.x > end.x)
+						inside = y <= std::max(yvala, yvalb)+.5f;
+					else
+						inside = y >= std::min(yvala, yvalb)-.5f;
+				} else if (start.y != end.y) {
+					if (start.y < end.y)
+						inside = x <= start.x;
+					else
+						inside = x >= start.x;
+				} else
+					inside = true;
+
+				if (!inside)
+					break;
 			}
 
-			y += (start.y < end.y ? 1 : -1);
-
-			if (x+1 <= end.x) {
-				if (steep)
-					grid[Pos(y, x)] = square;
-				else
-					grid[Pos(x, y)] = square;
-			}
-
-			error -= 1;
+			if (inside)
+				grid[pos] = square;
 		}
 	}
 }

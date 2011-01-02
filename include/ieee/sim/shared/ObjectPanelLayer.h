@@ -9,8 +9,8 @@ namespace ieee {
 		public:
 			struct Callbacks {
 				public:
-					virtual bool onWorldClicked(const Pos &pos) =0; // return true to begin dragging
-					virtual void onWorldDragged(const Pos &pos) =0;
+					virtual bool onWorldClicked(const Coord &coord) =0; // return true to begin dragging
+					virtual void onWorldDragged(const Coord &coord) =0;
 			};
 
 			ObjectPanelLayer(const World &world, const CoordScale &gridscale, Callbacks &callbacks);
@@ -29,7 +29,6 @@ namespace ieee {
 			Callbacks &callbacks;
 
 			bool dragging;
-			Pos lastdragpos;
 	};
 }
 

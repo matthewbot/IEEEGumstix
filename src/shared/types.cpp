@@ -133,6 +133,10 @@ Dir ieee::radToNearestDir(float rad) {
 	return (Dir)(i + DIR_E);
 }
 
+ostream &ieee::operator<<(ostream &out, const Coord &coord) {
+	out << "(" << coord.x << ", " << coord.y << ")";
+}
+
 Pos CoordScale::coordToPos(float x, float y) const {
     return Pos((int)round(x*sx + xoff), (int)round(y*sy + yoff));
 }

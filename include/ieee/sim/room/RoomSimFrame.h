@@ -13,8 +13,8 @@ namespace ieee {
 			RoomSimFrame();
 
 			// WorldPanel::Callbacks
-			virtual bool onWorldClicked(const Pos &pos);
-			virtual void onWorldDragged(const Pos &pos);
+			virtual bool onWorldClicked(const Coord &pos);
+			virtual void onWorldDragged(const Coord &pos);
 
 		private:
 			struct SimWorld : World {

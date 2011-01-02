@@ -28,14 +28,14 @@ END_EVENT_TABLE()
 
 RoomSimFrame::SimWorld::SimWorld()
 : World(10, 10) {
-	add(new ObstacleWorldObject(Pos(0, 3), Pos(3, 3), true));
-	add(new ObstacleWorldObject(Pos(2, 6), Pos(3, 9), true));
-	add(new ObstacleWorldObject(Pos(6, 3), Pos(9, 2), true));
-	add(new ObstacleWorldObject(Pos(7, 6), Pos(6, 9), false));
+	add(new ObstacleWorldObject(Coord(5, 35), Coord(35, 35), true));
+	add(new ObstacleWorldObject(Coord(25, 65), Coord(35, 95), true));
+	add(new ObstacleWorldObject(Coord(65, 35), Coord(95, 25), true));
+	add(new ObstacleWorldObject(Coord(75, 65), Coord(65, 95), false));
 
-	add(new VictimWorldObject(Pos(8, 1)));
-	add(new VictimWorldObject(Pos(1, 8)));
-	add(new VictimWorldObject(Pos(8, 8)));
+	add(new VictimWorldObject(Coord(85, 15)));
+	add(new VictimWorldObject(Coord(15, 85)));
+	add(new VictimWorldObject(Coord(85, 85)));
 }
 
 RoomSimFrame::RoomSimFrame()
@@ -151,9 +151,9 @@ void RoomSimFrame::showGrid(bool mapgrid) {
 	worldpanel.Refresh();
 }
 
-bool RoomSimFrame::onWorldClicked(const Pos &pos) {
+bool RoomSimFrame::onWorldClicked(const Coord &coord) {
 	for (World::iterator i = world.begin(); i != world.end(); ++i) {
-		int id = i->selectionTest(pos);
+		int id = i->selectionTest(coord);
 		if (id != -1) {
 			selectedid = id;
 			selectedobj = i;
@@ -164,8 +164,8 @@ bool RoomSimFrame::onWorldClicked(const Pos &pos) {
 	return false;
 }
 
-void RoomSimFrame::onWorldDragged(const Pos &pos) {
-	selectedobj->selectionMoved(selectedid, pos);
+void RoomSimFrame::onWorldDragged(const Coord &coord) {
+	selectedobj->selectionMoved(selectedid, coord);
 	world.updateGrid();
 	worldpanel.Refresh();
 }

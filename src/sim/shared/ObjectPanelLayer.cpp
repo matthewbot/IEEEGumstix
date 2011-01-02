@@ -19,12 +19,12 @@ void ObjectPanelLayer::render(wxPaintDC &dc, const CoordScale &drawscale) const 
 
 	for (World::const_iterator i = world.begin(); i != world.end(); ++i) {
 		if (const VictimWorldObject *victim = dynamic_cast<const VictimWorldObject *>(&*i)) {
-			Pos pos = drawscale.coordToPos(gridscale.posToCoord(victim->getPos()));
+			Pos pos = drawscale.coordToPos(victim->getCoord());
 			const float radius = minsize*0.4f;
 			dc.DrawCircle(pos.x, pos.y, radius);
 		} else if (const ObstacleWorldObject *obstacle = dynamic_cast<const ObstacleWorldObject *>(&*i)) {
-			Pos startpos = drawscale.coordToPos(gridscale.posToCoord(obstacle->getStartPos()));
-			Pos endpos = drawscale.coordToPos(gridscale.posToCoord(obstacle->getEndPos()));
+			Pos startpos = drawscale.coordToPos(obstacle->getStartCoord());
+			Pos endpos = drawscale.coordToPos(obstacle->getEndCoord());
 			const float dir = atan2(endpos.y-startpos.y, endpos.x - startpos.x);
 
 			const float thickness = (obstacle->isLarge() ? 0.3 : 0.1) * minsize;
@@ -43,11 +43,7 @@ void ObjectPanelLayer::render(wxPaintDC &dc, const CoordScale &drawscale) const 
 }
 
 bool ObjectPanelLayer::leftDown(const Coord &coord) {
-	Pos pos = gridscale.coordToPos(coord);
-
-	dragging = callbacks.onWorldClicked(pos);
-	if (dragging)
-		lastdragpos = pos;
+	dragging = callbacks.onWorldClicked(coord);
 	return dragging;
 }
 
@@ -60,24 +56,6 @@ bool ObjectPanelLayer::mouseMotion(const Coord &coord) {
 	if (!dragging)
 		return false;
 
-	Pos pos = gridscale.coordToPos(coord);
-
-	const WorldGrid &grid = world.getGrid();
-	if (pos.x < 0)
-		pos.x = 0;
-	else if (pos.x >= grid.getWidth())
-		pos.x = grid.getWidth()-1;
-
-	if (pos.y < 0)
-		pos.y = 0;
-	else if (pos.y >= grid.getHeight())
-		pos.y = grid.getHeight()-1;
-
-	if (lastdragpos != pos) {
-		callbacks.onWorldDragged(pos);
-		lastdragpos = pos;
-	}
-
-	return false; // callbacks will redraw us if needed
+	callbacks.onWorldDragged(coord);
 }
 

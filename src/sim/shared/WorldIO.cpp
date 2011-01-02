@@ -27,16 +27,16 @@ void ieee::readWorldObjects(istream &in, World &world) {
 			if (parts.size() != 3)
 				throw runtime_error("Expected victim entry to have 3 parts");
 
-			Pos pos(lexical_cast<int>(parts[1]), lexical_cast<int>(parts[2]));
-			obj = new VictimWorldObject(pos);
+			Coord coord(lexical_cast<float>(parts[1]), lexical_cast<float>(parts[2]));
+			obj = new VictimWorldObject(coord);
 		} else if (iequals(parts[0], "obstacle")) {
 			if (parts.size() != 6)
 				throw runtime_error("Expected obstacle entry to have 6 parts");
 
 			bool large = iequals(parts[1], "large");
-			Pos startpos(lexical_cast<int>(parts[2]), lexical_cast<int>(parts[3]));
-			Pos endpos(lexical_cast<int>(parts[4]), lexical_cast<int>(parts[5]));
-			obj = new ObstacleWorldObject(startpos, endpos, large);
+			Coord startcoord(lexical_cast<float>(parts[2]), lexical_cast<float>(parts[3]));
+			Coord endcoord(lexical_cast<float>(parts[4]), lexical_cast<float>(parts[5]));
+			obj = new ObstacleWorldObject(startcoord, endcoord, large);
 		} else {
 			throw runtime_error("Unexpected type '" + parts[0] + "' in readWorldObjects");
 		}
@@ -49,11 +49,11 @@ void ieee::writeWorldObjects(ostream &out, const World &world) {
 	for (World::const_iterator i = world.begin(); i != world.end(); ++i) {
 		if (const VictimWorldObject *victim = dynamic_cast<const VictimWorldObject *>(&*i)) {
 			out << "victim ";
-			out << victim->getPos().x << " " << victim->getPos().y << endl;
+			out << victim->getCoord().x << " " << victim->getCoord().y << endl;
 		} else if (const ObstacleWorldObject *obstacle = dynamic_cast<const ObstacleWorldObject *>(&*i)) {
 			out << "obstacle " << (obstacle->isLarge() ? "large " : "small ");
-			out << obstacle->getStartPos().x << " " << obstacle->getStartPos().y << " ";
-			out << obstacle->getEndPos().x << " " << obstacle->getEndPos().y << endl;
+			out << obstacle->getStartCoord().x << " " << obstacle->getStartCoord().y << " ";
+			out << obstacle->getEndCoord().x << " " << obstacle->getEndCoord().y << endl;
 		} else {
 			throw runtime_error("Unknown WorldObject encountered in writeWorldObjects");
 		}

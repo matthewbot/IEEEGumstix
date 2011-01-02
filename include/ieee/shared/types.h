@@ -8,6 +8,8 @@
 
 namespace ieee {
 	struct Pos {
+		typedef int value_type;
+
 		int x, y;
 
 		inline bool operator==(const Pos &pos) const { return pos.x == x && pos.y == y; }
@@ -52,6 +54,8 @@ namespace ieee {
 	Dir radToNearestDir(float rad);
 
 	struct Coord {
+		typedef float value_type;
+
 		float x, y;
 
 		inline Coord() { }
@@ -60,6 +64,35 @@ namespace ieee {
 
 		inline bool operator<(const Pos &pos) const;
 	};
+
+	std::ostream &operator<<(std::ostream &stream, const Coord &coord);
+
+	template <typename T> T sqr(T val) { return val*val; }
+
+	// valid for Coord or Pos
+	template <typename T> typename T::value_type distance(const T &a, const T &b) {
+		return static_cast<typename T::value_type>(sqrt(sqr(a.x - b.x) + sqr(a.y - b.y)));
+	}
+
+	template <typename T, typename TIter> std::pair<T, T> findMinMax(TIter val, TIter end) {
+		T min = *val;
+		T max = *val;
+		val++;
+
+		for (; val != end; val++) {
+			if (val->x < min.x)
+				min.x = val->x;
+			else if (val->x > max.x)
+				max.x = val->x;
+
+			if (val->y < min.y)
+				min.y = val->y;
+			else if (val->y > max.y)
+				max.y = val->y;
+		}
+
+		return make_pair(min, max);
+	}
 
 	typedef std::vector<Coord> CoordList;
 

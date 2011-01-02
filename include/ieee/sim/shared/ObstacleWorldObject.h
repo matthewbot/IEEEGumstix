@@ -6,25 +6,29 @@
 namespace ieee {
 	class ObstacleWorldObject : public WorldObject {
 		public:
-			ObstacleWorldObject(const Pos &start, const Pos &end, bool large);
+			ObstacleWorldObject(const Coord &startcoord, const Coord &endcoord, bool large);
 			virtual ~ObstacleWorldObject();
-			
-			virtual void fillWorldGrid(WorldGrid &grid) const;			
-			virtual int selectionTest(const Pos &selectpos) const;
-			virtual void selectionMoved(int id, const Pos &newpos);
 
-			inline const Pos &getStartPos() const { return startpos; }
-			inline const Pos &getEndPos() const { return endpos; }
+			virtual void fillWorldGrid(WorldGrid &grid, const CoordScale &gridscale) const;
+			virtual int selectionTest(const Coord &selectpos) const;
+			virtual void selectionMoved(int id, const Coord &newpos);
+
+			inline const Coord &getStartCoord() const { return startcoord; }
+			inline const Coord &getEndCoord() const { return endcoord; }
 			inline bool isLarge() const { return large; }
-			
-			inline void setStartPos(const Pos &startpos) { this->startpos = startpos; }
-			inline void setEndPos(const Pos &endpos) { this->endpos = endpos; };
-			
+
+			inline void setStartCoord(const Coord &startcoord) { this->startcoord = startcoord; }
+			inline void setEndCoord(const Coord &endcoord) { this->endcoord = endcoord; };
+
+			static const float SMALL_WIDTH=2, LARGE_WIDTH=4;
+
+			float getWidth() const;
+
 		private:
-			Pos startpos, endpos;
+			Coord startcoord, endcoord;
 			bool large;
-			
-			static void fillLine(WorldGrid &grid, Pos start, Pos end, WorldGrid::GridSquare square);
+
+			static void shadeQuad(const Pos (&poses)[4], WorldGrid &grid, WorldGrid::GridSquare square);
 	};
 }
 

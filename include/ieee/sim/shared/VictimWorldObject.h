@@ -7,18 +7,19 @@
 namespace ieee {
 	class VictimWorldObject : public WorldObject {
 		public:
-			VictimWorldObject(const Pos &pos);
+			VictimWorldObject(const Coord &coord);
 			virtual ~VictimWorldObject();
 
-			virtual void fillWorldGrid(WorldGrid &grid) const;
-			virtual int selectionTest(const Pos &selectpos) const;
-			virtual void selectionMoved(int id, const Pos &newpos);
+			virtual void fillWorldGrid(WorldGrid &grid, const CoordScale &gridscale) const;
+			virtual int selectionTest(const Coord &selectcoord) const;
+			virtual void selectionMoved(int id, const Coord &newcoord);
 
-			inline const Pos &getPos() const { return pos; }
-			inline void setPos(const Pos &pos) { this->pos = pos; }
+			inline const Coord &getCoord() const { return coord; }
+			inline void setCoord(const Coord &coord) { this->coord = coord; }
 
+			static const float RADIUS = 4;
 		private:
-			Pos pos;
+			Coord coord;
 	};
 }
 
