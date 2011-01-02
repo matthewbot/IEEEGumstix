@@ -13,7 +13,7 @@ namespace ieee {
 					virtual void onWorldDragged(const Coord &coord) =0;
 			};
 
-			ObjectPanelLayer(const World &world, const CoordScale &gridscale, Callbacks &callbacks);
+			ObjectPanelLayer(const World &world, Callbacks &callbacks);
 
 			static const int WEIGHT = 8;
 			virtual int getWeight() const;
@@ -25,7 +25,6 @@ namespace ieee {
 
 		private:
 			const World &world;
-			const CoordScale &gridscale;
 			Callbacks &callbacks;
 
 			bool dragging;

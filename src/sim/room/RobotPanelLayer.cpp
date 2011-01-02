@@ -4,15 +4,14 @@
 using namespace ieee;
 using namespace std;
 
-RobotPanelLayer::RobotPanelLayer(const Robot &robot, const CoordScale &gridscale, const CoordScale &victimscale)
+RobotPanelLayer::RobotPanelLayer(const Robot &robot, const CoordScale &victimscale)
 : robot(robot),
-  gridscale(gridscale),
   victimscale(victimscale) { }
 
 int RobotPanelLayer::getWeight() const { return WEIGHT; }
 
 void RobotPanelLayer::render(wxPaintDC &dc, const CoordScale &drawscale) const {
-	const float minsize = min(drawscale.sx/gridscale.sx, drawscale.sy/gridscale.sy);
+	const float minsize = min(drawscale.sx, drawscale.sy)*10;
 
 	Pos pos = drawscale.coordToPos(robot.getPosition());
 	const float thickness = minsize * .3;

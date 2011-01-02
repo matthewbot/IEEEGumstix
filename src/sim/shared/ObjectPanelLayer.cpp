@@ -6,16 +6,15 @@
 using namespace ieee;
 using namespace std;
 
-ObjectPanelLayer::ObjectPanelLayer(const World &world, const CoordScale &gridscale, Callbacks &callbacks)
+ObjectPanelLayer::ObjectPanelLayer(const World &world, Callbacks &callbacks)
 : world(world),
-  gridscale(gridscale),
   callbacks(callbacks),
   dragging(false) { }
 
 int ObjectPanelLayer::getWeight() const { return WEIGHT; }
 
 void ObjectPanelLayer::render(wxPaintDC &dc, const CoordScale &drawscale) const {
-	const float minsize = min(drawscale.sx/gridscale.sx, drawscale.sy/gridscale.sy);
+	const float minsize = min(drawscale.sx, drawscale.sy)*10;
 
 	for (World::const_iterator i = world.begin(); i != world.end(); ++i) {
 		if (const VictimWorldObject *victim = dynamic_cast<const VictimWorldObject *>(&*i)) {
