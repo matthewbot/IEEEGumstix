@@ -27,6 +27,7 @@ namespace ieee {
 				RouteEvaluator::Config routeevalconfig;
 			};
 
+			// RoomPlanner keeps a reference to the Config, but assumes the config does not change
 			RoomPlanner(const SensorPredictor &sensorpred, const WorldGrid &worldmap, const Config &config);
 
 			inline const CoordScale &getGridScale() const { return config.gridscale; }
@@ -38,7 +39,6 @@ namespace ieee {
 			inline bool isVictimIdentified(const Pos &pos) const { return identifiedvictims.find(pos) != identifiedvictims.end(); }
 			inline void setVictimIdentified(const Pos &pos) { identifiedvictims.insert(pos); }
 			inline const PosSet &getIdentifiedVictims() const { return identifiedvictims; }
-			inline void resetVictims() { identifiedvictims.clear(); }
 
 		private:
 			const Config &config;

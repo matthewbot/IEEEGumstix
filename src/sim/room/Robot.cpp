@@ -5,20 +5,21 @@
 using namespace ieee;
 using namespace std;
 
-Robot::Robot(const Coord &startpos, const WorldGrid &grid, const RoomPlanner::Config &roomplannerconfig)
+Robot::Robot(const WorldGrid &grid, const RoomPlanner::Config &roomplannerconfig, const Coord &pos, float dir)
 : sensorpred(55, M_PI/4, .15),
   grid(grid),
-  map(grid.getWidth(), grid.getHeight()),
-  roomplanner(sensorpred, map, roomplannerconfig) {
-	reset(startpos);
+  map(grid.getWidth(), grid.getHeight()) {
+	reset(roomplannerconfig, pos, dir);
 }
 
-void Robot::reset(const Coord &pos, float dir) {
+void Robot::reset(const RoomPlanner::Config &roomplannerconfig, const Coord &pos, float dir) {
+	roomplannerptr.reset(new RoomPlanner(sensorpred, map, roomplannerconfig));
+
 	curpos = pos;
 	curdir = dir;
 	map.clear(WorldGrid::UNKNOWN);
 
-    const CoordScale &gridscale = roomplanner.getGridScale();
+    const CoordScale &gridscale = roomplannerptr->getGridScale();
 	Pos minpos = gridscale.coordToPos(pos.x-5, pos.y-5);
 	Pos maxpos = gridscale.coordToPos(pos.x+5, pos.y+5);
 
@@ -28,8 +29,6 @@ void Robot::reset(const Coord &pos, float dir) {
 			map[p] = grid[p];
 		}
 	}
-
-	roomplanner.resetVictims();
 
 	updateSensorsStep();
 	updatePathStep();
@@ -52,13 +51,13 @@ void Robot::moveStep() {
 	else if (plan.coords.size() > 1)
 		curpos = plan.coords[1];
 	else if (plan.identifyvictim)
-		roomplanner.setVictimIdentified(plan.victimpos);
+		roomplannerptr->setVictimIdentified(plan.victimpos);
 	else
 		throw runtime_error("Do nothing route?");
 }
 
 void Robot::updateSensorsStep() {
-    const CoordScale &gridscale = roomplanner.getGridScale();
+    const CoordScale &gridscale = roomplannerptr->getGridScale();
 	PosSet seenset = sensorpred.predictVision(curpos, curdir, grid, gridscale);
 
 	for (PosSet::const_iterator i = seenset.begin(); i != seenset.end(); ++i) {
@@ -67,6 +66,6 @@ void Robot::updateSensorsStep() {
 }
 
 void Robot::updatePathStep() {
-	plan = roomplanner.planRoute(curpos, radToNearestDir(curdir));
+	plan = roomplannerptr->planRoute(curpos, radToNearestDir(curdir));
 }
 

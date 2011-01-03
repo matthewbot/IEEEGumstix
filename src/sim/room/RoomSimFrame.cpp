@@ -70,7 +70,7 @@ RoomSimFrame::RoomPlannerConfig::RoomPlannerConfig() {
 
 RoomSimFrame::RoomSimFrame()
 : wxFrame(NULL, -1, _("Hello World"), wxDefaultPosition, wxSize(400, 400)),
-  robot(Coord(10, 10), world.getGrid(), roomplannerconfig),
+  robot(world.getGrid(), roomplannerconfig, Coord(10, 10)),
   worldgridlayer(world.getGrid(), robot.getGridScale()),
   mapgridlayer(robot.getMap(), robot.getGridScale()),
   objectlayer(world, *this),
@@ -119,7 +119,7 @@ void RoomSimFrame::onStepPressed(wxCommandEvent &evt) {
 }
 
 void RoomSimFrame::onResetPressed(wxCommandEvent &evt) {
-	robot.reset(Coord(10, 10));
+	robot.reset(roomplannerconfig, Coord(10, 10));
 	worldpanel.Refresh();
 }
 
