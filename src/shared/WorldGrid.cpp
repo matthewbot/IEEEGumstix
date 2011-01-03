@@ -15,3 +15,8 @@ void WorldGrid::clear(GridSquare square) {
 	fill(squares.data(), squares.data() + squares.num_elements(), square);
 }
 
+void WorldGrid::resizeClear(int w, int h, GridSquare square) {
+	squares.resize(extents[w][h]);
+	clear(square);
+}
+

@@ -2,6 +2,7 @@
 #define ROOMSIMFRAME_H
 
 #include <wx/wx.h>
+#include "ieee/sim/room/RoomSimSettingsDialog.h"
 #include "ieee/sim/room/RobotPanelLayer.h"
 #include "ieee/sim/shared/WorldPanel.h"
 #include "ieee/sim/shared/GridPanelLayer.h"
@@ -17,13 +18,20 @@ namespace ieee {
 			virtual void onWorldDragged(const Coord &pos);
 
 		private:
-			struct SimWorld : World {
-				SimWorld();
+			struct Settings : RoomSimSettingsDialog::Settings {
+				Settings();
 			};
 
 			struct RoomPlannerConfig : RoomPlanner::Config {
-				RoomPlannerConfig();
+				RoomPlannerConfig(const Settings &settings);
 			};
+
+			struct SimWorld : World {
+				SimWorld(const Settings &settings, const RoomPlannerConfig &config);
+			};
+
+			RoomSimSettingsDialog roomsimsettingsdialog;
+			Settings roomsimsettings;
 
 			RoomPlannerConfig roomplannerconfig;
 
@@ -48,6 +56,7 @@ namespace ieee {
 			void onMenuOpen(wxCommandEvent &event);
 			void onMenuSave(wxCommandEvent &event);
 			void onMenuQuit(wxCommandEvent &event);
+			void onMenuSettings(wxCommandEvent &event);
 			void onMenuObjects(wxCommandEvent &event);
 			void onMenuWorldGrid(wxCommandEvent &event);
 			void onMenuMapGrid(wxCommandEvent &event);

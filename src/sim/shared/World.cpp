@@ -6,7 +6,7 @@ using namespace ieee;
 using namespace boost;
 using namespace std;
 
-World::World(int w, int h) : grid(w, h), gridscale(w/100.0f, h/100.0f, -.5, -.5) { }
+World::World(int w, int h, const CoordScale &gridscale) : grid(w, h), gridscale(gridscale) { }
 
 World::iterator World::add(WorldObject *object) {
 	iterator pos = objects.insert(objects.end(), object);
@@ -22,5 +22,11 @@ void World::remove(iterator object) {
 void World::updateGrid() {
 	grid.clear();
 	for_each(objects.begin(), objects.end(), bind(&WorldObject::fillWorldGrid, _1, ref(grid), cref(gridscale)));
+}
+
+void World::resizeGrid(int width, int height, const CoordScale &gridscale) {
+	this->gridscale = gridscale;
+	grid.resizeClear(width, height);
+	updateGrid();
 }
 

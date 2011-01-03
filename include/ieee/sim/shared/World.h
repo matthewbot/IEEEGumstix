@@ -9,7 +9,7 @@ namespace ieee {
 		typedef boost::ptr_vector<WorldObject> WorldObjectList;
 
 		public:
-			World(int w, int h);
+			World(int w, int h, const CoordScale &gridscale);
 
 			typedef WorldObjectList::iterator iterator;
 			typedef WorldObjectList::const_iterator const_iterator;
@@ -26,7 +26,7 @@ namespace ieee {
 			inline const CoordScale &getGridScale() const { return gridscale; }
 
 			void updateGrid();
-			void setGridScale(const CoordScale &gridscale);
+			void resizeGrid(int w, int h, const CoordScale &gridscale);
 
 		private:
 			WorldGrid grid;

@@ -21,6 +21,8 @@ namespace ieee {
 			inline int getWidth() const { return squares.shape()[0]; }
 			inline int getHeight() const { return squares.shape()[1]; }
 
+			void resizeClear(int w, int h, GridSquare square=EMPTY);
+
 			inline bool inBounds(const Pos &pos) const {
 				if (pos.x < 0 || pos.x >= getWidth())
 					return false;

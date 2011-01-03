@@ -1,4 +1,5 @@
 #include "ieee/sim/room/RoomSimFrame.h"
+#include "ieee/sim/room/RoomSimSettingsDialog.h"
 #include "ieee/sim/shared/VictimWorldObject.h"
 #include "ieee/sim/shared/ObstacleWorldObject.h"
 #include "ieee/sim/shared/WorldIO.h"
@@ -10,6 +11,7 @@ using namespace std;
 enum {
 	STEP_BUTTON,
 	RESET_BUTTON,
+	SETTINGS_MENU,
 	OBJECTS_MENU,
 	WORLDGRID_MENU,
 	MAPGRID_MENU
@@ -21,13 +23,14 @@ BEGIN_EVENT_TABLE(RoomSimFrame, wxFrame)
 	EVT_MENU(wxID_OPEN, RoomSimFrame::onMenuOpen)
 	EVT_MENU(wxID_SAVE, RoomSimFrame::onMenuSave)
 	EVT_MENU(wxID_EXIT, RoomSimFrame::onMenuQuit)
+	EVT_MENU(SETTINGS_MENU, RoomSimFrame::onMenuSettings)
 	EVT_MENU(OBJECTS_MENU, RoomSimFrame::onMenuObjects)
 	EVT_MENU(WORLDGRID_MENU, RoomSimFrame::onMenuWorldGrid)
 	EVT_MENU(MAPGRID_MENU, RoomSimFrame::onMenuMapGrid)
 END_EVENT_TABLE()
 
-RoomSimFrame::SimWorld::SimWorld()
-: World(10, 10) {
+RoomSimFrame::SimWorld::SimWorld(const Settings &settings, const RoomPlannerConfig &config)
+: World(settings.gridwidth, settings.gridheight, config.gridscale) {
 	add(new ObstacleWorldObject(Coord(5, 35), Coord(35, 35), true));
 	add(new ObstacleWorldObject(Coord(25, 65), Coord(35, 95), true));
 	add(new ObstacleWorldObject(Coord(65, 35), Coord(95, 25), true));
@@ -38,13 +41,15 @@ RoomSimFrame::SimWorld::SimWorld()
 	add(new VictimWorldObject(Coord(85, 85)));
 }
 
+RoomSimFrame::Settings::Settings() {
+	gridwidth = gridheight = 10;
+}
 
-RoomSimFrame::RoomPlannerConfig::RoomPlannerConfig() {
+RoomSimFrame::RoomPlannerConfig::RoomPlannerConfig(const Settings &settings) {
 	static const float roomwidth = 100, roomheight = 100;
-	static const float gridwidth = 10, gridheight = 10;
 
-	gridscale.sx = gridwidth/roomwidth;
-	gridscale.sy = gridheight/roomheight;
+	gridscale.sx = settings.gridwidth/roomwidth;
+	gridscale.sy = settings.gridheight/roomheight;
     gridscale.xoff = gridscale.yoff = -.5;
 
 	static const float nodegridwidth = 10, nodegridheight = 10;
@@ -70,6 +75,9 @@ RoomSimFrame::RoomPlannerConfig::RoomPlannerConfig() {
 
 RoomSimFrame::RoomSimFrame()
 : wxFrame(NULL, -1, _("Hello World"), wxDefaultPosition, wxSize(400, 400)),
+  roomsimsettingsdialog(this, roomsimsettings),
+  roomplannerconfig(roomsimsettings),
+  world(roomsimsettings, roomsimsettings),
   robot(world.getGrid(), roomplannerconfig, Coord(10, 10)),
   worldgridlayer(world.getGrid(), roomplannerconfig.gridscale),
   mapgridlayer(robot.getMap(), roomplannerconfig.gridscale),
@@ -100,6 +108,9 @@ RoomSimFrame::RoomSimFrame()
 	file->AppendSeparator();
 	file->Append(wxID_EXIT, _T("&Quit"));
 
+	wxMenu *edit = new wxMenu();
+	edit->Append(SETTINGS_MENU, _T("&Settings"));
+
 	wxMenu *view = new wxMenu();
 	view->AppendCheckItem(OBJECTS_MENU, _T("&Objects"))->Check();
 	view->AppendSeparator();
@@ -108,6 +119,7 @@ RoomSimFrame::RoomSimFrame()
 
 	wxMenuBar *menubar = new wxMenuBar();
 	menubar->Append(file, _T("&File"));
+	menubar->Append(edit, _T("&Edit"));
 	menubar->Append(view, _T("&View"));
 
 	SetMenuBar(menubar);
@@ -145,6 +157,16 @@ void RoomSimFrame::onMenuSave(wxCommandEvent &evt) {
 
 void RoomSimFrame::onMenuQuit(wxCommandEvent &evt) {
 	Close(false);
+}
+
+void RoomSimFrame::onMenuSettings(wxCommandEvent &evt) {
+	if (!roomsimsettingsdialog.show())
+		return;
+
+	roomplannerconfig = RoomPlannerConfig(roomsimsettings);
+	world.resizeGrid(roomsimsettings.gridwidth, roomsimsettings.gridheight, roomplannerconfig.gridscale);
+	robot.reset(roomplannerconfig, Coord(10, 10));
+	worldpanel.Refresh();
 }
 
 void RoomSimFrame::onMenuObjects(wxCommandEvent &evt) {

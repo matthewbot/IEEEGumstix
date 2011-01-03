@@ -18,15 +18,16 @@ void Robot::reset(const RoomPlanner::Config &roomplannerconfig, const Coord &pos
 
 	curpos = pos;
 	curdir = dir;
-	map.clear(WorldGrid::UNKNOWN);
+	map.resizeClear(grid.getWidth(), grid.getHeight(), WorldGrid::UNKNOWN);
 
-	Pos minpos = roomplannerconfig.gridscale.coordToPos(pos.x-5, pos.y-5);
-	Pos maxpos = roomplannerconfig.gridscale.coordToPos(pos.x+5, pos.y+5);
+	Pos minpos = roomplannerconfig.gridscale.coordToPos(pos.x-10, pos.y-10);
+	Pos maxpos = roomplannerconfig.gridscale.coordToPos(pos.x+10, pos.y+10);
 
 	for (int x=minpos.x; x<=maxpos.x; x++) {
 		for (int y=minpos.y; y<=maxpos.y; y++) {
 			Pos p(x, y);
-			map[p] = grid[p];
+			if (grid.inBounds(p))
+				map[p] = grid[p];
 		}
 	}
 
