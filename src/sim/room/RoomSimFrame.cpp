@@ -71,10 +71,10 @@ RoomSimFrame::RoomPlannerConfig::RoomPlannerConfig() {
 RoomSimFrame::RoomSimFrame()
 : wxFrame(NULL, -1, _("Hello World"), wxDefaultPosition, wxSize(400, 400)),
   robot(world.getGrid(), roomplannerconfig, Coord(10, 10)),
-  worldgridlayer(world.getGrid(), robot.getGridScale()),
-  mapgridlayer(robot.getMap(), robot.getGridScale()),
+  worldgridlayer(world.getGrid(), roomplannerconfig.gridscale),
+  mapgridlayer(robot.getMap(), roomplannerconfig.gridscale),
   objectlayer(world, *this),
-  robotlayer(robot, robot.getVictimScale()),
+  robotlayer(robot, roomplannerconfig.victimscale),
   worldpanel(this, 100, 100),
   selectedid(-1),
   buttonpanel(this),

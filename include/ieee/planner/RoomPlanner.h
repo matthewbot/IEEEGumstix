@@ -30,10 +30,6 @@ namespace ieee {
 			// RoomPlanner keeps a reference to the Config, but assumes the config does not change
 			RoomPlanner(const SensorPredictor &sensorpred, const WorldGrid &worldmap, const Config &config);
 
-			inline const CoordScale &getGridScale() const { return config.gridscale; }
-			inline const CoordScale &getNodeScale() const { return config.nodescale; }
-			inline const CoordScale &getVictimScale() const { return config.victimscale; }
-
 			Plan planRoute(const Coord &curcoord, Dir curdir) const;
 
 			inline bool isVictimIdentified(const Pos &pos) const { return identifiedvictims.find(pos) != identifiedvictims.end(); }

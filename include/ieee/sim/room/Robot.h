@@ -24,8 +24,6 @@ namespace ieee {
 			inline const Coord &getDestination() const { return plan.coords.back(); }
 			inline const RoomPlanner::Plan &getPlan() const { return plan; }
 			inline const WorldGrid &getMap() const { return map; }
-			inline const CoordScale &getGridScale() const { return roomplannerptr->getGridScale(); }
-			inline const CoordScale &getVictimScale() const { return roomplannerptr->getVictimScale(); }
 
 		private:
 			void moveStep();
@@ -43,6 +41,7 @@ namespace ieee {
 			RoomPlanner::Plan plan;
 
 			boost::scoped_ptr<RoomPlanner> roomplannerptr;
+			const RoomPlanner::Config *roomplannerconfigptr;
 	};
 }
 

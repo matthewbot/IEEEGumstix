@@ -13,15 +13,15 @@ Robot::Robot(const WorldGrid &grid, const RoomPlanner::Config &roomplannerconfig
 }
 
 void Robot::reset(const RoomPlanner::Config &roomplannerconfig, const Coord &pos, float dir) {
+	roomplannerconfigptr = &roomplannerconfig;
 	roomplannerptr.reset(new RoomPlanner(sensorpred, map, roomplannerconfig));
 
 	curpos = pos;
 	curdir = dir;
 	map.clear(WorldGrid::UNKNOWN);
 
-    const CoordScale &gridscale = roomplannerptr->getGridScale();
-	Pos minpos = gridscale.coordToPos(pos.x-5, pos.y-5);
-	Pos maxpos = gridscale.coordToPos(pos.x+5, pos.y+5);
+	Pos minpos = roomplannerconfig.gridscale.coordToPos(pos.x-5, pos.y-5);
+	Pos maxpos = roomplannerconfig.gridscale.coordToPos(pos.x+5, pos.y+5);
 
 	for (int x=minpos.x; x<=maxpos.x; x++) {
 		for (int y=minpos.y; y<=maxpos.y; y++) {
@@ -46,7 +46,7 @@ void Robot::moveStep() {
 
 	float facedirrad = dirToRad(plan.facedirs[0]);
 
-	if (abs(curdir - facedirrad) > .1)
+	if (abs(curdir - facedirrad) > .01)
 		curdir = facedirrad;
 	else if (plan.coords.size() > 1)
 		curpos = plan.coords[1];
@@ -57,8 +57,7 @@ void Robot::moveStep() {
 }
 
 void Robot::updateSensorsStep() {
-    const CoordScale &gridscale = roomplannerptr->getGridScale();
-	PosSet seenset = sensorpred.predictVision(curpos, curdir, grid, gridscale);
+	PosSet seenset = sensorpred.predictVision(curpos, curdir, grid, roomplannerconfigptr->gridscale);
 
 	for (PosSet::const_iterator i = seenset.begin(); i != seenset.end(); ++i) {
 		map[*i] = grid[*i];
