@@ -5,41 +5,12 @@
 using namespace ieee;
 using namespace std;
 
-Robot::Robot(const Coord &startpos, const WorldGrid &grid)
+Robot::Robot(const Coord &startpos, const WorldGrid &grid, const RoomPlanner::Config &roomplannerconfig)
 : sensorpred(55, M_PI/4, .15),
   grid(grid),
   map(grid.getWidth(), grid.getHeight()),
   roomplanner(sensorpred, map, roomplannerconfig) {
 	reset(startpos);
-}
-
-Robot::RoomPlannerConfig::RoomPlannerConfig() {
-	static const float roomwidth = 100, roomheight = 100;
-	static const float gridwidth = 10, gridheight = 10;
-
-	gridscale.sx = gridwidth/roomwidth;
-	gridscale.sy = gridheight/roomheight;
-    gridscale.xoff = gridscale.yoff = -.5;
-
-	static const float nodegridwidth = 10, nodegridheight = 10;
-
-	nodescale.sx = nodegridwidth/roomwidth;
-	nodescale.sy = nodegridheight/roomheight;
-    nodescale.xoff = nodescale.yoff = 0;
-
-	static const int victimgridwidth = 10, victimgridheight = 10;
-
-	victimscale.sx = victimgridwidth/roomwidth;
-	victimscale.sy = victimgridheight/roomheight;
-	victimscale.xoff = victimscale.yoff = -.5;
-	victimradius = 4;
-	victimidentifyradius = 14;
-
-	routeevalconfig.pathcostfactor = 1;
-	routeevalconfig.revealedscorefactor = 6;
-	routeevalconfig.turncostconstant = 4;
-	routeevalconfig.turncostfactor = 1;
-	routeevalconfig.turncostdivider = 2;
 }
 
 void Robot::reset(const Coord &pos, float dir) {

@@ -21,6 +21,12 @@ namespace ieee {
 				SimWorld();
 			};
 
+			struct RoomPlannerConfig : RoomPlanner::Config {
+				RoomPlannerConfig();
+			};
+
+			RoomPlannerConfig roomplannerconfig;
+
 			SimWorld world;
 			Robot robot;
 

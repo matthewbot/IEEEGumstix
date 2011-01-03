@@ -38,9 +38,39 @@ RoomSimFrame::SimWorld::SimWorld()
 	add(new VictimWorldObject(Coord(85, 85)));
 }
 
+
+RoomSimFrame::RoomPlannerConfig::RoomPlannerConfig() {
+	static const float roomwidth = 100, roomheight = 100;
+	static const float gridwidth = 10, gridheight = 10;
+
+	gridscale.sx = gridwidth/roomwidth;
+	gridscale.sy = gridheight/roomheight;
+    gridscale.xoff = gridscale.yoff = -.5;
+
+	static const float nodegridwidth = 10, nodegridheight = 10;
+
+	nodescale.sx = nodegridwidth/roomwidth;
+	nodescale.sy = nodegridheight/roomheight;
+    nodescale.xoff = nodescale.yoff = 0;
+
+	static const int victimgridwidth = 10, victimgridheight = 10;
+
+	victimscale.sx = victimgridwidth/roomwidth;
+	victimscale.sy = victimgridheight/roomheight;
+	victimscale.xoff = victimscale.yoff = -.5;
+	victimradius = 4;
+	victimidentifyradius = 14;
+
+	routeevalconfig.pathcostfactor = 1;
+	routeevalconfig.revealedscorefactor = 6;
+	routeevalconfig.turncostconstant = 4;
+	routeevalconfig.turncostfactor = 1;
+	routeevalconfig.turncostdivider = 2;
+}
+
 RoomSimFrame::RoomSimFrame()
 : wxFrame(NULL, -1, _("Hello World"), wxDefaultPosition, wxSize(400, 400)),
-  robot(Coord(10, 10), world.getGrid()),
+  robot(Coord(10, 10), world.getGrid(), roomplannerconfig),
   worldgridlayer(world.getGrid(), robot.getGridScale()),
   mapgridlayer(robot.getMap(), robot.getGridScale()),
   objectlayer(world, *this),

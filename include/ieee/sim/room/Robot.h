@@ -10,7 +10,7 @@
 namespace ieee {
 	class Robot {
 		public:
-			Robot(const Coord &startpos, const WorldGrid &grid);
+			Robot(const Coord &startpos, const WorldGrid &grid, const RoomPlanner::Config &roomplannerconfig);
 
 			void reset(const Coord &pos, float dir=0);
 			void step();
@@ -40,11 +40,6 @@ namespace ieee {
 			WorldGrid map;
 			RoomPlanner::Plan plan;
 
-			struct RoomPlannerConfig : public RoomPlanner::Config {
-				RoomPlannerConfig();
-			};
-
-			RoomPlannerConfig roomplannerconfig;
 			RoomPlanner roomplanner;
 	};
 }
