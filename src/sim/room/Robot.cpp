@@ -14,20 +14,19 @@ Robot::Robot(const Coord &startpos, const WorldGrid &grid, const RoomPlanner::Co
 }
 
 void Robot::reset(const Coord &pos, float dir) {
-    const CoordScale &gridscale = roomplanner.getGridScale();
 	curpos = pos;
 	curdir = dir;
 	map.clear(WorldGrid::UNKNOWN);
 
-	Pos givenposes[] = {
-		gridscale.coordToPos(pos.x-5, pos.y-5),
-		gridscale.coordToPos(pos.x-5, pos.y+5),
-		gridscale.coordToPos(pos.x+5, pos.y-5),
-		gridscale.coordToPos(pos.x+5, pos.y+5),
-	};
+    const CoordScale &gridscale = roomplanner.getGridScale();
+	Pos minpos = gridscale.coordToPos(pos.x-5, pos.y-5);
+	Pos maxpos = gridscale.coordToPos(pos.x+5, pos.y+5);
 
-	for (int i=0; i<4; i++) {
-		map[givenposes[i]] = grid[givenposes[i]];
+	for (int x=minpos.x; x<=maxpos.x; x++) {
+		for (int y=minpos.y; y<=maxpos.y; y++) {
+			Pos p(x, y);
+			map[p] = grid[p];
+		}
 	}
 
 	roomplanner.resetVictims();
