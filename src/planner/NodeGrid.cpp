@@ -4,7 +4,14 @@ using namespace ieee;
 using namespace boost;
 using namespace std;
 
+NodeGrid::NodeGrid() { }
 NodeGrid::NodeGrid(int width, int height) : array(extents[width][height]) { }
+NodeGrid::NodeGrid(const NodeGrid &nodegrid) : array(nodegrid.array) { }
+
+NodeGrid &NodeGrid::operator=(const NodeGrid &nodegrid) {
+	array.resize(extents[nodegrid.getWidth()][nodegrid.getHeight()]);
+	array = nodegrid.array;
+}
 
 static Dir getVictimIDDir(const Pos &pos, const WorldGrid &grid);
 

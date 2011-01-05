@@ -23,6 +23,7 @@ namespace ieee {
 			inline float getDirection() const { return curdir; }
 			inline const Coord &getDestination() const { return plan.coords.back(); }
 			inline const RoomPlanner::Plan &getPlan() const { return plan; }
+			inline const RoomPlanner::PlanDebugInfo &getPlanDebugInfo() const { return plandebuginfo; }
 			inline const WorldGrid &getMap() const { return map; }
 
 		private:
@@ -39,6 +40,7 @@ namespace ieee {
 
 			WorldGrid map;
 			RoomPlanner::Plan plan;
+			RoomPlanner::PlanDebugInfo plandebuginfo;
 
 			boost::scoped_ptr<RoomPlanner> roomplannerptr;
 			const RoomPlanner::Config *roomplannerconfigptr;

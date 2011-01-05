@@ -66,6 +66,6 @@ void Robot::updateSensorsStep() {
 }
 
 void Robot::updatePathStep() {
-	plan = roomplannerptr->planRoute(curpos, radToNearestDir(curdir));
+	plan = roomplannerptr->planRoute(curpos, radToNearestDir(curdir), &plandebuginfo);
 }
 

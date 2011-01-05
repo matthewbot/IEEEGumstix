@@ -8,15 +8,18 @@ using namespace std;
 RoomPlanner::RoomPlanner(const SensorPredictor &sensorpred, const WorldGrid &worldmap, const Config &config)
 : sensorpred(sensorpred), worldmap(worldmap), config(config) { }
 
-RoomPlanner::Plan RoomPlanner::planRoute(const Coord &curcoord, Dir curdir) const {
+RoomPlanner::Plan RoomPlanner::planRoute(const Coord &curcoord, Dir curdir, PlanDebugInfo *debug) const {
 	Pos curpos = config.nodescale.coordToPos(curcoord);
-	NodeGrid map = NodeGrid::fromWorldGrid(worldmap, config.gridscale, config.nodescale);
+	NodeGrid nodegrid = NodeGrid::fromWorldGrid(worldmap, config.gridscale, config.nodescale);
 
-	Plan victimplan = planIdentifyNearestVictim(curpos, curdir, map);
+	if (debug)
+		debug->nodegrid = nodegrid;
+
+	Plan victimplan = planIdentifyNearestVictim(curpos, curdir, nodegrid);
 	if (victimplan.coords.size() > 0)
 		return victimplan;
 	else
-		return planSearchUnknown(curpos, curdir, map);
+		return planSearchUnknown(curpos, curdir, nodegrid);
 }
 
 PosList RoomPlanner::findUnidentifiedVictimPoses() const {

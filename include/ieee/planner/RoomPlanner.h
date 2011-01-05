@@ -18,6 +18,10 @@ namespace ieee {
 				Pos victimpos;
 			};
 
+			struct PlanDebugInfo {
+				NodeGrid nodegrid;
+			};
+
 			struct Config {
 				CoordScale gridscale;
 				CoordScale nodescale;
@@ -30,7 +34,7 @@ namespace ieee {
 			// RoomPlanner keeps a reference to the Config, but assumes the config does not change
 			RoomPlanner(const SensorPredictor &sensorpred, const WorldGrid &worldmap, const Config &config);
 
-			Plan planRoute(const Coord &curcoord, Dir curdir) const;
+			Plan planRoute(const Coord &curcoord, Dir curdir, PlanDebugInfo *debug=NULL) const;
 
 			inline bool isVictimIdentified(const Pos &pos) const { return identifiedvictims.find(pos) != identifiedvictims.end(); }
 			inline void setVictimIdentified(const Pos &pos) { identifiedvictims.insert(pos); }

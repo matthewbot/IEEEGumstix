@@ -82,7 +82,7 @@ RoomSimFrame::RoomSimFrame()
   worldgridlayer(world.getGrid(), roomplannerconfig.gridscale),
   mapgridlayer(robot.getMap(), roomplannerconfig.gridscale),
   objectlayer(world, *this),
-  robotlayer(robot, roomplannerconfig.victimscale),
+  robotlayer(robot, roomplannerconfig.victimscale, roomplannerconfig.nodescale),
   worldpanel(this, 100, 100),
   selectedid(-1),
   buttonpanel(this),

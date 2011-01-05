@@ -7,15 +7,21 @@
 namespace ieee {
 	class RobotPanelLayer : public WorldPanelLayer {
 		public:
-			RobotPanelLayer(const Robot &robot, const CoordScale &victimscale);
+			RobotPanelLayer(const Robot &robot, const CoordScale &victimscale, const CoordScale &nodescale);
 
 			static const int WEIGHT = 0;
 			virtual int getWeight() const;
 			virtual void render(wxPaintDC &dc, const CoordScale &drawscale) const;
 
 		private:
+			void drawRobot(wxPaintDC &dc, const CoordScale &drawscale) const;
+			void drawPlan(wxPaintDC &dc, const CoordScale &drawscale) const;
+			void drawIdentifiedVictims(wxPaintDC &dc, const CoordScale &drawscale) const;
+			void drawNodeGrid(wxPaintDC &dc, const CoordScale &drawscale) const;
+
 			const Robot &robot;
 			const CoordScale &victimscale;
+			const CoordScale &nodescale;
 	};
 }
 
