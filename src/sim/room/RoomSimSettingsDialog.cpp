@@ -13,7 +13,12 @@ RoomSimSettingsDialog::RoomSimSettingsDialog(wxWindow *parent, Settings &setting
   gridsizepanel(&fieldpanel),
   gridwidthtext(&gridsizepanel, -1, _(""), wxDefaultPosition, wxSize(40, wxDefaultCoord)),
   gridlabelx(&gridsizepanel, -1, _("x")),
-  gridheighttext(&gridsizepanel, -1, _(""), wxDefaultPosition, wxSize(40, wxDefaultCoord)) {
+  gridheighttext(&gridsizepanel, -1, _(""), wxDefaultPosition, wxSize(40, wxDefaultCoord)),
+  nodesizelabel(&fieldpanel, -1, _T("Node size")),
+  nodesizepanel(&fieldpanel),
+  nodewidthtext(&nodesizepanel, -1, _(""), wxDefaultPosition, wxSize(40, wxDefaultCoord)),
+  nodelabelx(&nodesizepanel, -1, _("x")),
+  nodeheighttext(&nodesizepanel, -1, _(""), wxDefaultPosition, wxSize(40, wxDefaultCoord)) {
 	wxBoxSizer *buttonsizer = new wxBoxSizer(wxHORIZONTAL);
 	buttonpanel.SetSizer(buttonsizer);
 	buttonsizer->Add(&cancelbutton, 0, wxALIGN_RIGHT);
@@ -25,11 +30,19 @@ RoomSimSettingsDialog::RoomSimSettingsDialog(wxWindow *parent, Settings &setting
 	gridsizesizer->Add(&gridlabelx, 0, wxALIGN_CENTER);
 	gridsizesizer->Add(&gridheighttext, 0, 0);
 
+	wxBoxSizer *nodesizesizer = new wxBoxSizer(wxHORIZONTAL);
+	nodesizepanel.SetSizer(nodesizesizer);
+	nodesizesizer->Add(&nodewidthtext, 0, 0);
+	nodesizesizer->Add(&nodelabelx, 0, wxALIGN_CENTER);
+	nodesizesizer->Add(&nodeheighttext, 0, 0);
+
 	wxFlexGridSizer *fieldsizer = new wxFlexGridSizer(2, 10, 10);
 	fieldsizer->AddGrowableCol(0);
 	fieldpanel.SetSizer(fieldsizer);
 	fieldsizer->Add(&gridsizelabel, 0, wxALIGN_CENTER_VERTICAL);
 	fieldsizer->Add(&gridsizepanel, 0, wxALIGN_RIGHT);
+	fieldsizer->Add(&nodesizelabel, 0, wxALIGN_CENTER_VERTICAL);
+	fieldsizer->Add(&nodesizepanel, 0, wxALIGN_RIGHT);
 
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	SetSizer(sizer);
@@ -40,6 +53,8 @@ RoomSimSettingsDialog::RoomSimSettingsDialog(wxWindow *parent, Settings &setting
 bool RoomSimSettingsDialog::show() {
 	gridwidthtext.SetValue(wxString() << settings.gridwidth);
 	gridheighttext.SetValue(wxString() << settings.gridheight);
+	nodewidthtext.SetValue(wxString() << settings.nodewidth);
+	nodeheighttext.SetValue(wxString() << settings.nodeheight);
 
 	if (ShowModal() != wxID_OK)
 		return false;
@@ -51,6 +66,12 @@ bool RoomSimSettingsDialog::show() {
 
 	if (gridheighttext.GetValue().ToLong(&tmp))
 		settings.gridheight = tmp;
+
+	if (nodewidthtext.GetValue().ToLong(&tmp))
+		settings.nodewidth = tmp;
+
+	if (nodeheighttext.GetValue().ToLong(&tmp))
+		settings.nodeheight = tmp;
 
 	return true;
 }

@@ -27,7 +27,7 @@ NodeGrid NodeGrid::fromWorldGrid(const WorldGrid &grid, const CoordScale &gridsc
 			Coord coord = nodescale.posToCoord(pos);
 			Node &node = nodes[pos];
 
-			Pos mingridpos = gridscale.coordToPos(coord.x-5, coord.y-5); // TODO should somehow compute width of a node from CoordScale
+			Pos mingridpos = gridscale.coordToPos(coord.x-5, coord.y-5);
 			Pos maxgridpos = gridscale.coordToPos(coord.x+5, coord.y+5);
 
 			// determine if passable

@@ -43,6 +43,7 @@ RoomSimFrame::SimWorld::SimWorld(const Settings &settings, const RoomPlannerConf
 
 RoomSimFrame::Settings::Settings() {
 	gridwidth = gridheight = 10;
+	nodewidth = nodeheight = 10;
 }
 
 RoomSimFrame::RoomPlannerConfig::RoomPlannerConfig(const Settings &settings) {
@@ -50,13 +51,13 @@ RoomSimFrame::RoomPlannerConfig::RoomPlannerConfig(const Settings &settings) {
 
 	gridscale.sx = settings.gridwidth/roomwidth;
 	gridscale.sy = settings.gridheight/roomheight;
-    gridscale.xoff = gridscale.yoff = -.5;
+	gridscale.xoff = gridscale.yoff = -.5;
 
-	static const float nodegridwidth = 10, nodegridheight = 10;
+	nodescale.sx = settings.nodewidth/roomwidth;
+	nodescale.sy = settings.nodeheight/roomheight;
+	nodescale.xoff = nodescale.yoff = 0;
 
-	nodescale.sx = nodegridwidth/roomwidth;
-	nodescale.sy = nodegridheight/roomheight;
-    nodescale.xoff = nodescale.yoff = 0;
+	cout << nodescale.sx << " " << nodescale.sy << endl;
 
 	static const int victimgridwidth = 10, victimgridheight = 10;
 
@@ -149,7 +150,7 @@ void RoomSimFrame::onMenuOpen(wxCommandEvent &evt) {
 void RoomSimFrame::onMenuSave(wxCommandEvent &evt) {
 	wxFileDialog savedialog(this, _("Save layout"), _(""), _("layout.dat"), _("DAT files (*.dat)|*.dat"), wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
 	if (savedialog.ShowModal() == wxID_CANCEL)
-		return;     // the user changed idea...
+		return;	 // the user changed idea...
 
 	ofstream out(savedialog.GetPath().fn_str());
 	writeWorldObjects(out, world);

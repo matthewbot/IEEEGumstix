@@ -9,6 +9,7 @@ namespace ieee {
 		public:
 			struct Settings {
 				int gridwidth, gridheight;
+				int nodewidth, nodeheight;
 			};
 
 			RoomSimSettingsDialog(wxWindow *parent, Settings &settings);
@@ -22,11 +23,18 @@ namespace ieee {
 			wxButton cancelbutton;
 
 			wxPanel fieldpanel;
+
 			wxStaticText gridsizelabel;
 			wxPanel gridsizepanel;
 			wxTextCtrl gridwidthtext;
 			wxStaticText gridlabelx;
 			wxTextCtrl gridheighttext;
+
+			wxStaticText nodesizelabel;
+			wxPanel nodesizepanel;
+			wxTextCtrl nodewidthtext;
+			wxStaticText nodelabelx;
+			wxTextCtrl nodeheighttext;
 	};
 }
 
