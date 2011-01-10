@@ -11,10 +11,10 @@ list(REMOVE_ITEM sources ${tests})
 add_library(ieeedrivers ${sources})
 
 add_executable(capturetest capturetest.cpp)
-target_link_libraries(capturetest ieeedrivers ${Boost_LIBRARIES} ${OpenCV_LIBS})
+target_link_libraries(capturetest ieeedrivers ieeeshared ${Boost_LIBRARIES} ${OpenCV_LIBS})
 
 add_executable(mousetest mousetest.cpp)
-target_link_libraries(mousetest ieeedrivers ${Boost_LIBRARIES})
+target_link_libraries(mousetest ieeedrivers ieeeshared ${Boost_LIBRARIES})
 
 install(TARGETS capturetest mousetest DESTINATION bin)
 

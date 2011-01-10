@@ -7,9 +7,12 @@ namespace ieee {
 	class Timer {
 		public:
 			Timer();
-			
+
+            void reset();
+
 			float getSeconds() const;
-			
+			inline float getMilliseconds() const { return getSeconds() * 1000; }
+
 		private:
 			timespec start;
 	};
