@@ -13,5 +13,8 @@ add_library(ieeedrivers ${sources})
 add_executable(capturetest capturetest.cpp)
 target_link_libraries(capturetest ieeedrivers ieeeshared ${Boost_LIBRARIES} ${OpenCV_LIBS})
 
-install(TARGETS capturetest DESTINATION bin)
+add_executable(lasertest lasertest.cpp)
+target_link_libraries(lasertest ieeedrivers ieeeshared ${Boost_LIBRARIES} ${OpenCV_LIBS})
+
+install(TARGETS capturetest lasertest DESTINATION bin)
 
