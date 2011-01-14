@@ -34,30 +34,18 @@ vector<int> LaserSensor::getReadings(LaserSensorDebug *debug) {
 }
 
 int LaserSensor::scanCol(const Mat &frame, const int col) const {
-	int row = frame.rows;
+	int bestrow = -1;
+	int bestval = config.minthresh;
 
-	while (true) {
-		while (--row >= 0) {
-			if (checkPix(&frame.data[3*(row*frame.cols + col)]))
-				break;
+	for (int row=0; row<frame.rows; row++) {
+		int val = pixVal(&frame.data[3*(row*frame.cols + col)]);
+		if (val > bestval) {
+			bestval = val;
+			bestrow = row;
 		}
-		if (row < 0)
-			return -1;
-		const int segstart = row;
-
-		while (--row >= 0) {
-			if (!checkPix(&frame.data[3*(row*frame.cols + col)]))
-				break;
-		}
-		const int segend = row;
-
-		const int segheight = segstart - segend;
-
-		if (segheight < config.minsegheight)
-			continue;
-
-		return segend + segheight/2;
 	}
+
+	return bestrow;
 }
 
 int LaserSensor::pixVal(const uchar *pix) const {

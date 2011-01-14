@@ -18,9 +18,7 @@ namespace ieee {
 			struct Config {
 				int gmult;
 				int brmult;
-
-				int segthresh;
-				int minsegheight;
+				int minthresh;
 			};
 
 			typedef std::vector<int> Readings;
@@ -35,7 +33,6 @@ namespace ieee {
 
 			int scanCol(const cv::Mat &frame, int col) const;
 			int pixVal(const uchar *pix) const;
-			inline bool checkPix(const uchar *pix) const { return pixVal(pix) > config.segthresh; }
 	};
 }
 

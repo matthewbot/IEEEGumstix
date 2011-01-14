@@ -16,8 +16,7 @@ struct LaserConfig : LaserSensor::Config {
 		brmult = -1;
 		gmult = 2;
 
-		segthresh = 80;
-		minsegheight = 2;
+		minthresh = 30;
 	};
 };
 
@@ -54,11 +53,11 @@ int main(int argc, char **argv) {
 		if ((key=waitKey(10)) >= 0) {
 			char chkey = (char)key;
 			if (chkey == 'u') {
-				laserconfig.segthresh += 5;
-				cout << "segthresh " << laserconfig.segthresh << endl;
+				laserconfig.minthresh += 5;
+				cout << "minthresh " << laserconfig.minthresh << endl;
 			} else if (chkey == 'd') {
-				laserconfig.segthresh -= 5;
-				cout << "segthresh " << laserconfig.segthresh << endl;
+				laserconfig.minthresh -= 5;
+				cout << "minthresh " << laserconfig.minthresh << endl;
 			} else {
 				break;
 			}
