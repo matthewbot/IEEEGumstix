@@ -21,6 +21,13 @@ vector<int> LaserSensor::getReadings(LaserSensorDebug *debug) {
 
 	if (debug) {
 		debug->rawframe = frame;
+		debug->greenframe.create(frame.rows, frame.cols, CV_8UC1);
+
+		for (int row=0; row<frame.rows; row++) {
+			for (int col=0; col<frame.cols; col++) {
+				debug->greenframe.data[row*frame.cols + col] = saturate_cast<uchar>(pixVal(&frame.data[3*(row*frame.cols + col)]));
+			}
+		}
 	}
 
 	return out;
@@ -53,11 +60,9 @@ int LaserSensor::scanCol(const Mat &frame, const int col) const {
 	}
 }
 
-bool LaserSensor::checkPix(const uchar *pix) const {
+int LaserSensor::pixVal(const uchar *pix) const {
 	int br = (int)pix[0] + pix[2];
 	int g = pix[1];
-	int sum = config.brmult*br + config.gmult*g;
-
-	return sum > config.segthresh;
+	return config.brmult*br + config.gmult*g;
 }
 

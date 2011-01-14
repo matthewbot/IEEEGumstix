@@ -31,6 +31,7 @@ int main(int argc, char **argv) {
 	LaserSensorDebug laserdebug;
 
 	namedWindow("rawframe");
+	namedWindow("greenframe");
 
 	while (true) {
 		Timer tim;
@@ -47,6 +48,7 @@ int main(int argc, char **argv) {
 		}
 
 		imshow("rawframe", rawframe);
+		imshow("greenframe", laserdebug.greenframe);
 
 		int key;
 		if ((key=waitKey(10)) >= 0) {

@@ -6,6 +6,7 @@
 namespace ieee {
 	struct LaserSensorDebug {
 		cv::Mat rawframe;
+		cv::Mat greenframe;
 	};
 }
 

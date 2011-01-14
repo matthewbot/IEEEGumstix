@@ -34,7 +34,8 @@ namespace ieee {
 			const Config &config;
 
 			int scanCol(const cv::Mat &frame, int col) const;
-			bool checkPix(const uchar *pix) const;
+			int pixVal(const uchar *pix) const;
+			inline bool checkPix(const uchar *pix) const { return pixVal(pix) > config.segthresh; }
 	};
 }
 
