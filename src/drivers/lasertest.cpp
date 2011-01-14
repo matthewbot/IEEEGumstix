@@ -28,14 +28,16 @@ int main(int argc, char **argv) {
 	V4LCapture cap("/dev/video1", 320, 240);
 	LaserSensor lasersensor(cap, laserconfig);
 	LaserSensorDebug laserdebug;
+	bool showtiming=false;
+	bool showgreen=false;
 
-	namedWindow("rawframe");
-	namedWindow("greenframe");
+	namedWindow("frame");
 
 	while (true) {
 		Timer tim;
 		LaserSensor::Readings readings = lasersensor.getReadings(&laserdebug);
-		cout << "getReadings(): " << tim.getMilliseconds() << " ms" << endl;
+		if (showtiming)
+			cout << "getReadings(): " << tim.getMilliseconds() << " ms" << endl;
 
 		Mat &rawframe = laserdebug.rawframe;
 		for (int col=0; col<readings.size(); col++) {
@@ -46,8 +48,10 @@ int main(int argc, char **argv) {
 			putRedPix(rawframe, row, col);
 		}
 
-		imshow("rawframe", rawframe);
-		imshow("greenframe", laserdebug.greenframe);
+		if (showgreen)
+			imshow("frame", laserdebug.greenframe);
+		else
+			imshow("frame", rawframe);
 
 		int key;
 		if ((key=waitKey(10)) >= 0) {
@@ -58,6 +62,13 @@ int main(int argc, char **argv) {
 			} else if (chkey == 'd') {
 				laserconfig.minthresh -= 5;
 				cout << "minthresh " << laserconfig.minthresh << endl;
+			} else if (chkey == 'v') {
+				int val = readings[readings.size()/2];
+				cout << "middle value " << val << endl;
+			} else if (chkey == 't') {
+				showtiming = !showtiming;
+			} else if (chkey == 'i') {
+				showgreen = !showgreen;
 			} else {
 				break;
 			}
