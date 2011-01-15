@@ -1,5 +1,5 @@
-#ifndef SIMFRAME_H
-#define SIMFRAME_H
+#ifndef ROOMSIMFRAME_H
+#define ROOMSIMFRAME_H
 
 #include <wx/wx.h>
 #include "ieee/sim/room/RobotPanelLayer.h"

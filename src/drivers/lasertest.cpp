@@ -1,5 +1,4 @@
 #include "ieee/drivers/LaserSensor.h"
-#include "ieee/drivers/LaserSensorDebug.h"
 #include "ieee/drivers/V4LCapture.h"
 #include "ieee/shared/Timer.h"
 #include <opencv/cv.h>
@@ -17,28 +16,27 @@ struct LaserConfig : LaserSensor::Config {
 		gmult = 2;
 		minval = 30;
 		maxpoints = 3;
-		lasersep = 5;
+		lasersep = 15;
+		exposure = 5000;
 	};
 };
 
 static void putPix(Mat &mat, int row, int col, int color);
 
 int main(int argc, char **argv) {
-	bool showtiming = false;
-	bool showgreen = false;
-	int exposure = 5000;
+	namedWindow("frame");
 
 	LaserConfig laserconfig;
-	V4LCapture cap(320, 240, "", exposure);
+	LaserSensor::Debug laserdebug;
+	laserconfig.debug = &laserdebug;
+	LaserSensor lasersensor(laserconfig);
 
-	LaserSensor lasersensor(cap, laserconfig);
-	LaserSensorDebug laserdebug;
-
-	namedWindow("frame");
+	bool showtiming = false;
+	bool showgreen = false;
 
 	while (true) {
 		Timer tim;
-		LaserSensor::Readings readings = lasersensor.getReadings(&laserdebug);
+		LaserSensor::RawReadings readings = lasersensor.captureRawReadings();
 		if (showtiming)
 			cout << "getReadings(): " << tim.getMilliseconds() << " ms" << endl;
 
@@ -73,17 +71,17 @@ int main(int argc, char **argv) {
 				cout << "middle values ";
 				for (int laser=0; laser<readings.size(); laser++) {
 					const vector<int> &vals = readings[laser];
-					cout << vals[vals.size()/2];
+					cout << vals[vals.size()/2] << " ";
 				}
 				cout << endl;
 			} else if (chkey == 'e') {
-				exposure += 100;
-				cout << "exposure " << exposure << endl;
-				cap.setExposure(exposure);
+				laserconfig.exposure += 100;
+				cout << "exposure " << laserconfig.exposure << endl;
+				lasersensor.setExposure(laserconfig.exposure);
 			} else if (chkey == 'r') {
-				exposure -= 100;
-				cout << "exposure " << exposure << endl;
-				cap.setExposure(exposure);
+				laserconfig.exposure -= 100;
+				cout << "exposure " << laserconfig.exposure << endl;
+				lasersensor.setExposure(laserconfig.exposure);
 			} else if (chkey == 't') {
 				showtiming = !showtiming;
 			} else if (chkey == 'i') {

@@ -4,30 +4,37 @@
 #include "ieee/drivers/V4LCapture.h"
 #include "ieee/drivers/LaserTrack.h"
 #include "ieee/shared/types.h"
-#include <boost/array.hpp>
-#include <utility>
 
 namespace cv {
 	class Mat; // predeclare to avoid pulling in cv/cv.h
 };
 
 namespace ieee {
-	class LaserSensorDebug; // predeclare to avoid pulling in cv/cv.h
-
 	class LaserSensor {
 		public:
-			struct Config : LaserTrack::Config {
+			struct Debug {
+				cv::Mat rawframe;
+				cv::Mat greenframe;
 			};
 
-			typedef LaserTrack::LineVec Readings;
+			struct Config : LaserTrack::Config {
+				inline Config() : debug(NULL) { }
 
-			LaserSensor(V4LCapture &cap, const Config &config);
+				int exposure;
+				Debug *debug;
+			};
 
-			Readings getReadings(LaserSensorDebug *debug=NULL);
+			typedef LaserTrack::LineVec RawReadings;
+
+			LaserSensor(const Config &config, const std::string &devname="");
+
+			RawReadings captureRawReadings();
+
+			inline void setExposure(int exposure) { cap.setExposure(exposure); }
 
 		private:
-			V4LCapture &cap;
 			const Config &config;
+			V4LCapture cap;
 	};
 }
 

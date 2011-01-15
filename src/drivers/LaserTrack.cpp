@@ -1,6 +1,5 @@
 #include "ieee/drivers/LaserTrack.h"
 #include <opencv/cv.h>
-#include <utility>
 
 using namespace ieee;
 using namespace cv;
@@ -55,7 +54,7 @@ void LaserTrack::scanCol(int col) {
 				bestlhrow = lh+row;
 			}
 		}
-		row += config.lasersep; // advance our current row by the laser seperation since we already got these pixels
+		row = bestlhrow + config.lasersep; // advance our current row by the laser seperation since we already got these pixels
 
 		vector<Entry>::iterator pos = greatestrows.begin(); // go through each of our greatest entry rows
 		for (; pos != greatestrows.end(); ++pos) {
