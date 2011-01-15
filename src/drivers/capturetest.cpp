@@ -9,7 +9,7 @@ using namespace cv;
 using namespace std;
 
 int main(int argc, char **argv) {
-	V4LCapture cap("/dev/video0", 320, 240);
+	V4LCapture cap(320, 240);
 
 	namedWindow("frame");
 

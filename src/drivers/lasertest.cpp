@@ -23,13 +23,15 @@ struct LaserConfig : LaserSensor::Config {
 static void putRedPix(Mat &mat, int row, int col);
 
 int main(int argc, char **argv) {
-	LaserConfig laserconfig;
+	bool showtiming = false;
+	bool showgreen = false;
+	int exposure = 5000;
 
-	V4LCapture cap("/dev/video1", 320, 240);
+	LaserConfig laserconfig;
+	V4LCapture cap(320, 240, "", exposure);
+
 	LaserSensor lasersensor(cap, laserconfig);
 	LaserSensorDebug laserdebug;
-	bool showtiming=false;
-	bool showgreen=false;
 
 	namedWindow("frame");
 
@@ -54,7 +56,7 @@ int main(int argc, char **argv) {
 			imshow("frame", rawframe);
 
 		int key;
-		if ((key=waitKey(10)) >= 0) {
+		while ((key=waitKey(10)) >= 0) {
 			char chkey = (char)key;
 			if (chkey == 'u') {
 				laserconfig.minthresh += 5;
@@ -65,12 +67,20 @@ int main(int argc, char **argv) {
 			} else if (chkey == 'v') {
 				int val = readings[readings.size()/2];
 				cout << "middle value " << val << endl;
+			} else if (chkey == 'e') {
+				exposure += 100;
+				cout << "exposure " << exposure << endl;
+				cap.setExposure(exposure);
+			} else if (chkey == 'r') {
+				exposure -= 100;
+				cout << "exposure " << exposure << endl;
+				cap.setExposure(exposure);
 			} else if (chkey == 't') {
 				showtiming = !showtiming;
 			} else if (chkey == 'i') {
 				showgreen = !showgreen;
 			} else {
-				break;
+				return 0;
 			}
 		}
 	}

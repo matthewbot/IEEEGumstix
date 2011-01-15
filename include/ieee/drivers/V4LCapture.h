@@ -3,19 +3,28 @@
 
 #include <string>
 #include <opencv/cv.h>
+#include <utility>
 
 namespace ieee {
 	class V4LCapture {
 		public:
-			V4LCapture(const std::string &filename, int width, int height);
+			V4LCapture(int width, int height, const std::string &filename="", int exposure=-1);
 			~V4LCapture();
-			
+
 			inline int getWidth() { return width; }
 			inline int getHeight() { return height; }
-			
+
 			void readFrame(cv::Mat &mat);
-		
+
+			void setAutoExposure(bool on=true);
+			void setExposure(int exposure);
+
 		private:
+			std::pair<bool, std::string> scanDevices();
+			std::pair<bool, std::string> openDevice(const std::string &filename);
+
+			bool setControl(int id, int val);
+
 			int fd;
 			int width, height;
 	};
