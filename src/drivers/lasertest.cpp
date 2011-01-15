@@ -15,12 +15,13 @@ struct LaserConfig : LaserSensor::Config {
 	LaserConfig() {
 		brmult = -1;
 		gmult = 2;
-
-		minthresh = 30;
+		minval = 30;
+		maxpoints = 3;
+		lasersep = 5;
 	};
 };
 
-static void putRedPix(Mat &mat, int row, int col);
+static void putPix(Mat &mat, int row, int col, int color);
 
 int main(int argc, char **argv) {
 	bool showtiming = false;
@@ -42,12 +43,16 @@ int main(int argc, char **argv) {
 			cout << "getReadings(): " << tim.getMilliseconds() << " ms" << endl;
 
 		Mat &rawframe = laserdebug.rawframe;
-		for (int col=0; col<readings.size(); col++) {
-			const int row = readings[col];
-			if (row == -1)
-				continue;
 
-			putRedPix(rawframe, row, col);
+		for (int laser=0; laser<readings.size(); laser++) {
+			const vector<int> &vals = readings[laser];
+			for (int col=0; col<vals.size(); col++) {
+				const int row = vals[col];
+				if (row == -1)
+					continue;
+
+				putPix(rawframe, row, col, laser);
+			}
 		}
 
 		if (showgreen)
@@ -59,14 +64,18 @@ int main(int argc, char **argv) {
 		while ((key=waitKey(10)) >= 0) {
 			char chkey = (char)key;
 			if (chkey == 'u') {
-				laserconfig.minthresh += 5;
-				cout << "minthresh " << laserconfig.minthresh << endl;
+				laserconfig.minval += 5;
+				cout << "minval " << laserconfig.minval << endl;
 			} else if (chkey == 'd') {
-				laserconfig.minthresh -= 5;
-				cout << "minthresh " << laserconfig.minthresh << endl;
+				laserconfig.minval -= 5;
+				cout << "minval " << laserconfig.minval << endl;
 			} else if (chkey == 'v') {
-				int val = readings[readings.size()/2];
-				cout << "middle value " << val << endl;
+				cout << "middle values ";
+				for (int laser=0; laser<readings.size(); laser++) {
+					const vector<int> &vals = readings[laser];
+					cout << vals[vals.size()/2];
+				}
+				cout << endl;
 			} else if (chkey == 'e') {
 				exposure += 100;
 				cout << "exposure " << exposure << endl;
@@ -86,7 +95,7 @@ int main(int argc, char **argv) {
 	}
 }
 
-static void putRedPix(Mat &mat, int row, int col) {
+static void putPix(Mat &mat, int row, int col, int color) {
 	for (int dr=0; dr<=0; dr++) {
 		for (int dc=0; dc<=0; dc++) {
 			const int r = row+dr;
@@ -96,8 +105,10 @@ static void putRedPix(Mat &mat, int row, int col) {
 				continue;
 
 			uchar *base = &mat.data[3*(r*mat.cols + c)];
-			base[0] = base[1] = 0;
-			base[2] = 255;
+			base[0] = 0;
+			base[1] = 0;
+			base[2] = 0;
+			base[color] = 255;
 		}
 	}
 }

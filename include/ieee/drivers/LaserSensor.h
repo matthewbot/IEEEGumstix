@@ -2,6 +2,7 @@
 #define LASERSENSOR_H
 
 #include "ieee/drivers/V4LCapture.h"
+#include "ieee/drivers/LaserTrack.h"
 #include "ieee/shared/types.h"
 #include <boost/array.hpp>
 #include <utility>
@@ -15,13 +16,10 @@ namespace ieee {
 
 	class LaserSensor {
 		public:
-			struct Config {
-				int gmult;
-				int brmult;
-				int minthresh;
+			struct Config : LaserTrack::Config {
 			};
 
-			typedef std::vector<int> Readings;
+			typedef LaserTrack::LineVec Readings;
 
 			LaserSensor(V4LCapture &cap, const Config &config);
 
@@ -30,9 +28,6 @@ namespace ieee {
 		private:
 			V4LCapture &cap;
 			const Config &config;
-
-			int scanCol(const cv::Mat &frame, int col) const;
-			int pixVal(const uchar *pix) const;
 	};
 }
 
