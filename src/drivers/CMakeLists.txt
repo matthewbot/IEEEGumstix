@@ -4,7 +4,7 @@ project(Drivers)
 find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIR})
 
-file(GLOB tests "*test.cpp")
+file(GLOB tests "*test*.cpp")
 file(GLOB sources "*.cpp")
 list(REMOVE_ITEM sources ${tests})
 
@@ -16,5 +16,8 @@ target_link_libraries(capturetest ieeedrivers ieeeshared ${Boost_LIBRARIES} ${Op
 add_executable(lasertest lasertest.cpp)
 target_link_libraries(lasertest ieeedrivers ieeeshared ${Boost_LIBRARIES} ${OpenCV_LIBS})
 
-install(TARGETS capturetest lasertest DESTINATION bin)
+add_executable(lasertest2 lasertest2.cpp)
+target_link_libraries(lasertest2 ieeedrivers ieeeshared ${Boost_LIBRARIES} ${OpenCV_LIBS})
+
+install(TARGETS capturetest lasertest lasertest2 DESTINATION bin)
 

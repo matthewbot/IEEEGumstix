@@ -99,7 +99,7 @@ static void putPix(Mat &mat, int row, int col, int color) {
 			const int r = row+dr;
 			const int c = col+dc;
 
-			if (r < 0 || c < 0 || r >= mat.rows || col >= mat.cols)
+			if (r < 0 || c < 0 || r >= mat.rows || c >= mat.cols)
 				continue;
 
 			uchar *base = &mat.data[3*(r*mat.cols + c)];
