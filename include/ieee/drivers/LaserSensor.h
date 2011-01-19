@@ -13,9 +13,23 @@ namespace cv {
 namespace ieee {
 	class LaserSensor {
 		public:
+			typedef LaserTrack::LineVec RawReadings;
+
+			struct DistAngle {
+				float dist; // in cm
+				float angle;
+
+				inline DistAngle() { }
+				inline DistAngle(float dist, float angle) : dist(dist), angle(angle) { }
+			};
+
+			typedef std::vector<DistAngle> DistAngleVec;
+			typedef std::vector<DistAngleVec> Readings;
+
 			struct Debug {
 				cv::Mat rawframe;
 				cv::Mat greenframe;
+				RawReadings rawreadings;
 			};
 
 			struct Calibration {
@@ -33,19 +47,6 @@ namespace ieee {
 
 				Debug *debug;
 			};
-
-			typedef LaserTrack::LineVec RawReadings;
-
-			struct DistAngle {
-				float dist; // in cm
-				float angle;
-
-				inline DistAngle() { }
-				inline DistAngle(float dist, float angle) : dist(dist), angle(angle) { }
-			};
-
-			typedef std::vector<DistAngle> DistAngleVec;
-			typedef std::vector<DistAngleVec> Readings;
 
 			LaserSensor(const Config &config, const std::string &devname="");
 
