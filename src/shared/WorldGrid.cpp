@@ -7,11 +7,11 @@ using namespace ieee;
 using namespace std;
 
 WorldGrid::WorldGrid(int w, int h, GridSquare clearsquare)
-: width(w), height(h), squares(new GridSquare [w*h]) {
+: squares(extents[w][h]) {
 	clear(clearsquare);
 }
 
 void WorldGrid::clear(GridSquare square) {
-	fill(&squares[0], &squares[width*height], square);
+	fill(squares.data(), squares.data() + squares.num_elements(), square);
 }
 
