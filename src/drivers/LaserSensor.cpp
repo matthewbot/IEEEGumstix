@@ -48,3 +48,20 @@ LaserSensor::DistAngle LaserSensor::toDistAngle(int row, int col, int maxcol, in
 	return DistAngle(dist, angle);
 }
 
+auto_ptr<LaserSensor> LaserSensor::createAndHandleExposureFailure(Config &config, const std::string &devname) {
+	auto_ptr<LaserSensor> sensorptr;
+
+	try {
+		sensorptr = auto_ptr<LaserSensor>(new LaserSensor(config));
+	} catch (runtime_error &err) {
+		if (string(err.what()).find("exposure") != string::npos) {
+			config.exposure = -1;
+			sensorptr = auto_ptr<LaserSensor>(new LaserSensor(config));
+		} else
+			throw;
+	}
+
+	return sensorptr;
+}
+
+

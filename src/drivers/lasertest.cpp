@@ -50,7 +50,9 @@ int main(int argc, char **argv) {
 	LaserConfig laserconfig;
 	LaserSensor::Debug laserdebug;
 	laserconfig.debug = &laserdebug;
-	LaserSensor lasersensor(laserconfig);
+
+	const auto_ptr<LaserSensor> lasersensorptr(LaserSensor::createAndHandleExposureFailure(laserconfig));
+	LaserSensor &lasersensor = *lasersensorptr;
 
 	bool showtiming = false;
 	int display = 0;

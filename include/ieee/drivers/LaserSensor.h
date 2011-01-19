@@ -5,6 +5,7 @@
 #include "ieee/drivers/LaserTrack.h"
 #include "ieee/shared/types.h"
 #include <vector>
+#include <memory>
 
 namespace cv {
 	class Mat; // predeclare to avoid pulling in cv/cv.h
@@ -54,6 +55,8 @@ namespace ieee {
 			Readings captureReadings();
 
 			inline void setExposure(int exposure) { cap.setExposure(exposure); }
+
+			static std::auto_ptr<LaserSensor> createAndHandleExposureFailure(Config &config, const std::string &devname="");
 
 		private:
 			const Config &config;

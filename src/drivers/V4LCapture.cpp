@@ -38,10 +38,13 @@ V4LCapture::V4LCapture(int width, int height, const string &filename, int exposu
 	if (!result.first)
 		throw runtime_error(result.second);
 
-	if (exposure == -1)
-		setAutoExposure(true);
-	else
+	if (exposure == -1) {
+		try {
+			setAutoExposure(true);
+		} catch (runtime_error &err) { }
+	} else {
 		setExposure(exposure);
+	}
 
 	v4l2_format fmt; // set up video format
 	memset(&fmt, 0, sizeof(fmt));
