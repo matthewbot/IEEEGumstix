@@ -6,6 +6,11 @@ using namespace ieee;
 using namespace cv;
 using namespace std;
 
+Coord LaserSensor::DistAngle::toCoord(float rotate) const {
+	float a = angle + rotate;
+	return Coord(dist*cos(a), dist*sin(a));
+}
+
 LaserSensor::LaserSensor(const Config &config, const std::string &devname)
 : config(config), cap(320, 240, devname, config.exposure) { }
 

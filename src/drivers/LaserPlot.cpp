@@ -17,11 +17,9 @@ LaserPlot::LaserPlot(const Config &config, const LaserSensor::Readings &readings
 		const LaserSensor::DistAngleVec &distangles = readings[laser];
 
 		for (LaserSensor::DistAngleVec::const_iterator i = distangles.begin(); i != distangles.end(); ++i) {
-			const float angle = i->angle + curangle;
-			const float x = curcoord.x - i->dist*cos(angle);
-			const float y = curcoord.y - i->dist*sin(angle);
+			Coord coord = i->toCoord(M_PI/2);
 
-			Pos pos = gridscale.coordToPos(x, y);
+			Pos pos = gridscale.coordToPos(curcoord.x - coord.x, curcoord.y - coord.y);
 			if (!grid.inBounds(pos))
 				continue;
 

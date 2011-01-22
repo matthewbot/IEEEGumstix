@@ -151,8 +151,9 @@ static Mat displayReadingFrame(LaserSensor &laser, const LaserSensor::Debug &las
 		const LaserSensor::DistAngleVec &distangles = readings[laser];
 
 		for (LaserSensor::DistAngleVec::const_iterator i = distangles.begin(); i != distangles.end(); ++i) {
-			float x = image.cols/2 + sin(i->angle)*i->dist/100*image.cols;
-			float y = (image.rows-1) - cos(i->angle)*i->dist/100*image.rows;
+			Coord c = i->toCoord(M_PI/2);
+			float x = image.cols/2 + c.x/100*image.cols;
+			float y = (image.rows-1) - c.y/100*image.rows;
 
 			putPix(image, (int)y, (int)x, laser);
 		}
