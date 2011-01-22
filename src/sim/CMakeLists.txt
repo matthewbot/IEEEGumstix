@@ -6,5 +6,6 @@ find_package(wxWidgets COMPONENTS core base REQUIRED)
 include(${wxWidgets_USE_FILE})
 
 add_subdirectory(room)
+add_subdirectory(laser)
 add_subdirectory(shared)
 

@@ -1,5 +1,5 @@
 #ifndef LASERPLOT_H
-#define LASERPLOTTER_H
+#define LASERPLOT_H
 
 #include "ieee/drivers/LaserSensor.h"
 #include "ieee/shared/WorldGrid.h"
@@ -12,8 +12,8 @@ namespace ieee {
 				int maxlasers;
 				float maxangle;
 
-				int *minhits;
-				WorldGrid::GridSquare *squarelookup;
+				const int *minhits;
+				const WorldGrid::GridSquare *squarelookup;
 			};
 
 			LaserPlot(const Config &config, const LaserSensor::Readings &readings, const Coord &curcoord, float curangle, WorldGrid &grid, const CoordScale &gridscale);

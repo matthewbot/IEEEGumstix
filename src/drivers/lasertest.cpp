@@ -26,7 +26,7 @@ struct LaserConfig : LaserSensor::Config {
 		};
 
 		calibrations = calibrations_array;
-		viewangle = M_PI/3;
+		viewangle = 70.0 / 180 * M_PI;
 	};
 };
 
