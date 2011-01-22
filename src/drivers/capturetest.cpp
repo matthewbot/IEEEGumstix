@@ -19,12 +19,10 @@ int main(int argc, char **argv) {
 
 		cap.readFrame(frame);
 		cout << "readFrame(): " << tim.getMilliseconds() << " ms" << endl;
-		tim.reset();
 
 		imshow("frame", frame);
-		cout << "imshow(): " << tim.getMilliseconds() << " ms" << endl;
 
-		if(waitKey(10) >= 0) break;
+		if(waitKey(5) >= 0) break;
 	}
 }
 

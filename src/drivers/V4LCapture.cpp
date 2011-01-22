@@ -13,10 +13,6 @@ using namespace ieee;
 using namespace cv;
 using namespace std;
 
-struct YUVPixel {
-	uchar y, u, v;
-};
-
 struct BGRPixel {
 	uchar b, g, r;
 };
@@ -25,7 +21,7 @@ struct YUYV { // raw image format from camera, each corresponds to two YUV pixel
 	uchar y, u, y2, v;
 };
 
-static BGRPixel yuv2bgr(const YUVPixel &in);
+static void yuyv2bgr(const YUYV &yuyv, BGRPixel *outs);
 static void convertFrame(BGRPixel *frame, const YUYV *yuyv, int length);
 
 V4LCapture::V4LCapture(int width, int height, const string &filename, int exposure) : width(width), height(height) {
@@ -147,28 +143,30 @@ void V4LCapture::readFrame(Mat &mat) {
 
 static void convertFrame(BGRPixel *frame, const YUYV *rawframe, int length) {
 	while (length) {
-		YUVPixel pix1 = { rawframe->y, rawframe->u, rawframe->v}; // every 4-byte YUYV has two YUV pixels
-		YUVPixel pix2 = { rawframe->y2, rawframe->u, rawframe->v};
+		yuyv2bgr(*rawframe, frame); // so output the two as RGB
 		rawframe++;
+		frame += 2;
 		length -= sizeof(YUYV);
-
-		*frame++ = yuv2bgr(pix1); // so output the two as RGB
-		*frame++ = yuv2bgr(pix2);
 	}
 }
 
 // based on http://social.msdn.microsoft.com/Forums/en/windowsdirectshowdevelopment/thread/1071301e-74a2-4de4-be72-81c34604cde9
-static BGRPixel yuv2bgr(const YUVPixel &in) {
-	int c = (int)in.y-16;
-	int d = (int)in.u-128;
-	int e = (int)in.v-128;
+static void yuyv2bgr(const YUYV &yuyv, BGRPixel *outs) {
+	int c  = ((int)yuyv.y-16)*298;
+	int c2 = ((int)yuyv.y2-16)*298;
+	int d  = (int)yuyv.u-128;
+	int e  = (int)yuyv.v-128;
 
-	BGRPixel out;
-	out.r = saturate_cast<uchar>((298 * c           + 409 * e + 128) >> 8);
-	out.g = saturate_cast<uchar>((298 * c - 100 * d - 208 * e + 128) >> 8);
-	out.b = saturate_cast<uchar>((298 * c + 516 * d           + 128) >> 8);
+	int rtmp = 409 * e + 128;
+	int gtmp = -100 * d - 208 * e + 128;
+	int btmp = 516 * d + 128;
 
-	return out;
+	outs[0].r = saturate_cast<uchar>((c + rtmp) >> 8);
+	outs[0].g = saturate_cast<uchar>((c + gtmp) >> 8);
+	outs[0].b = saturate_cast<uchar>((c + btmp) >> 8);
+	outs[1].r = saturate_cast<uchar>((c2 + rtmp) >> 8);
+	outs[1].g = saturate_cast<uchar>((c2 + gtmp) >> 8);
+	outs[1].b = saturate_cast<uchar>((c2 + btmp) >> 8);
 }
 
 void V4LCapture::setAutoExposure(bool on) {
