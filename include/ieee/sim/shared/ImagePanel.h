@@ -14,7 +14,7 @@ namespace ieee {
 		private:
 			cv::Mat frame;
 			mutable wxBitmap bitmap;
-			mutable volatile bool bitmap_dirty;
+			mutable bool bitmap_dirty;
 
 			void regenBitmap() const;
 			void OnPaint(wxPaintEvent &paint);
