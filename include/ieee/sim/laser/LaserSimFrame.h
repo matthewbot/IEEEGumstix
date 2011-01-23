@@ -4,6 +4,7 @@
 #include "ieee/drivers/LaserPlot.h"
 #include "ieee/sim/laser/LaserSimWorkerThread.h"
 #include "ieee/sim/laser/LaserPanelLayer.h"
+#include "ieee/sim/laser/LaserImagePanel.h"
 #include "ieee/sim/shared/GridPanelLayer.h"
 #include "ieee/sim/shared/WorldPanel.h"
 #include "ieee/sim/shared/ImagePanel.h"
@@ -26,6 +27,8 @@ namespace ieee {
 			GridPanelLayer gridlayer;
 			LaserPanelLayer laserlayer;
 			WorldPanel *gridworldpanel; // pointers because wxNotebook insists on calling delete on these
+
+			LaserImagePanel *laserimagepanel;
 
 			ImagePanel *rawimagepanel;
 

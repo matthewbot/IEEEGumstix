@@ -11,13 +11,19 @@ namespace ieee {
 
 			void update(const cv::Mat &frame);
 
+			inline int getFrameWidth() const { return frame.cols; }
+			inline int getFrameHeight() const { return frame.rows; }
+
+		protected:
+			void OnPaint(wxPaintEvent &paint);
+
 		private:
 			cv::Mat frame;
 			mutable wxBitmap bitmap;
 			mutable bool bitmap_dirty;
 
 			void regenBitmap() const;
-			void OnPaint(wxPaintEvent &paint);
+
 
 			DECLARE_EVENT_TABLE()
 	};
