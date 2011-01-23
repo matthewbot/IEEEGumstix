@@ -10,7 +10,7 @@ namespace ieee {
 		public:
 			class Callbacks {
 				public:
-					virtual void onNewLaserData(const LaserSensor::Readings &readings) = 0;
+					virtual void onNewLaserData(const LaserSensor::Readings &readings, const LaserSensor::Debug &debug) = 0;
 			};
 
 			LaserSimWorkerThread(Callbacks &callbacks);
@@ -24,9 +24,10 @@ namespace ieee {
 			Callbacks &callbacks;
 
 			struct LaserConfig : LaserSensor::Config {
-				LaserConfig();
+				LaserConfig(LaserSensor::Debug *laserdebug);
 			};
 
+			LaserSensor::Debug laserdebug;
 			LaserConfig laserconfig;
 			const std::auto_ptr<LaserSensor> laserptr;
 			volatile bool stopflag;

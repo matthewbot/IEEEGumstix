@@ -2,7 +2,7 @@
 
 using namespace ieee;
 
-LaserSimWorkerThread::LaserConfig::LaserConfig() {
+LaserSimWorkerThread::LaserConfig::LaserConfig(LaserSensor::Debug *laserdebug) {
 	brmult = -1;
 	gmult = 2;
 	minval = 30;
@@ -18,11 +18,14 @@ LaserSimWorkerThread::LaserConfig::LaserConfig() {
 
 	calibrations = calibrations_array;
 	viewangle = 50.0 / 180 * M_PI;
+
+	debug = laserdebug;
 };
 
 LaserSimWorkerThread::LaserSimWorkerThread(Callbacks &callbacks)
 : wxThread(wxTHREAD_JOINABLE),
   callbacks(callbacks),
+  laserconfig(&laserdebug),
   laserptr(LaserSensor::createAndHandleExposureFailure(laserconfig)),
   stopflag(false) {
 	Create();
@@ -42,7 +45,7 @@ wxThread::ExitCode LaserSimWorkerThread::Entry() {
 		if (stopflag)
 			return 0;
 
-		callbacks.onNewLaserData(laserptr->captureReadings());
+		callbacks.onNewLaserData(laserptr->captureReadings(), laserdebug);
 	}
 }
 

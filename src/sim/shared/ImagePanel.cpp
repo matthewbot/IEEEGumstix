@@ -9,7 +9,7 @@ BEGIN_EVENT_TABLE(ImagePanel, wxPanel)
 	EVT_PAINT(ImagePanel::OnPaint)
 END_EVENT_TABLE()
 
-ImagePanel::ImagePanel() { }
+ImagePanel::ImagePanel(wxWindow *parent) : wxPanel(parent) { }
 
 void ImagePanel::update(const Mat &frame) {
 	this->frame = frame;

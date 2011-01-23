@@ -7,7 +7,7 @@
 namespace ieee {
 	class ImagePanel : public wxPanel {
 		public:
-			ImagePanel();
+			ImagePanel(wxWindow *parent);
 
 			void update(const cv::Mat &frame);
 

@@ -13,18 +13,24 @@ BEGIN_EVENT_TABLE(LaserSimFrame, wxFrame)
 END_EVENT_TABLE()
 
 LaserSimFrame::LaserSimFrame()
-: wxFrame(NULL, -1, _("Hello World"), wxDefaultPosition, wxSize(400, 400)),
+: wxFrame(NULL, -1, _("Hello World"), wxDefaultPosition, wxSize(450, 400)),
   thread(*this),
   grid(10, 10, WorldGrid::UNKNOWN),
   gridscale(.1, .1, -.5, -.5), // TODO get rid of const references in gridlayer and other places, use setters. This isn't really thread safe until this is chagned
   gridlayer(grid, gridscale),
   laserlayer(readings),
-  worldpanel(this) {
-	worldpanel.addLayer(&gridlayer);
-	worldpanel.addLayer(&laserlayer);
+  notebook(this, -1, wxDefaultPosition, wxDefaultSize, wxNB_RIGHT) {
+  	gridworldpanel = new WorldPanel(&notebook);
+	gridworldpanel->addLayer(&gridlayer);
+	gridworldpanel->addLayer(&laserlayer);
+
+	rawimagepanel = new ImagePanel(&notebook);
+
+	notebook.AddPage(gridworldpanel, _("Grid"));
+	notebook.AddPage(rawimagepanel, _("Raw"));
 
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-	sizer->Add(&worldpanel, 1, wxEXPAND);
+	sizer->Add(&notebook, 1, wxEXPAND);
 	SetSizer(sizer);
 
 	thread.start();
@@ -34,13 +40,15 @@ LaserSimFrame::~LaserSimFrame() {
 	thread.stop();
 }
 
-void LaserSimFrame::onNewLaserData(const LaserSensor::Readings &readings) {
+void LaserSimFrame::onNewLaserData(const LaserSensor::Readings &readings, const LaserSensor::Debug &debug) {
 	wxCriticalSectionLocker locker(grid_critsect);
 
 	this->readings = readings;
 
 	grid.clear(WorldGrid::UNKNOWN);
 	LaserPlot laserplot(laserplotconfig, readings, Coord(50, 100), M_PI/2, grid, gridscale);
+
+	rawimagepanel->update(debug.rawframe);
 
 	wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, WORLDGRID_UDPATE_EVENT);
 	AddPendingEvent(event);
