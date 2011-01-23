@@ -2,7 +2,7 @@
 
 using namespace ieee;
 
-LaserSimWorkerThread::LaserConfig::LaserConfig(LaserSensor::Debug *laserdebug) {
+LaserSimWorkerThread::LaserConfig::LaserConfig() {
 	brmult = -1;
 	gmult = 2;
 	minval = 30;
@@ -18,14 +18,12 @@ LaserSimWorkerThread::LaserConfig::LaserConfig(LaserSensor::Debug *laserdebug) {
 
 	calibrations = calibrations_array;
 	viewangle = 50.0 / 180 * M_PI;
-
-	debug = laserdebug;
 };
 
 LaserSimWorkerThread::LaserSimWorkerThread(Callbacks &callbacks)
 : wxThread(wxTHREAD_JOINABLE),
   callbacks(callbacks),
-  laserconfig(&laserdebug),
+  laserconfig(),
   laserptr(LaserSensor::createAndHandleExposureFailure(laserconfig)),
   stopflag(false) {
 	Create();
@@ -40,12 +38,37 @@ void LaserSimWorkerThread::stop() {
 	Wait();
 }
 
+LaserSensor::Readings LaserSimWorkerThread::getLaserReadings() const {
+	LaserSensor::Readings retval;
+	wxCriticalSectionLocker locker(critsect);
+	retval = laserreadings;
+	return retval;
+}
+
+LaserSensor::Debug LaserSimWorkerThread::getLaserDebug() const {
+	LaserSensor::Debug retval;
+	wxCriticalSectionLocker locker(critsect);
+	retval = laserdebug;
+	return retval;
+}
+
 wxThread::ExitCode LaserSimWorkerThread::Entry() {
+	LaserSensor::Debug debug;
+	laserconfig.debug = &debug; // awkward... TODO take this out of the config struct and put it as an argument to captureReadings
+
 	while (true) {
 		if (stopflag)
 			return 0;
 
-		callbacks.onNewLaserData(laserptr->captureReadings(), laserdebug);
+		LaserSensor::Readings readings = laserptr->captureReadings();
+
+		{
+			wxCriticalSectionLocker locker(critsect);
+			laserreadings = readings;
+			laserdebug = debug;
+		}
+
+		callbacks.onNewLaserData();
 	}
 }
 

@@ -20,7 +20,6 @@ namespace ieee {
 		private:
 			LaserSimWorkerThread thread;
 			WorldGrid grid;
-			mutable wxCriticalSection grid_critsect;
 			LaserSensor::Readings readings;
 
 			CoordScale gridscale;
@@ -39,7 +38,7 @@ namespace ieee {
 
 			DECLARE_EVENT_TABLE()
 
-			virtual void onNewLaserData(const LaserSensor::Readings &readings, const LaserSensor::Debug &debug);
+			virtual void onNewLaserData();
 			void OnWorldGridUpdateEvent(wxCommandEvent &evt);
 	};
 }
