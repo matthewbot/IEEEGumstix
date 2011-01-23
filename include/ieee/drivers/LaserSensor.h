@@ -42,19 +42,17 @@ namespace ieee {
 			};
 
 			struct Config : LaserTrack::Config {
-				inline Config() : debug(NULL) { }
+				inline Config() { }
 
 				const Calibration *calibrations;
 				int exposure;
 				float viewangle; // horizontal, in radians
-
-				Debug *debug;
 			};
 
 			LaserSensor(const Config &config, const std::string &devname="");
 
-			RawReadings captureRawReadings();
-			Readings captureReadings();
+			RawReadings captureRawReadings(Debug *debug=NULL);
+			Readings captureReadings(Debug *debug=NULL);
 
 			inline void setExposure(int exposure) { cap.setExposure(exposure); }
 

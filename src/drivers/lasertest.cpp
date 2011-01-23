@@ -30,10 +30,10 @@ struct LaserConfig : LaserSensor::Config {
 	};
 };
 
-typedef Mat (*DisplayFunc)(LaserSensor &laser, const LaserSensor::Debug &laserdebug, const LaserSensor::Config &laserconfig);
-static Mat displayRawFrame(LaserSensor &laser, const LaserSensor::Debug &laserdebug, const LaserSensor::Config &laserconfig);
-static Mat displayGreenFrame(LaserSensor &laser, const LaserSensor::Debug &laserdebug, const LaserSensor::Config &laserconfig);
-static Mat displayReadingFrame(LaserSensor &laser, const LaserSensor::Debug &laserdebug, const LaserSensor::Config &laserconfig);
+typedef Mat (*DisplayFunc)(LaserSensor &laser, const LaserSensor::Config &laserconfig);
+static Mat displayRawFrame(LaserSensor &laser, const LaserSensor::Config &laserconfig);
+static Mat displayGreenFrame(LaserSensor &laser, const LaserSensor::Config &laserconfig);
+static Mat displayReadingFrame(LaserSensor &laser, const LaserSensor::Config &laserconfig);
 
 static const DisplayFunc displayfuncs[] = {
 	displayRawFrame,
@@ -48,8 +48,6 @@ int main(int argc, char **argv) {
 	namedWindow("frame");
 
 	LaserConfig laserconfig;
-	LaserSensor::Debug laserdebug;
-	laserconfig.debug = &laserdebug;
 
 	const auto_ptr<LaserSensor> lasersensorptr(LaserSensor::createAndHandleExposureFailure(laserconfig));
 	LaserSensor &lasersensor = *lasersensorptr;
@@ -59,7 +57,7 @@ int main(int argc, char **argv) {
 
 	while (true) {
 		Timer tim;
-		Mat frame = displayfuncs[display](lasersensor, laserdebug, laserconfig);
+		Mat frame = displayfuncs[display](lasersensor, laserconfig);
 		if (showtiming)
 			cout << "Time: " << tim.getMilliseconds() << " ms" << endl;
 		imshow("frame", frame);
@@ -73,13 +71,6 @@ int main(int argc, char **argv) {
 			} else if (chkey == 'd') {
 				laserconfig.minval -= 5;
 				cout << "minval " << laserconfig.minval << endl;
-			} else if (chkey == 'v') {
-				cout << "middle values ";
-				for (int laser=0; laser<laserdebug.rawreadings.size(); laser++) {
-					const vector<int> &vals = laserdebug.rawreadings[laser];
-					cout << vals[vals.size()/2] << " ";
-				}
-				cout << endl;
 			} else if (chkey == 'e') {
 				laserconfig.exposure += 100;
 				cout << "exposure " << laserconfig.exposure << endl;
@@ -118,10 +109,11 @@ static void putPix(Mat &mat, int row, int col, int color) {
 	}
 }
 
-static Mat displayRawFrame(LaserSensor &laser, const LaserSensor::Debug &laserdebug, const LaserSensor::Config &laserconfig) {
-	LaserSensor::RawReadings readings = laser.captureRawReadings();
+static Mat displayRawFrame(LaserSensor &laser, const LaserSensor::Config &laserconfig) {
+	LaserSensor::Debug debug;
+	LaserSensor::RawReadings readings = laser.captureRawReadings(&debug);
 
-	Mat rawframe = laserdebug.rawframe;
+	Mat rawframe = debug.rawframe;
 	for (int laser=0; laser<readings.size(); laser++) {
 		const vector<int> &vals = readings[laser];
 		for (int col=0; col<vals.size(); col++) {
@@ -136,13 +128,14 @@ static Mat displayRawFrame(LaserSensor &laser, const LaserSensor::Debug &laserde
 	return rawframe;
 }
 
-static Mat displayGreenFrame(LaserSensor &laser, const LaserSensor::Debug &laserdebug, const LaserSensor::Config &laserconfig) {
-	laser.captureRawReadings();
+static Mat displayGreenFrame(LaserSensor &laser, const LaserSensor::Config &laserconfig) {
+	LaserSensor::Debug debug;
+	laser.captureRawReadings(&debug);
 
-	return laserdebug.greenframe;
+	return debug.greenframe;
 }
 
-static Mat displayReadingFrame(LaserSensor &laser, const LaserSensor::Debug &laserdebug, const LaserSensor::Config &laserconfig) {
+static Mat displayReadingFrame(LaserSensor &laser, const LaserSensor::Config &laserconfig) {
 	LaserSensor::Readings readings = laser.captureReadings();
 
 	Mat image(200, 200, CV_8UC3, Scalar(0, 0, 0));

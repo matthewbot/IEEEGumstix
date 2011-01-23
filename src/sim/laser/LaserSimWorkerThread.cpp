@@ -53,14 +53,12 @@ LaserSensor::Debug LaserSimWorkerThread::getLaserDebug() const {
 }
 
 wxThread::ExitCode LaserSimWorkerThread::Entry() {
-	LaserSensor::Debug debug;
-	laserconfig.debug = &debug; // awkward... TODO take this out of the config struct and put it as an argument to captureReadings
-
 	while (true) {
 		if (stopflag)
 			return 0;
 
-		LaserSensor::Readings readings = laserptr->captureReadings();
+		LaserSensor::Debug debug;
+		LaserSensor::Readings readings = laserptr->captureReadings(&debug);
 
 		{
 			wxCriticalSectionLocker locker(critsect);

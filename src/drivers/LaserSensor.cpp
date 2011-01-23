@@ -14,22 +14,23 @@ Coord LaserSensor::DistAngle::toCoord(float rotate) const {
 LaserSensor::LaserSensor(const Config &config, const std::string &devname)
 : config(config), cap(320, 240, devname, config.exposure) { }
 
-LaserSensor::RawReadings LaserSensor::captureRawReadings() {
+LaserSensor::RawReadings LaserSensor::captureRawReadings(Debug *debug) {
 	Mat frame;
 	cap.readFrame(frame);
 
 	LaserTrack track(config, frame);
 
-	if (config.debug) {
-		config.debug->rawframe = frame;
-		config.debug->greenframe = track.generateGreenChannel();
+	if (debug) {
+		debug->rawframe = frame;
+		debug->greenframe = track.generateGreenChannel();
+		debug->rawreadings = track.getLineVec();
 	}
 
 	return track.getLineVec();
 }
 
-LaserSensor::Readings LaserSensor::captureReadings() {
-	RawReadings rawreadings = captureRawReadings();
+LaserSensor::Readings LaserSensor::captureReadings(Debug *debug) {
+	RawReadings rawreadings = captureRawReadings(debug);
 
 	Readings readings(config.maxpoints);
 	for (int laser=0; laser<config.maxpoints; laser++) {
