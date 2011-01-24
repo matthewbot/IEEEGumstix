@@ -10,3 +10,6 @@ target_link_libraries(lasersim ieeeshared ieeesim ieeedrivers ${wxWidgets_LIBRAR
 
 install(TARGETS lasersim DESTINATION bin)
 
+include(IconLib)
+install_desktop_file(lasersim)
+

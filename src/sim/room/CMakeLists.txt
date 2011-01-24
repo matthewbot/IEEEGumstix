@@ -8,3 +8,6 @@ target_link_libraries(roomsim ieeeshared ieeeplanner ieeesim ${wxWidgets_LIBRARI
 
 install(TARGETS roomsim DESTINATION bin)
 
+include(IconLib)
+install_desktop_file(roomsim)
+

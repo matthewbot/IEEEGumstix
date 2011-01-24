@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=RoomSim
+Type=Application
+Exec=${CMAKE_INSTALL_PREFIX}/bin/roomsim
+Categories=Application;
+

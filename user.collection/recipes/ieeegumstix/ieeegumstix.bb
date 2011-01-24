@@ -7,7 +7,7 @@ SRC_URI = "git://github.com/matthewbot/IEEEGumstix.git;tag=master;protocol=git f
 
 S = "${WORKDIR}/git"
 
-EXTRA_OECMAKE = "-DOpenCV_DIR=${WORKDIR}"
+EXTRA_OECMAKE = "-DOpenCV_DIR=${WORKDIR} -DICONLIB_INSTALL_ICONS=TRUE -DICONLIB_MANUAL_INSTALL_DIR=${D}/usr/share/applications"
 
 inherit cmake
 

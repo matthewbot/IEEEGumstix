@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=LaserSim
+Type=Application
+Exec=${CMAKE_INSTALL_PREFIX}/bin/lasersim
+Categories=Application;
+

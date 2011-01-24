@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.6)
 project(IEEEGumstix)
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}") # to find FindOpenCV.cmake
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/misc)
 
 # set our include directory
 include_directories(include)
