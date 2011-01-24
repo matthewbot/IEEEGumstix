@@ -14,6 +14,7 @@ IMAGE_INSTALL += " \
   xrefresh \
   links \
   mplayer \
+  espeak \
   ieeegumstix \
  "
 
