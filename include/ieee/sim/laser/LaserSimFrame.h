@@ -21,18 +21,18 @@ namespace ieee {
 		private:
 			LaserSimWorkerThread thread;
 			WorldGrid grid;
+			CoordScale gridscale;
 			LaserSensor::Readings readings;
 
-			CoordScale gridscale;
+			wxStaticText rawreadingtext;
+			wxNotebook notebook;
+
+			WorldPanel *gridworldpanel; // pointers because wxNotebook insists on calling delete on these.. I have yet to think of anything better :/
 			GridPanelLayer gridlayer;
 			LaserPanelLayer laserlayer;
-			WorldPanel *gridworldpanel; // pointers because wxNotebook insists on calling delete on these
 
 			LaserImagePanel *laserimagepanel;
-
 			ImagePanel *rawimagepanel;
-
-			wxNotebook notebook;
 
 			struct LaserPlotConfig : LaserPlot::Config {
 				LaserPlotConfig();

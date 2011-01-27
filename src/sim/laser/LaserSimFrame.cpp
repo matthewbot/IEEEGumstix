@@ -19,14 +19,13 @@ LaserSimFrame::LaserSimFrame()
   gridscale(.1, .1, -.5, -.5),
   gridlayer(grid, gridscale),
   laserlayer(readings),
-  notebook(this, -1, wxDefaultPosition, wxDefaultSize, wxNB_RIGHT) {
-  	gridworldpanel = new WorldPanel(&notebook);
+  rawreadingtext(this, -1, _("")),
+  notebook(this, -1, wxDefaultPosition, wxDefaultSize, wxNB_RIGHT),
+  gridworldpanel(new WorldPanel(&notebook)),
+  laserimagepanel(new LaserImagePanel(&notebook)),
+  rawimagepanel(new ImagePanel(&notebook)) {
 	gridworldpanel->addLayer(&gridlayer);
 	gridworldpanel->addLayer(&laserlayer);
-
-	laserimagepanel = new LaserImagePanel(&notebook);
-
-	rawimagepanel = new ImagePanel(&notebook);
 
 	notebook.AddPage(gridworldpanel, _("Grid"));
 	notebook.AddPage(laserimagepanel, _("Laser"));
@@ -34,6 +33,7 @@ LaserSimFrame::LaserSimFrame()
 
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	sizer->Add(&notebook, 1, wxEXPAND);
+	sizer->Add(&rawreadingtext, 0, wxEXPAND);
 	SetSizer(sizer);
 
 	thread.start();
@@ -70,6 +70,15 @@ void LaserSimFrame::OnWorldGridUpdateEvent(wxCommandEvent& event) {
 	laserimagepanel->update(debug.rawframe, debug.rawreadings);
 
 	rawimagepanel->update(debug.rawframe);
+
+	stringstream buf;
+	buf << "Raw readings: ";
+	for (int laser=0; laser<readings.size(); laser++) {
+		const LaserTrack::LineData &linedata = debug.rawreadings[laser];
+		buf << linedata[linedata.size()/2] << " ";
+	}
+
+	rawreadingtext.SetLabel(wxString(buf.str().c_str(), wxConvUTF8)); // eh...
 
 	Refresh();
 }

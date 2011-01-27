@@ -7,8 +7,8 @@ LaserSimWorkerThread::LaserConfig::LaserConfig() {
 	gmult = 2;
 	minval = 30;
 	maxpoints = 3;
-	lasersep = 15;
-	exposure = 5000;
+	lasersep = 10;
+	exposure = 2000;
 
 	static const LaserSensor::Calibration calibrations_array[] = {
 		{ 3.6926e-4, 9.3072e-03, 5},
