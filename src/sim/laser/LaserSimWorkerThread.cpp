@@ -8,16 +8,16 @@ LaserSimWorkerThread::LaserConfig::LaserConfig() {
 	minval = 30;
 	maxpoints = 3;
 	lasersep = 10;
-	exposure = 2000;
+	exposure = 4000;
 
 	static const LaserSensor::Calibration calibrations_array[] = {
-		{ 3.6926e-4, 9.3072e-03, 5},
-		{ 3.6926e-4, 9.3072e-03, 5},
+		{ 2.4545e-4, 9.6096e-03, 0},
+		{ 1.9022e-4, 2.1028e-03, 0},
 		{ 3.6926e-4, 9.3072e-03, 5}
 	};
 
 	calibrations = calibrations_array;
-	viewangle = 50.0 / 180 * M_PI;
+	viewangle = 55.7 / 180 * M_PI;
 };
 
 LaserSimWorkerThread::LaserSimWorkerThread(Callbacks &callbacks)
