@@ -23,12 +23,14 @@ LaserSimFrame::LaserSimFrame()
   notebook(this, -1, wxDefaultPosition, wxDefaultSize, wxNB_RIGHT),
   gridworldpanel(new WorldPanel(&notebook)),
   laserimagepanel(new LaserImagePanel(&notebook)),
+  greenimagepanel(new ImagePanel(&notebook)),
   rawimagepanel(new ImagePanel(&notebook)) {
 	gridworldpanel->addLayer(&gridlayer);
 	gridworldpanel->addLayer(&laserlayer);
 
 	notebook.AddPage(gridworldpanel, _("Grid"));
 	notebook.AddPage(laserimagepanel, _("Laser"));
+	notebook.AddPage(greenimagepanel, _("Green"));
 	notebook.AddPage(rawimagepanel, _("Raw"));
 
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
@@ -68,7 +70,7 @@ void LaserSimFrame::OnWorldGridUpdateEvent(wxCommandEvent& event) {
 	LaserPlot laserplot(laserplotconfig, readings, Coord(50, 100), M_PI/2, grid, gridscale);
 
 	laserimagepanel->update(debug.rawframe, debug.rawreadings);
-
+	greenimagepanel->update(debug.greenframe);
 	rawimagepanel->update(debug.rawframe);
 
 	stringstream buf;

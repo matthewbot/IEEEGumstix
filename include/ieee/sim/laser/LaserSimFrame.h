@@ -32,6 +32,7 @@ namespace ieee {
 			LaserPanelLayer laserlayer;
 
 			LaserImagePanel *laserimagepanel;
+			ImagePanel *greenimagepanel;
 			ImagePanel *rawimagepanel;
 
 			struct LaserPlotConfig : LaserPlot::Config {

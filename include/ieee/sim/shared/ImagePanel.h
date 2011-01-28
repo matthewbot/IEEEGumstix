@@ -23,7 +23,8 @@ namespace ieee {
 			mutable bool bitmap_dirty;
 
 			void regenBitmap() const;
-
+			static void frameConv1C(wxImage &out, const cv::Mat &frame);
+			static void frameConv3C(wxImage &out, const cv::Mat &frame);
 
 			DECLARE_EVENT_TABLE()
 	};
