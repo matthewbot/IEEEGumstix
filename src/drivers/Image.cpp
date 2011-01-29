@@ -1,19 +1,9 @@
 #include "ieee/drivers/Image.h"
+#include <cassert>
 #include <stdexcept>
 
 using namespace ieee;
 using namespace std;
-
-int Image::bytesPerPixel(Format format) {
-	if (format == RGB)
-		return 3;
-	else if (format == GRAYSCALE)
-		return 1;
-	else if (format == YUYV)
-		return 2;
-	else
-		throw runtime_error("Bad format argument in bytesPerPixel");
-}
 
 Image::Image(Format format)
 : rows(0), cols(0), format(format) { }
@@ -50,11 +40,8 @@ void Image::reformat(int rows, int cols, Format format) {
 	resize(rows, cols);
 }
 
-uint8_t *Image::getPixel(int row, int col) {
-	return &data[(col+row*cols)*bytesPerPixel(format)];
-}
-const uint8_t *Image::getPixel(int row, int col) const {
-	return &data[(col+row*cols)*bytesPerPixel(format)];
+bool Image::inBounds(int row, int col) const {
+	return row >= 0 && col >= 0 && row < rows && col < cols;
 }
 
 void Image::clear() {
@@ -62,9 +49,9 @@ void Image::clear() {
 }
 
 static uint8_t u8sat(int i) {
-	if (i & ~0xFF == 0)
+	if ((i & ~0xFF) == 0)
 		return (uint8_t)i;
-	else if (i & (1 << 31)) // check sign bit (assumes 32 bit 2's signed complement)
+	else if (i < 0) // check sign bit (assumes 32 bit 2's signed complement)
 		return 0;
 	else
 		return 255;

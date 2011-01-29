@@ -9,7 +9,7 @@ namespace ieee {
 		public:
 			LaserImagePanel(wxWindow *parent);
 
-			void update(const cv::Mat &frame, const LaserSensor::RawReadings &readings);
+			void update(const Image &frame, const LaserSensor::RawReadings &readings);
 
 		protected:
 			void OnPaint(wxPaintEvent &event);

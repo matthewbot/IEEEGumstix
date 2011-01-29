@@ -1,20 +1,23 @@
 #include "ieee/drivers/LaserTrack.h"
-#include <opencv/cv.h>
+#include <algorithm>
+#include <stdint.h>
 
 using namespace ieee;
-using namespace cv;
 using namespace std;
 
-LaserTrack::LaserTrack(const Config &config, const Mat &frame)
+LaserTrack::LaserTrack(const Config &config, const Image &frame)
 : config(config),
   frame(frame),
   linevec(config.maxpoints) {
 	for (LineVec::iterator i = linevec.begin(); i != linevec.end(); ++i) {
-		i->resize(frame.cols);
+		i->resize(frame.getCols());
 	}
 
-	for (int col=0; col<frame.cols; col++)
+	for (int col=0; col<frame.getCols(); col+=2) {
 		scanCol(col);
+		for (int i=0; i<config.maxpoints; i++)
+			linevec[i][col+1] = linevec[i][col];
+	}
 }
 
 namespace {
@@ -37,18 +40,20 @@ namespace {
 void LaserTrack::scanCol(int col) {
 	vector<Entry> greatestrows;
 
-	for (int row=0; row<frame.rows; row++) {
-		const int val = pixVal(&frame.data[3*(row*frame.cols + col)]); // get the value of the current pixel
-		if (val < config.minval) // if it doesn't exceed the threshold
+	const int realminval = (config.minval << 8)-197248;
+
+	for (int row=0; row<frame.getRows(); row++) {
+		const int val = pixVal(frame.getPixel(row, col)); // get the value of the current pixel
+		if (val < realminval) // if it doesn't exceed the threshold
 			continue; // we skip it
 
 		int bestlhrow=row;
 		int bestlhval=val;
 		for (int lh=1; lh < config.lasersep; lh++) { // for each lookahead pixel
-			if (lh+row >= frame.rows) // don't go past the end of the frame
+			if (lh+row >= frame.getRows()) // don't go past the end of the frame
 				break;
 
-			int lhval = pixVal(&frame.data[3*((lh+row)*frame.cols + col)]); // get a new value for the lookahead pixel
+			int lhval = pixVal(frame.getPixel(row, col)); // get a new value for the lookahead pixel
 			if (lhval > bestlhval) { // if its greater than the best lookahead val
 				bestlhval = lhval; // its the new best lookahead val
 				bestlhrow = lh+row;
@@ -81,19 +86,21 @@ void LaserTrack::scanCol(int col) {
 	}
 }
 
-int LaserTrack::pixVal(const uchar *pix) const {
-	int br = (int)pix[0] + pix[2];
-	int g = pix[1];
-	return config.brmult*br + config.gmult*g;
+int LaserTrack::pixVal(const uint8_t *pix) const {
+	return -716*pix[1] - 825*pix[3];
 }
 
-cv::Mat LaserTrack::generateGreenChannel() const {
-	Mat out;
-	out.create(frame.rows, frame.cols, CV_8UC1);
+Image LaserTrack::generateGreenChannel() const {
+	Image out(frame.getRows(), frame.getCols(), Image::GRAYSCALE);
 
-	for (int row=0; row<frame.rows; row++) {
-		for (int col=0; col<frame.cols; col++) {
-			out.data[row*frame.cols + col] = saturate_cast<uchar>(pixVal(&frame.data[3*(row*frame.cols + col)]));
+	for (int row=0; row<frame.getRows(); row++) {
+		for (int col=0; col<frame.getCols(); col++) {
+			int pixval = (pixVal(frame.getPixel(row, col)) + 197248) >> 8;
+			if (pixval < 0)
+				pixval = 0;
+			else if (pixval > 255)
+				pixval = 255;
+			*out.getPixel(row, col) = (uint8_t)pixval;
 		}
 	}
 

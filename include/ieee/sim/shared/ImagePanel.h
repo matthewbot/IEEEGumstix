@@ -2,29 +2,29 @@
 #define IMAGEPANEL_H
 
 #include "ieee/sim/shared/WorldPanelLayer.h"
-#include <opencv/cv.h>
+#include "ieee/drivers/Image.h"
 
 namespace ieee {
 	class ImagePanel : public wxPanel {
 		public:
 			ImagePanel(wxWindow *parent);
 
-			void update(const cv::Mat &frame);
+			void update(const Image &frame);
 
-			inline int getFrameWidth() const { return frame.cols; }
-			inline int getFrameHeight() const { return frame.rows; }
+			inline int getFrameWidth() const { return frame.getCols(); }
+			inline int getFrameHeight() const { return frame.getRows(); }
 
 		protected:
 			void OnPaint(wxPaintEvent &paint);
 
 		private:
-			cv::Mat frame;
+			Image frame;
 			mutable wxBitmap bitmap;
 			mutable bool bitmap_dirty;
 
 			void regenBitmap() const;
-			static void frameConv1C(wxImage &out, const cv::Mat &frame);
-			static void frameConv3C(wxImage &out, const cv::Mat &frame);
+			static void frameConvGray(wxImage &out, const Image &frame);
+			static void frameConvRGB(wxImage &out, const Image &frame);
 
 			DECLARE_EVENT_TABLE()
 	};

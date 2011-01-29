@@ -1,9 +1,7 @@
 #include "ieee/drivers/LaserSensor.h"
-#include <opencv/cv.h>
 #include <vector>
 
 using namespace ieee;
-using namespace cv;
 using namespace std;
 
 Coord LaserSensor::DistAngle::toCoord(float rotate) const {
@@ -15,7 +13,7 @@ LaserSensor::LaserSensor(const Config &config, const std::string &devname)
 : config(config), cap(320, 240, devname, config.exposure) { }
 
 LaserSensor::RawReadings LaserSensor::captureRawReadings(Debug *debug) {
-	Mat frame;
+	Image frame;
 	cap.readFrame(frame);
 
 	LaserTrack track(config, frame);

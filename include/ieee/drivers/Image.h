@@ -3,17 +3,19 @@
 
 #include <vector>
 #include <stdint.h>
+#include <cassert>
 
 namespace ieee {
 	class Image {
 		public:
 			enum Format {
-				RGB,
-				GRAYSCALE,
-				YUYV
+				GRAYSCALE=1,
+				YUYV=2,
+				RGB=3
 			};
 
-			static int bytesPerPixel(Format f);
+			// CLEVER/STUPID HACK: the format's enum value is also the number of bytes per pixel
+			static int bytesPerPixel(Format f) { return f; }
 
 			Image(Format format=RGB);
 			Image(int rows, int cols, Format format=RGB);
@@ -25,13 +27,21 @@ namespace ieee {
 
 			inline int getRows() const { return rows; }
 			inline int getCols() const { return cols; }
+			inline Format getFormat() const { return format; }
 
 			uint8_t *getData() { return &data[0]; }
 			const uint8_t *getData() const { return &data[0]; }
 			int getDataLength() const { return data.size(); }
 
-			uint8_t *getPixel(int row, int col);
-			const uint8_t *getPixel(int row, int col) const;
+			bool inBounds(int row, int col) const;
+			inline uint8_t *getPixel(int row, int col) {
+				assert(inBounds(row, col));
+				return &data[(col+row*cols)*bytesPerPixel(format)];
+			}
+			inline const uint8_t *getPixel(int row, int col) const {
+				assert(inBounds(row, col));
+				return &data[(col+row*cols)*bytesPerPixel(format)];
+			}
 
 			void clear();
 

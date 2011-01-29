@@ -2,8 +2,8 @@
 #define V4LCAPTURE_H
 
 #include <string>
-#include <opencv/cv.h>
 #include <utility>
+#include "ieee/drivers/Image.h"
 
 namespace ieee {
 	class V4LCapture {
@@ -14,7 +14,7 @@ namespace ieee {
 			inline int getWidth() { return width; }
 			inline int getHeight() { return height; }
 
-			void readFrame(cv::Mat &mat);
+			void readFrame(Image &mat);
 
 			void setAutoExposure(bool on=true);
 			void setExposure(int exposure);

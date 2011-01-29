@@ -1,7 +1,6 @@
 #include "ieee/sim/laser/LaserImagePanel.h"
 
 using namespace ieee;
-using namespace cv;
 using namespace std;
 
 BEGIN_EVENT_TABLE(LaserImagePanel, ImagePanel)
@@ -10,7 +9,7 @@ END_EVENT_TABLE()
 
 LaserImagePanel::LaserImagePanel(wxWindow *parent) : ImagePanel(parent) { }
 
-void LaserImagePanel::update(const Mat &frame, const LaserSensor::RawReadings &readings) {
+void LaserImagePanel::update(const Image &frame, const LaserSensor::RawReadings &readings) {
 	ImagePanel::update(frame);
 
 	this->readings = readings;

@@ -1,11 +1,9 @@
 #ifndef LASERTRACK_H
 #define LASERTRACK_H
 
+#include "ieee/drivers/Image.h"
 #include <vector>
-
-namespace cv {
-	class Mat;
-}
+#include <stdint.h>
 
 namespace ieee {
 	class LaserTrack {
@@ -21,21 +19,21 @@ namespace ieee {
 			typedef std::vector<int> LineData;
 			typedef std::vector<LineData> LineVec;
 
-			LaserTrack(const Config &config, const cv::Mat &frame);
+			LaserTrack(const Config &config, const Image &frame);
 
 			inline const LineVec &getLineVec() const { return linevec; }
 			inline const LineData &getLine(int num) const { return linevec[num]; }
 
-			cv::Mat generateGreenChannel() const;
+			Image generateGreenChannel() const;
 
 		private:
 			const Config &config;
-			const cv::Mat &frame;
+			const Image &frame;
 			LineVec linevec;
 
 			void scanCol(int col);
 
-			int pixVal(const unsigned char *pix) const;
+			int pixVal(const uint8_t *pix) const;
 	};
 }
 

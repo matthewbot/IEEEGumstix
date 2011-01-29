@@ -1,8 +1,6 @@
 #include "ieee/sim/shared/ImagePanel.h"
-#include <opencv/cv.h>
 
 using namespace ieee;
-using namespace cv;
 using namespace std;
 
 BEGIN_EVENT_TABLE(ImagePanel, wxPanel)
@@ -11,7 +9,7 @@ END_EVENT_TABLE()
 
 ImagePanel::ImagePanel(wxWindow *parent) : wxPanel(parent) { }
 
-void ImagePanel::update(const Mat &frame) {
+void ImagePanel::update(const Image &frame) {
 	this->frame = frame;
 	bitmap_dirty = true;
 }
@@ -31,14 +29,16 @@ void ImagePanel::OnPaint(wxPaintEvent &ev) {
 }
 
 void ImagePanel::regenBitmap() const {
-	if (frame.data) {
-		wxImage image(frame.cols, frame.rows, false);
-		if (frame.channels() == 3)
-			frameConv3C(image, frame);
-		else if (frame.channels() == 1)
-			frameConv1C(image, frame);
+	if (frame.getRows() && frame.getCols()) {
+		wxImage image(frame.getCols(), frame.getRows(), false);
+		if (frame.getFormat() == Image::RGB)
+			frameConvRGB(image, frame);
+		else if (frame.getFormat() == Image::GRAYSCALE)
+			frameConvGray(image, frame);
+		else if (frame.getFormat() == Image::YUYV)
+			frameConvRGB(image, Image(frame, Image::RGB));
 		else
-			throw runtime_error("Bad number of channels in ImagePanel's frame Mat");
+			throw runtime_error("Bad format image in ImagePanel");
 
 		bitmap = image;
 	} else {
@@ -48,23 +48,17 @@ void ImagePanel::regenBitmap() const {
 	bitmap_dirty = false;
 }
 
-void ImagePanel::frameConv3C(wxImage &out, const cv::Mat &frame) {
-	uchar *imagedata = out.GetData();
-	const uchar *framedata = frame.data;
-	const uchar *framedata_end = framedata + frame.rows*frame.cols*3;
-	while (framedata != framedata_end) {
-		imagedata[0] = framedata[2]; // BGR -> RGB
-		imagedata[1] = framedata[1];
-		imagedata[2] = framedata[0];
-		imagedata += 3;
-		framedata += 3;
-	}
+void ImagePanel::frameConvRGB(wxImage &out, const Image &frame) {
+	unsigned char *imagedata = out.GetData();
+	const unsigned char *framedata = frame.getData();
+	const unsigned char *framedata_end = framedata + frame.getRows()*frame.getCols()*3;
+	copy(framedata, framedata_end, imagedata);
 }
 
-void ImagePanel::frameConv1C(wxImage &out, const cv::Mat &frame) {
-	uchar *imagedata = out.GetData();
-	const uchar *framedata = frame.data;
-	const uchar *framedata_end = framedata + frame.rows*frame.cols;
+void ImagePanel::frameConvGray(wxImage &out, const Image &frame) {
+	unsigned char *imagedata = out.GetData();
+	const unsigned char *framedata = frame.getData();
+	const unsigned char *framedata_end = framedata + frame.getRows()*frame.getCols();
 	while (framedata != framedata_end) {
 		imagedata[0] = *framedata;
 		imagedata[1] = *framedata;

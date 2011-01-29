@@ -8,21 +8,10 @@
 #include <string>
 #include <sstream>
 #include <stdexcept>
+#include <algorithm>
 
 using namespace ieee;
-using namespace cv;
 using namespace std;
-
-struct BGRPixel {
-	uchar b, g, r;
-};
-
-struct YUYV { // raw image format from camera, each corresponds to two YUV pixels
-	uchar y, u, y2, v;
-};
-
-static void yuyv2bgr(const YUYV &yuyv, BGRPixel *outs);
-static void convertFrame(BGRPixel *frame, const YUYV *yuyv, int length);
 
 V4LCapture::V4LCapture(int width, int height, const string &filename, int exposure) : width(width), height(height) {
 	std::pair<bool, std::string> result;
@@ -112,7 +101,9 @@ V4LCapture::~V4LCapture() {
 	close(fd); // close filehandle
 }
 
-void V4LCapture::readFrame(Mat &mat) {
+void V4LCapture::readFrame(Image &out) {
+	out.reformat(height, width, Image::YUYV);
+
 	v4l2_buffer buf; // dequeue our buffer (will block until the driver has actually written data to it)
 	memset(&buf, 0, sizeof(buf));
 	buf.index = 0;
@@ -128,45 +119,15 @@ void V4LCapture::readFrame(Mat &mat) {
 	}
 
 	// after we've dequeued the buffer, its safe to mmap in to our process so we can look at it
-	YUYV *rawframe = (YUYV *)mmap(NULL, buf.length, PROT_READ | PROT_WRITE, MAP_SHARED, fd, buf.m.offset);
-	if (rawframe == NULL)
+	uint8_t *data = (uint8_t *)mmap(NULL, buf.length, PROT_READ | PROT_WRITE, MAP_SHARED, fd, buf.m.offset);
+	if (data == NULL)
 		throw runtime_error("Failed to mmap buffer");
 
-	mat.create(height, width, CV_8UC3); // tell OpenCV to allocate memory for the Mat
-	convertFrame((BGRPixel *)mat.data, rawframe, width*height*2); // do our conversion directly from the mmap()ed buffer to OpenCV's memory
-
-	munmap(rawframe, buf.length); // unmap the buffer
+	copy(data, data+buf.length, out.getData());
+	munmap(data, buf.length); // unmap the buffer
 
 	if (ioctl(fd, VIDIOC_QBUF, &buf) == -1) // requeue it with the driver
 		throw runtime_error("Failed to re-queue buffer");
-}
-
-static void convertFrame(BGRPixel *frame, const YUYV *rawframe, int length) {
-	while (length) {
-		yuyv2bgr(*rawframe, frame); // so output the two as RGB
-		rawframe++;
-		frame += 2;
-		length -= sizeof(YUYV);
-	}
-}
-
-// based on http://social.msdn.microsoft.com/Forums/en/windowsdirectshowdevelopment/thread/1071301e-74a2-4de4-be72-81c34604cde9
-static void yuyv2bgr(const YUYV &yuyv, BGRPixel *outs) {
-	int c  = ((int)yuyv.y-16)*298;
-	int c2 = ((int)yuyv.y2-16)*298;
-	int d  = (int)yuyv.u-128;
-	int e  = (int)yuyv.v-128;
-
-	int rtmp = 409 * e + 128;
-	int gtmp = -100 * d - 208 * e + 128;
-	int btmp = 516 * d + 128;
-
-	outs[0].r = saturate_cast<uchar>((c + rtmp) >> 8);
-	outs[0].g = saturate_cast<uchar>((c + gtmp) >> 8);
-	outs[0].b = saturate_cast<uchar>((c + btmp) >> 8);
-	outs[1].r = saturate_cast<uchar>((c2 + rtmp) >> 8);
-	outs[1].g = saturate_cast<uchar>((c2 + gtmp) >> 8);
-	outs[1].b = saturate_cast<uchar>((c2 + btmp) >> 8);
 }
 
 void V4LCapture::setAutoExposure(bool on) {

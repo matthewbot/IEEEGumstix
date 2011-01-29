@@ -2,14 +2,11 @@
 #define LASERSENSOR_H
 
 #include "ieee/drivers/V4LCapture.h"
+#include "ieee/drivers/Image.h"
 #include "ieee/drivers/LaserTrack.h"
 #include "ieee/shared/types.h"
 #include <vector>
 #include <memory>
-
-namespace cv {
-	class Mat; // predeclare to avoid pulling in cv/cv.h
-};
 
 namespace ieee {
 	class LaserSensor {
@@ -30,8 +27,8 @@ namespace ieee {
 			typedef std::vector<DistAngleVec> Readings;
 
 			struct Debug {
-				cv::Mat rawframe;
-				cv::Mat greenframe;
+				Image rawframe;
+				Image greenframe;
 				RawReadings rawreadings;
 			};
 
