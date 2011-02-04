@@ -8,16 +8,17 @@ using namespace boost;
 using namespace std;
 
 int main(int argc, char **argv) {
-	cout << "Opening serial port" << endl;
-
-	XMegaComm comm("/dev/ttyUSB0");
+	XMegaComm comm;
+	cout << "Started XMegaComm" << endl;
 
 	while (true) {
 		this_thread::sleep(posix_time::milliseconds(500));
 		bool good = comm.sync();
 
 		if (good)
-			cout << "Got a good packet!" << endl;
+			cout << "Got a good packet! Debug output: " << comm.getAVRPacket().debugoutput << endl;
+		else
+			cout << "sync() failed" << endl;
 	}
 }
 

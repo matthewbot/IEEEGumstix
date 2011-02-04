@@ -12,7 +12,7 @@
 namespace ieee {
 	class XMegaComm {
 		public:
-			XMegaComm(const std::string &device, boost::posix_time::time_duration timeout=boost::posix_time::millisec(200), int recvbuflen=128);
+			XMegaComm(const std::string &device="", boost::posix_time::time_duration timeout=boost::posix_time::millisec(200), int recvbuflen=128);
 
 			inline AVRPacket &getAVRPacket() { return avrpacket; }
 			inline const AVRPacket &getAVRPacket() const { return avrpacket; }

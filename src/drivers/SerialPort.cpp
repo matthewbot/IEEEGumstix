@@ -10,9 +10,11 @@ using namespace ieee;
 using namespace std;
 
 SerialPort::SerialPort(const string &device) {
-	portfd = open(device.c_str(), O_RDWR | O_NOCTTY | O_NDELAY); // readwrite, don't become controlling TTY, don't wait for DCD line to be asserted
-	if (portfd == -1)
-		throwError("Failed to open " + device);
+	if (device.size())
+		openDevice(device);
+	else
+		scanDevices();
+
 	if (tcflush(portfd, TCIFLUSH) == -1)
 		throwError("Error while clearing read buffers on serial port");
 
@@ -45,6 +47,29 @@ void SerialPort::write(const uint8_t *buf, int len) {
 		len -= amt;
 		buf += amt;
 	}
+}
+
+void SerialPort::openDevice(const std::string &device) {
+	portfd = open(device.c_str(), O_RDWR | O_NOCTTY | O_NDELAY); // readwrite, don't become controlling TTY, don't wait for DCD line to be asserted
+	if (portfd == -1)
+		throwError("Failed to open " + device);
+}
+
+void SerialPort::scanDevices() {
+	stringstream errbuf;
+
+	for (int i=5; i>=0; i--) {
+		try {
+			stringstream devname;
+			devname << "/dev/ttyUSB" << i;
+			openDevice(devname.str());
+			return;
+		} catch (exception &ex) {
+			errbuf << ex.what() << endl;
+		}
+	}
+
+	throw runtime_error("SerialPort failed to scan for device:\n" + errbuf.str());
 }
 
 void SerialPort::throwError(const std::string &msg) {
