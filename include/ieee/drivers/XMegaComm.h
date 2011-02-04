@@ -3,6 +3,7 @@
 
 #include "ieee/drivers/SerialPort.h"
 #include "ieee/drivers/SerialPackets.h"
+#include "ieee/drivers/SerialPortBuf.h"
 #include <boost/date_time/posix_time/posix_time_types.hpp>
 #include <vector>
 #include <string>
@@ -35,8 +36,7 @@ namespace ieee {
 			AVRPacket avrpacket;
 			GumstixPacket gumstixpacket;
 
-			std::vector<uint8_t> recvbuf;
-			int recvbufpos;
+			SerialPortBuf recvbuf;
 	};
 }
 
