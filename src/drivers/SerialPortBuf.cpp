@@ -8,6 +8,8 @@ using namespace std;
 SerialPortBuf::SerialPortBuf(int len) : data(len), count(0) { }
 
 void SerialPortBuf::fill(SerialPort &port) {
+	if (count >= data.size())
+		return;
 	count += port.read(&data[count], data.size() - count);
 }
 

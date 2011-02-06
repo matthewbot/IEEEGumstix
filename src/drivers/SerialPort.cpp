@@ -20,11 +20,11 @@ SerialPort::SerialPort(const string &device) {
 
 	termios tio;
 	memset(&tio, 0, sizeof(termios));
-	tio.c_cflag = B115200 | CS8 | CREAD | CLOCAL; // baud rate, 8 data bits, enable receiver, ignore modem status lines
+	tio.c_cflag = B230400 | CS8 | CREAD | CLOCAL; // baud rate, 8 data bits, enable receiver, ignore modem status lines
 	tio.c_cc[VTIME] = 0; // no timeout
 	tio.c_cc[VMIN] = 0; // don't block
 	if (tcsetattr(portfd, TCSANOW, &tio) == -1) // change the port's configuration
-		throwError("Error while configuring RS485 port");
+		throwError("Error while configuring serial port");
 }
 
 SerialPort::~SerialPort() {
@@ -50,7 +50,7 @@ void SerialPort::write(const uint8_t *buf, int len) {
 }
 
 void SerialPort::openDevice(const std::string &device) {
-	portfd = open(device.c_str(), O_RDWR | O_NOCTTY | O_NDELAY); // readwrite, don't become controlling TTY, don't wait for DCD line to be asserted
+	portfd = open(device.c_str(), O_RDWR | O_NOCTTY); // readwrite, don't become controlling TTY, don't wait for DCD line to be asserted
 	if (portfd == -1)
 		throwError("Failed to open " + device);
 }

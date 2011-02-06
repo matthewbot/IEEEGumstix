@@ -9,6 +9,9 @@ XMegaComm::XMegaComm(const string &device, time_duration timeout, int recvbuflen
 : port(device), timeout(timeout), recvbuf(recvbuflen) {
 	memset(&avrpacket, 0, sizeof(avrpacket));
 	memset(&gumstixpacket, 0, sizeof(gumstixpacket));
+
+	gumstixpacket.header = 0x1EEE;
+	gumstixpacket.protoversion = 1;
 }
 
 bool XMegaComm::ok() const {
@@ -17,7 +20,10 @@ bool XMegaComm::ok() const {
 
 bool XMegaComm::sync() {
 	syncOut();
-	return syncIn();
+	bool synced = syncIn();
+	if (synced)
+		while (syncIn()) { }
+	return synced;
 }
 
 bool XMegaComm::syncIn() {
@@ -39,18 +45,20 @@ bool XMegaComm::syncIn() {
 	}
 
 	memcpy(&avrpacket, &recvbuf[pos], sizeof(AVRPacket)); // otherwise, we got a packet, so copy it into avrpacket
-	recvbuf.drop(maxpos+sizeof(AVRPacket)); // then drop all the bytes that made up the packet, and all bytes before the packet
+	recvbuf.drop(pos+sizeof(AVRPacket)); // then drop all the bytes that made up the packet, and all bytes before the packet
 
 	lastpacket = microsec_clock::local_time(); // record the current time
 	return true;
 }
 
 void XMegaComm::syncOut() {
-	port.write(reinterpret_cast<uint8_t *>(&gumstixpacket), sizeof(gumstixpacket));
+	uint8_t *data = reinterpret_cast<uint8_t *>(&gumstixpacket);
+	gumstixpacket.checksum = checksum(data, sizeof(gumstixpacket)-1);
+	port.write(data, sizeof(gumstixpacket));
 }
 
 bool XMegaComm::checkRecvbufPacket(int pos) {
-	const AVRPacket *packet = reinterpret_cast<const AVRPacket *>(recvbuf[pos]);
+	const AVRPacket *packet = reinterpret_cast<const AVRPacket *>(&recvbuf[pos]);
 	if (packet->header != 0x1EEE)
 		return false;
 
@@ -61,9 +69,9 @@ bool XMegaComm::checkRecvbufPacket(int pos) {
 }
 
 uint8_t XMegaComm::checksum(const uint8_t *data, int length) {
-    int sum=0;
-    while (length--)
-        sum += *data++;
-    return (uint8_t)sum;
+	int sum=0;
+	while (length--)
+		sum += *data++;
+	return (uint8_t)sum;
 }
 
