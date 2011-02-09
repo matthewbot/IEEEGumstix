@@ -14,7 +14,9 @@ namespace ieee {
 			WheelWidget(wxWindow *parent, Callbacks &callbacks);
 
 			inline float getDirection() const { return dir; } // 0 - 2PI
+			void setDirection(float dir);
 			inline float getSpeed() const { return speed; } // 0 - 1
+			void setSpeed(float speed);
 
 		private:
 			Callbacks &callbacks;

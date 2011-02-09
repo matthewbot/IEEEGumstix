@@ -6,12 +6,14 @@ using namespace std;
 
 enum {
 	SYNC_EVENT,
-	ENABLED_CHECK_EVENT
+	ENABLED_CHECK,
+	SYNC_CHECK,
 };
 
 BEGIN_EVENT_TABLE(CommFrame, wxFrame)
 	EVT_MENU(SYNC_EVENT, CommFrame::OnSyncEvent)
-	EVT_CHECKBOX(ENABLED_CHECK_EVENT, CommFrame::OnEnabledCheckEvent)
+	EVT_CHECKBOX(ENABLED_CHECK, CommFrame::OnCheckEvent)
+	EVT_CHECKBOX(SYNC_CHECK, CommFrame::OnCheckEvent)
 END_EVENT_TABLE()
 
 CommFrame::CommFrame()
@@ -20,11 +22,13 @@ CommFrame::CommFrame()
   rightwidget(this, *this),
   bottomwidget(this, *this),
   centerpanel(this, -1),
-  enabledcheck(&centerpanel, ENABLED_CHECK_EVENT, _("Enabled")),
+  enabledcheck(&centerpanel, ENABLED_CHECK, _("Enabled")),
+  synccheck(&centerpanel, SYNC_CHECK, _("Sync")),
   thread(*this) {
 	wxBoxSizer *centerpanel_sizer = new wxBoxSizer(wxVERTICAL);
 	centerpanel.SetSizer(centerpanel_sizer);
 	centerpanel_sizer->Add(&enabledcheck, 0, wxEXPAND);
+	centerpanel_sizer->Add(&synccheck, 0, wxEXPAND);
 
 	wxGridBagSizer *sizer = new wxGridBagSizer();
 	SetSizer(sizer);
@@ -57,13 +61,22 @@ void CommFrame::onWheelChanged(WheelWidget *widget) {
 	updatePacket();
 }
 
-void CommFrame::OnEnabledCheckEvent(wxCommandEvent &) {
+void CommFrame::OnCheckEvent(wxCommandEvent &) {
 	updatePacket();
 }
 
 void CommFrame::updatePacket() {
 	GumstixPacket gp;
 	memset(&gp, 0, sizeof(GumstixPacket));
+
+	if (synccheck.GetValue()) {
+		float dir = bottomwidget.getDirection();
+		float speed = bottomwidget.getSpeed();
+		leftwidget.setDirection(dir);
+		leftwidget.setSpeed(speed);
+		rightwidget.setDirection(dir);
+		rightwidget.setSpeed(speed);
+	}
 
 	gp.leftwheel_angle = toRawAngle(leftwidget.getDirection());
 	gp.rightwheel_angle = toRawAngle(rightwidget.getDirection());

@@ -13,6 +13,16 @@ END_EVENT_TABLE()
 WheelWidget::WheelWidget(wxWindow *parent, Callbacks &callbacks)
 : wxPanel(parent), callbacks(callbacks), dir(M_PI/2), speed(0) { }
 
+void WheelWidget::setDirection(float dir) {
+	this->dir = dir;
+	Refresh();
+}
+
+void WheelWidget::setSpeed(float speed) {
+	this->speed = speed;
+	Refresh();
+}
+
 void WheelWidget::OnPaint(wxPaintEvent &ev) {
 	wxPaintDC dc(this);
 	paintWheel(dc);

@@ -23,12 +23,13 @@ namespace ieee {
 			WheelWidget leftwidget, rightwidget, bottomwidget;
 			wxPanel centerpanel;
 			wxCheckBox enabledcheck;
+			wxCheckBox synccheck;
 
 			CommWorkerThread thread;
 
 			DECLARE_EVENT_TABLE()
 			void OnSyncEvent(wxCommandEvent &);
-			void OnEnabledCheckEvent(wxCommandEvent &);
+			void OnCheckEvent(wxCommandEvent &);
 	};
 }
 
