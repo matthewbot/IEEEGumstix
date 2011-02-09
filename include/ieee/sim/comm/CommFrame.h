@@ -21,10 +21,14 @@ namespace ieee {
 			static int16_t toRawSpeed(float speed);
 
 			WheelWidget leftwidget, rightwidget, bottomwidget;
+			wxPanel centerpanel;
+			wxCheckBox enabledcheck;
+
 			CommWorkerThread thread;
 
 			DECLARE_EVENT_TABLE()
 			void OnSyncEvent(wxCommandEvent &);
+			void OnEnabledCheckEvent(wxCommandEvent &);
 	};
 }
 

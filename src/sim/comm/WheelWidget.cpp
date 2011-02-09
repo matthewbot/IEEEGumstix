@@ -114,7 +114,7 @@ wxPoint WheelWidget::getCircleCenter() const {
 wxRect WheelWidget::getSpeedbarRect() const {
 	wxSize size = GetSize();
 	const int width = 14;
-	const int height = size.GetHeight() / 2;
+	const int height = size.GetHeight() * 3 / 4;
 	const int x = size.GetWidth() - width - 2;
 	const int y = (size.GetHeight() - height) / 2;
 	return wxRect(x, y, width, height);
