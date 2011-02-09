@@ -2,6 +2,7 @@
 #define COMMWORKERTHREAD_H
 
 #include "ieee/drivers/XMegaComm.h"
+#include <boost/scoped_ptr.hpp>
 #include <wx/wx.h>
 #include <memory>
 
@@ -19,16 +20,19 @@ namespace ieee {
 			void start();
 			void stop();
 
-			inline const AVRPacket &getAVRPacket() const { return comm.getAVRPacket(); }
-			inline const GumstixPacket &getGumstixPacket() const { return comm.getGumstixPacket(); }
-			inline GumstixPacket &getGumstixPacket() { return comm.getGumstixPacket(); }
+			AVRPacket getAVRPacket() const;
+			GumstixPacket getGumstixPacket() const;
+			void setGumstixPacket(const GumstixPacket &gp);
 
 		private:
 			virtual ExitCode Entry();
 			Callbacks &callbacks;
 
-			XMegaComm comm;
+			boost::scoped_ptr<XMegaComm> comm;
 
+			mutable wxCriticalSection critsect;
+			AVRPacket avrpacket;
+			GumstixPacket gumstixpacket;
 			volatile bool stopflag;
 	};
 }

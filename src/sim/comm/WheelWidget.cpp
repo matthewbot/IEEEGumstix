@@ -11,7 +11,7 @@ BEGIN_EVENT_TABLE(WheelWidget, wxPanel)
 END_EVENT_TABLE()
 
 WheelWidget::WheelWidget(wxWindow *parent, Callbacks &callbacks)
-: wxPanel(parent), callbacks(callbacks), dir(M_PI/2+.4), speed(0) { }
+: wxPanel(parent), callbacks(callbacks), dir(M_PI/2), speed(0) { }
 
 void WheelWidget::OnPaint(wxPaintEvent &ev) {
 	wxPaintDC dc(this);

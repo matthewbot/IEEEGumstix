@@ -49,14 +49,14 @@ void CommFrame::onWheelChanged(WheelWidget *widget) {
 }
 
 void CommFrame::updatePacket() {
-	GumstixPacket &gp = thread.getGumstixPacket();
-
+	GumstixPacket gp = thread.getGumstixPacket();
 	gp.leftwheel_angle = toRawAngle(leftwidget.getDirection());
 	gp.rightwheel_angle = toRawAngle(rightwidget.getDirection());
 	gp.backwheel_angle = toRawAngle(bottomwidget.getDirection());
 	gp.leftwheel_speed = toRawSpeed(leftwidget.getSpeed());
 	gp.rightwheel_speed = toRawSpeed(leftwidget.getSpeed());
 	gp.backwheel_speed = toRawSpeed(leftwidget.getSpeed());
+	thread.setGumstixPacket(gp);
 }
 
 int16_t CommFrame::toRawAngle(float angle) {

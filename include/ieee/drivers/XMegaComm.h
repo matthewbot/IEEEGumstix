@@ -14,16 +14,11 @@ namespace ieee {
 		public:
 			XMegaComm(const std::string &device="", boost::posix_time::time_duration timeout=boost::posix_time::millisec(200), int recvbuflen=128);
 
-			inline AVRPacket &getAVRPacket() { return avrpacket; }
-			inline const AVRPacket &getAVRPacket() const { return avrpacket; }
-			inline GumstixPacket &getGumstixPacket() { return gumstixpacket; }
-			inline const GumstixPacket &getGumstixPacket() const { return gumstixpacket; }
-
 			bool ok() const;
 
-			bool sync();
-			bool syncIn();
-			void syncOut();
+			bool sync(AVRPacket &avr, GumstixPacket &gumstix);
+			bool syncIn(AVRPacket &avr);
+			void syncOut(GumstixPacket &gumstix);
 
 		private:
 			bool checkRecvbufPacket(int pos);
@@ -33,8 +28,6 @@ namespace ieee {
 			boost::posix_time::time_duration timeout;
 
 			boost::posix_time::ptime lastpacket;
-			AVRPacket avrpacket;
-			GumstixPacket gumstixpacket;
 
 			SerialPortBuf recvbuf;
 	};

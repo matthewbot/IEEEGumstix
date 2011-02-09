@@ -6,27 +6,21 @@ using namespace boost::posix_time;
 using namespace std;
 
 XMegaComm::XMegaComm(const string &device, time_duration timeout, int recvbuflen)
-: port(device), timeout(timeout), recvbuf(recvbuflen) {
-	memset(&avrpacket, 0, sizeof(avrpacket));
-	memset(&gumstixpacket, 0, sizeof(gumstixpacket));
-
-	gumstixpacket.header = 0x1EEE;
-	gumstixpacket.protoversion = 1;
-}
+: port(device), timeout(timeout), recvbuf(recvbuflen) { }
 
 bool XMegaComm::ok() const {
 	return microsec_clock::local_time() - lastpacket < timeout;
 }
 
-bool XMegaComm::sync() {
-	syncOut();
-	bool synced = syncIn();
+bool XMegaComm::sync(AVRPacket &avr, GumstixPacket &gumstix) {
+	syncOut(gumstix);
+	bool synced = syncIn(avr);
 	if (synced)
-		while (syncIn()) { }
+		while (syncIn(avr)) { }
 	return synced;
 }
 
-bool XMegaComm::syncIn() {
+bool XMegaComm::syncIn(AVRPacket &avr) {
 	recvbuf.fill(port); // pull new data into the receive buffer
 
 	int maxpos = recvbuf.getCount() - sizeof(AVRPacket); // determine the farthest back a packet could be based on size
@@ -44,17 +38,19 @@ bool XMegaComm::syncIn() {
 		return false;
 	}
 
-	memcpy(&avrpacket, &recvbuf[pos], sizeof(AVRPacket)); // otherwise, we got a packet, so copy it into avrpacket
+	memcpy(&avr, &recvbuf[pos], sizeof(AVRPacket)); // otherwise, we got a packet, so copy it into avrpacket
 	recvbuf.drop(pos+sizeof(AVRPacket)); // then drop all the bytes that made up the packet, and all bytes before the packet
 
 	lastpacket = microsec_clock::local_time(); // record the current time
 	return true;
 }
 
-void XMegaComm::syncOut() {
-	uint8_t *data = reinterpret_cast<uint8_t *>(&gumstixpacket);
-	gumstixpacket.checksum = checksum(data, sizeof(gumstixpacket)-1);
-	port.write(data, sizeof(gumstixpacket));
+void XMegaComm::syncOut(GumstixPacket &gumstix) {
+	gumstix.header = 0x1EEE;
+	gumstix.protoversion = 1;
+	uint8_t *data = reinterpret_cast<uint8_t *>(&gumstix);
+	gumstix.checksum = checksum(data, sizeof(GumstixPacket)-1);
+	port.write(data, sizeof(GumstixPacket));
 }
 
 bool XMegaComm::checkRecvbufPacket(int pos) {
