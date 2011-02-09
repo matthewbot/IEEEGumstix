@@ -1,4 +1,5 @@
 #include "ieee/sim/comm/CommFrame.h"
+#include <wx/gbsizer.h>
 
 using namespace ieee;
 using namespace std;
@@ -13,7 +14,20 @@ END_EVENT_TABLE()
 
 CommFrame::CommFrame()
 : wxFrame(NULL, -1, _("IEEE Comm"), wxDefaultPosition, wxSize(450, 400)),
+  leftwidget(this),
+  rightwidget(this),
+  bottomwidget(this),
   thread(*this) {
+	wxGridBagSizer *sizer = new wxGridBagSizer();
+	SetSizer(sizer);
+	sizer->Add(&leftwidget, wxGBPosition(0, 0), wxDefaultSpan, wxEXPAND);
+	sizer->Add(&rightwidget, wxGBPosition(0, 2), wxDefaultSpan, wxEXPAND);
+	sizer->Add(&bottomwidget, wxGBPosition(1, 1), wxDefaultSpan, wxEXPAND);
+	sizer->AddGrowableRow(0);
+	sizer->AddGrowableRow(1);
+	for (int i=0; i<3; i++)
+		sizer->AddGrowableCol(i);
+
 	CreateStatusBar();
 	thread.start();
 }
