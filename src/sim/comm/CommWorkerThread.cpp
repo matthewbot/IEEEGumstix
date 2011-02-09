@@ -5,6 +5,7 @@ using namespace ieee;
 CommWorkerThread::CommWorkerThread(Callbacks &callbacks)
 : wxThread(wxTHREAD_JOINABLE),
   callbacks(callbacks),
+  comm("/dev/null"),
   stopflag(false) {
 	Create();
 }

@@ -10,8 +10,8 @@ BEGIN_EVENT_TABLE(WheelWidget, wxPanel)
 	EVT_MOTION(WheelWidget::OnMouseEvents)
 END_EVENT_TABLE()
 
-WheelWidget::WheelWidget(wxWindow *parent)
-: wxPanel(parent), dir(M_PI/2+.4), speed(0) { }
+WheelWidget::WheelWidget(wxWindow *parent, Callbacks &callbacks)
+: wxPanel(parent), callbacks(callbacks), dir(M_PI/2+.4), speed(0) { }
 
 void WheelWidget::OnPaint(wxPaintEvent &ev) {
 	wxPaintDC dc(this);
@@ -53,6 +53,8 @@ void WheelWidget::OnMouseEvents(wxMouseEvent &evt) {
 	const int centery = size.GetHeight()/2;
 
 	dir = atan2(-(evt.GetY() - centery), evt.GetX() - centerx);
+
+	callbacks.onPositionChanged(this);
 	Refresh();
 }
 

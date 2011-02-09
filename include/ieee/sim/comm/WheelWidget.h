@@ -6,12 +6,18 @@
 namespace ieee {
 	class WheelWidget : public wxPanel {
 		public:
-			WheelWidget(wxWindow *parent);
+			class Callbacks {
+				public:
+					virtual void onPositionChanged(WheelWidget *widget)=0;
+			};
 
-			inline float getMotorDirection() const { return dir; } // 0 - 2PI
-			inline float getMotorSpeed() const { return speed; } // 0 - 1
+			WheelWidget(wxWindow *parent, Callbacks &callbacks);
+
+			inline float getDirection() const { return dir; } // 0 - 2PI
+			inline float getSpeed() const { return speed; } // 0 - 1
 
 		private:
+			Callbacks &callbacks;
 			float dir;
 			float speed;
 
