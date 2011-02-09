@@ -14,7 +14,7 @@ namespace ieee {
 		private:
 			virtual void onSync(); // CommWorkerThread::Callbacks
 
-			virtual void onPositionChanged(WheelWidget *widget);
+			virtual void onWheelChanged(WheelWidget *widget); // WheelWidget::Callbacks
 
 			void updatePacket();
 			static int16_t toRawAngle(float angle);

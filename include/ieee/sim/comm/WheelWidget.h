@@ -8,7 +8,7 @@ namespace ieee {
 		public:
 			class Callbacks {
 				public:
-					virtual void onPositionChanged(WheelWidget *widget)=0;
+					virtual void onWheelChanged(WheelWidget *widget)=0;
 			};
 
 			WheelWidget(wxWindow *parent, Callbacks &callbacks);
@@ -24,7 +24,16 @@ namespace ieee {
 			DECLARE_EVENT_TABLE()
 
 			void OnPaint(wxPaintEvent &paint);
+			void paintWheel(wxPaintDC &dc);
+			void paintSpeedbar(wxPaintDC &dc);
+
 			void OnMouseEvents(wxMouseEvent &evt);
+			bool checkWheelClick(wxMouseEvent &evt);
+			bool checkSpeedbarClick(wxMouseEvent &evt);
+
+			wxPoint getCircleCenter() const;
+			wxRect getSpeedbarRect() const;
+			static float doSnap(float val, float tolerance, float stepsize);
 	};
 }
 

@@ -44,7 +44,7 @@ void CommFrame::onSync() {
 	AddPendingEvent(event);
 }
 
-void CommFrame::onPositionChanged(WheelWidget *widget) {
+void CommFrame::onWheelChanged(WheelWidget *widget) {
 	updatePacket();
 }
 
