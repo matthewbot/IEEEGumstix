@@ -60,8 +60,6 @@ RoomSimFrame::RoomPlannerConfig::RoomPlannerConfig(const Settings &settings) {
 	nodescale.sy = settings.nodeheight/roomheight;
 	nodescale.xoff = nodescale.yoff = 0;
 
-	cout << nodescale.sx << " " << nodescale.sy << endl;
-
 	static const int victimgridwidth = 10, victimgridheight = 10;
 
 	victimscale.sx = victimgridwidth/roomwidth;

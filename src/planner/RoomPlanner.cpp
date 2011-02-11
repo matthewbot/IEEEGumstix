@@ -24,7 +24,7 @@ RoomPlanner::Plan RoomPlanner::planRoute(const Coord &curcoord, Dir curdir, Plan
 
 PosList RoomPlanner::findUnidentifiedVictimPoses() const {
 	PosList victimposes;
-	Pos victimgridsize = config.victimscale.coordToPos(config.nodescale.posToCoord(worldmap.getWidth(), worldmap.getHeight()));
+	Pos victimgridsize = config.victimscale.coordToPos(config.gridscale.posToCoord(worldmap.getWidth(), worldmap.getHeight()));
 
 	for (int xpos=0; xpos<victimgridsize.x; xpos++) {
 		for (int ypos=0; ypos<victimgridsize.y; ypos++) {
