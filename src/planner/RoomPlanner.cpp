@@ -10,7 +10,7 @@ RoomPlanner::RoomPlanner(const SensorPredictor &sensorpred, const WorldGrid &wor
 
 RoomPlanner::Plan RoomPlanner::planRoute(const Coord &curcoord, Dir curdir, PlanDebugInfo *debug) const {
 	Pos curpos = config.nodescale.coordToPos(curcoord);
-	NodeGrid nodegrid = NodeGrid::fromWorldGrid(worldmap, config.gridscale, config.nodescale);
+	NodeGrid nodegrid = NodeGrid::fromWorldGrid(worldmap, config.gridscale, config.nodescale, config.robotradius);
 
 	if (debug)
 		debug->nodegrid = nodegrid;

@@ -23,7 +23,7 @@ namespace ieee {
 			inline const Node &operator[](const Pos &pos) const { assert(inBounds(pos)); return array[pos.x][pos.y]; }
 			inline Node &operator[](const Pos &pos) { assert(inBounds(pos)); return array[pos.x][pos.y]; }
 
-			static NodeGrid fromWorldGrid(const WorldGrid &grid, const CoordScale &gridscale, const CoordScale &nodescale);
+			static NodeGrid fromWorldGrid(const WorldGrid &grid, const CoordScale &gridscale, const CoordScale &nodescale, float collisionradius);
 
 		private:
 			boost::multi_array<Node, 2> array;

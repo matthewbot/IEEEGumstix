@@ -15,7 +15,7 @@ NodeGrid &NodeGrid::operator=(const NodeGrid &nodegrid) {
 
 static Dir getVictimIDDir(const Pos &pos, const WorldGrid &grid);
 
-NodeGrid NodeGrid::fromWorldGrid(const WorldGrid &grid, const CoordScale &gridscale, const CoordScale &nodescale) {
+NodeGrid NodeGrid::fromWorldGrid(const WorldGrid &grid, const CoordScale &gridscale, const CoordScale &nodescale, float collisionradius) {
     Pos gridendpos(grid.getWidth(), grid.getHeight());
     Pos nodeendpos = nodescale.coordToPos(gridscale.posToCoord(gridendpos));
 
@@ -27,8 +27,8 @@ NodeGrid NodeGrid::fromWorldGrid(const WorldGrid &grid, const CoordScale &gridsc
 			Coord coord = nodescale.posToCoord(pos);
 			Node &node = nodes[pos];
 
-			Pos mingridpos = gridscale.coordToPos(coord.x-5, coord.y-5);
-			Pos maxgridpos = gridscale.coordToPos(coord.x+5, coord.y+5);
+			Pos mingridpos = gridscale.coordToPos(coord.x-collisionradius, coord.y-collisionradius);
+			Pos maxgridpos = gridscale.coordToPos(coord.x+collisionradius, coord.y+collisionradius);
 
 			// determine if passable
 			if (!passableRect(grid, mingridpos, maxgridpos)) {

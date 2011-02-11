@@ -44,6 +44,9 @@ RoomSimFrame::SimWorld::SimWorld(const Settings &settings, const RoomPlannerConf
 RoomSimFrame::Settings::Settings() {
 	gridwidth = gridheight = 10;
 	nodewidth = nodeheight = 10;
+
+	victimidentifyradius = 15;
+	robotradius = 5;
 }
 
 RoomSimFrame::RoomPlannerConfig::RoomPlannerConfig(const Settings &settings) {
@@ -65,7 +68,8 @@ RoomSimFrame::RoomPlannerConfig::RoomPlannerConfig(const Settings &settings) {
 	victimscale.sy = victimgridheight/roomheight;
 	victimscale.xoff = victimscale.yoff = -.5;
 	victimradius = 4;
-	victimidentifyradius = 14;
+	victimidentifyradius = settings.victimidentifyradius;
+	robotradius = settings.robotradius;
 
 	routeevalconfig.pathcostfactor = 1;
 	routeevalconfig.revealedscorefactor = 6;

@@ -27,6 +27,7 @@ namespace ieee {
 				CoordScale nodescale;
 				CoordScale victimscale;
 				float victimradius, victimidentifyradius;
+				float robotradius;
 
 				RouteEvaluator::Config routeevalconfig;
 			};

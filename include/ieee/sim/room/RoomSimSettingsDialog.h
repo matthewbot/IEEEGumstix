@@ -10,6 +10,9 @@ namespace ieee {
 			struct Settings {
 				int gridwidth, gridheight;
 				int nodewidth, nodeheight;
+
+				float robotradius;
+				float victimidentifyradius;
 			};
 
 			RoomSimSettingsDialog(wxWindow *parent, Settings &settings);
@@ -35,6 +38,12 @@ namespace ieee {
 			wxTextCtrl nodewidthtext;
 			wxStaticText nodelabelx;
 			wxTextCtrl nodeheighttext;
+
+			wxStaticText robotsizelabel;
+			wxTextCtrl robotsizetext;
+
+			wxStaticText victimidentifylabel;
+			wxTextCtrl victimidentifytext;
 	};
 }
 
