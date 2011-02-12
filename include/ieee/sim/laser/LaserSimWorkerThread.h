@@ -18,6 +18,7 @@ namespace ieee {
 			void start();
 			void stop();
 
+			inline void setDebugFlag(bool flag) { debugflag = flag; }
 			LaserSensor::Readings getLaserReadings() const;
 			LaserSensor::Debug getLaserDebug() const;
 			inline float getCaptureTime() const { return capturetime; } // in milliseconds
@@ -37,6 +38,7 @@ namespace ieee {
 			const std::auto_ptr<LaserSensor> laserptr;
 
 			volatile bool stopflag;
+			volatile bool debugflag;
 	};
 }
 

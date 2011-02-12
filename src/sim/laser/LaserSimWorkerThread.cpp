@@ -26,7 +26,8 @@ LaserSimWorkerThread::LaserSimWorkerThread(Callbacks &callbacks)
   callbacks(callbacks),
   laserconfig(),
   laserptr(LaserSensor::createAndHandleExposureFailure(laserconfig)),
-  stopflag(false) {
+  stopflag(false),
+  debugflag(true) {
 	Create();
 }
 
@@ -54,13 +55,22 @@ LaserSensor::Debug LaserSimWorkerThread::getLaserDebug() const {
 }
 
 wxThread::ExitCode LaserSimWorkerThread::Entry() {
+	LaserSensor::Debug debug;
+	LaserSensor::Readings readings;
+
 	while (true) {
 		if (stopflag)
 			return 0;
 
-		LaserSensor::Debug debug;
 		Timer tim;
-		LaserSensor::Readings readings = laserptr->captureReadings(&debug);
+
+		if (debugflag)
+			readings = laserptr->captureReadings(&debug);
+		else {
+			readings = laserptr->captureReadings();
+			debug = LaserSensor::Debug();
+		}
+
 		capturetime = tim.getMilliseconds();
 
 		{

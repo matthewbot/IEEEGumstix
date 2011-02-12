@@ -44,6 +44,7 @@ namespace ieee {
 
 			virtual void onNewLaserData();
 			void OnWorldGridUpdateEvent(wxCommandEvent &evt);
+			void OnPageChangeEvent(wxNotebookEvent &evt);
 	};
 }
 

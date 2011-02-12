@@ -5,11 +5,13 @@ using namespace ieee;
 using namespace std;
 
 enum {
-	WORLDGRID_UDPATE_EVENT
+	WORLDGRID_UDPATE_EVENT,
+	MAIN_NOTEBOOK
 };
 
 BEGIN_EVENT_TABLE(LaserSimFrame, wxFrame)
 	EVT_MENU(WORLDGRID_UDPATE_EVENT, LaserSimFrame::OnWorldGridUpdateEvent)
+	EVT_NOTEBOOK_PAGE_CHANGED(MAIN_NOTEBOOK, LaserSimFrame::OnPageChangeEvent)
 END_EVENT_TABLE()
 
 LaserSimFrame::LaserSimFrame()
@@ -20,7 +22,7 @@ LaserSimFrame::LaserSimFrame()
   gridlayer(grid, gridscale),
   laserlayer(readings),
   rawreadingtext(this, -1, _("")),
-  notebook(this, -1, wxDefaultPosition, wxDefaultSize, wxNB_RIGHT),
+  notebook(this, MAIN_NOTEBOOK, wxDefaultPosition, wxDefaultSize, wxNB_RIGHT),
   gridworldpanel(new WorldPanel(&notebook)),
   laserimagepanel(new LaserImagePanel(&notebook)),
   greenimagepanel(new ImagePanel(&notebook)),
@@ -74,15 +76,23 @@ void LaserSimFrame::OnWorldGridUpdateEvent(wxCommandEvent& event) {
 	rawimagepanel->update(debug.rawframe);
 
 	stringstream buf;
-	buf << "Raw readings: ";
-	for (int laser=0; laser<readings.size(); laser++) {
-		const LaserTrack::LineData &linedata = debug.rawreadings[laser];
-		buf << linedata[linedata.size()/2] << "\t";
+	if (debug.rawreadings.size()) {
+		buf << "Raw readings: ";
+		for (int laser=0; laser<debug.rawreadings.size(); laser++) {
+			const LaserTrack::LineData &linedata = debug.rawreadings[laser];
+			buf << linedata[linedata.size()/2] << "\t";
+		}
+		buf << "\t";
 	}
-	buf << "\t" << thread.getCaptureTime() << " ms";
+	buf << thread.getCaptureTime() << " ms";
 
 	rawreadingtext.SetLabel(wxString(buf.str().c_str(), wxConvUTF8)); // eh...
 
 	Refresh();
 }
+
+void LaserSimFrame::OnPageChangeEvent(wxNotebookEvent &evt) {
+	thread.setDebugFlag(evt.GetSelection() != 0);
+}
+
 
