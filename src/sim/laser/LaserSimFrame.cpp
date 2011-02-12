@@ -77,8 +77,9 @@ void LaserSimFrame::OnWorldGridUpdateEvent(wxCommandEvent& event) {
 	buf << "Raw readings: ";
 	for (int laser=0; laser<readings.size(); laser++) {
 		const LaserTrack::LineData &linedata = debug.rawreadings[laser];
-		buf << linedata[linedata.size()/2] << " ";
+		buf << linedata[linedata.size()/2] << "\t";
 	}
+	buf << "\t" << thread.getCaptureTime() << " ms";
 
 	rawreadingtext.SetLabel(wxString(buf.str().c_str(), wxConvUTF8)); // eh...
 

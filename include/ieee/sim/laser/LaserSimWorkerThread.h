@@ -20,6 +20,7 @@ namespace ieee {
 
 			LaserSensor::Readings getLaserReadings() const;
 			LaserSensor::Debug getLaserDebug() const;
+			inline float getCaptureTime() const { return capturetime; } // in milliseconds
 		private:
 			virtual ExitCode Entry();
 
@@ -27,6 +28,7 @@ namespace ieee {
 			LaserSensor::Readings laserreadings;
 			LaserSensor::Debug laserdebug;
 			mutable wxCriticalSection critsect;
+			float capturetime;
 
 			struct LaserConfig : LaserSensor::Config {
 				LaserConfig();

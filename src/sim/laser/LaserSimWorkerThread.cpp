@@ -1,4 +1,5 @@
 #include "ieee/sim/laser/LaserSimWorkerThread.h"
+#include "ieee/shared/Timer.h"
 
 using namespace ieee;
 
@@ -58,7 +59,9 @@ wxThread::ExitCode LaserSimWorkerThread::Entry() {
 			return 0;
 
 		LaserSensor::Debug debug;
+		Timer tim;
 		LaserSensor::Readings readings = laserptr->captureReadings(&debug);
+		capturetime = tim.getMilliseconds();
 
 		{
 			wxCriticalSectionLocker locker(critsect);
