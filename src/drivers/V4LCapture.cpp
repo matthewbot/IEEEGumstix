@@ -13,7 +13,7 @@
 using namespace ieee;
 using namespace std;
 
-V4LCapture::V4LCapture(int width, int height, const string &filename, int exposure) : width(width), height(height) {
+V4LCapture::V4LCapture(int width, int height, const string &filename, int exposure, int bufs) : width(width), height(height) {
 	std::pair<bool, std::string> result;
 	if (filename.size())
 		result = openDevice(filename);
@@ -43,23 +43,25 @@ V4LCapture::V4LCapture(int width, int height, const string &filename, int exposu
 
     v4l2_requestbuffers reqbufs; // request only single buffer, we don't care about dropped frames and in fact always want the most recent image available
     memset(&reqbufs, 0, sizeof(reqbufs));
-    reqbufs.count  = 1;
+    reqbufs.count  = bufs;
     reqbufs.type   = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     reqbufs.memory = V4L2_MEMORY_MMAP;
 
     if (ioctl(fd, VIDIOC_REQBUFS, &reqbufs) == -1)
     	throw runtime_error("Failed to request buffers");
-    if (reqbufs.count != 1)
-    	throw runtime_error("Got multiple buffers");
+    if (reqbufs.count != bufs)
+    	throw runtime_error("Got wrong number of buffers");
 
-	v4l2_buffer buf; // queue the buffer so it can be written to by the driver
-	memset(&buf, 0, sizeof(buf));
-	buf.index = 0;
-	buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-	buf.memory = V4L2_MEMORY_MMAP;
+	for (int i=0; i<bufs; i++) { // queue the buffers so it can be written to by the driver
+		v4l2_buffer buf;
+		memset(&buf, 0, sizeof(buf));
+		buf.index = i;
+		buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+		buf.memory = V4L2_MEMORY_MMAP;
 
-	if (ioctl(fd, VIDIOC_QBUF, &buf) == -1)
-		throw runtime_error("Failed to queue buffer");
+		if (ioctl(fd, VIDIOC_QBUF, &buf) == -1)
+			throw runtime_error("Failed to queue buffer");
+	}
 
     v4l2_buf_type type = V4L2_BUF_TYPE_VIDEO_CAPTURE; // tell the driver to begin streaming
     if (ioctl(fd, VIDIOC_STREAMON, &type) == -1)
@@ -123,7 +125,7 @@ void V4LCapture::readFrame(Image &out) {
 	if (data == NULL)
 		throw runtime_error("Failed to mmap buffer");
 
-	copy(data, data+buf.length, out.getData());
+	memcpy(out.getData(), data, buf.length);
 	munmap(data, buf.length); // unmap the buffer
 
 	if (ioctl(fd, VIDIOC_QBUF, &buf) == -1) // requeue it with the driver

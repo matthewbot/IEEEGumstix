@@ -8,7 +8,7 @@
 namespace ieee {
 	class V4LCapture {
 		public:
-			V4LCapture(int width, int height, const std::string &filename="", int exposure=-1);
+			V4LCapture(int width, int height, const std::string &filename="", int exposure=-1, int bufs=2);
 			~V4LCapture();
 
 			inline int getWidth() { return width; }
