@@ -13,6 +13,7 @@ enum {
 	RESET_BUTTON,
 	SETTINGS_MENU,
 	OBJECTS_MENU,
+	NODEGRID_MENU,
 	WORLDGRID_MENU,
 	MAPGRID_MENU
 };
@@ -27,6 +28,7 @@ BEGIN_EVENT_TABLE(RoomSimFrame, wxFrame)
 	EVT_MENU(OBJECTS_MENU, RoomSimFrame::onMenuObjects)
 	EVT_MENU(WORLDGRID_MENU, RoomSimFrame::onMenuWorldGrid)
 	EVT_MENU(MAPGRID_MENU, RoomSimFrame::onMenuMapGrid)
+	EVT_MENU(NODEGRID_MENU, RoomSimFrame::onMenuNodeGrid)
 END_EVENT_TABLE()
 
 RoomSimFrame::SimWorld::SimWorld(const Settings &settings, const RoomPlannerConfig &config)
@@ -84,6 +86,7 @@ RoomSimFrame::RoomSimFrame()
   robot(world.getGrid(), roomplannerconfig, Coord(10, 10)),
   worldgridlayer(world.getGrid(), roomplannerconfig.gridscale),
   mapgridlayer(robot.getMap(), roomplannerconfig.gridscale),
+  nodegridlayer(robot.getPlanDebugInfo().nodegrid, roomplannerconfig.nodescale),
   objectlayer(world, *this),
   robotlayer(robot, roomplannerconfig.victimscale, roomplannerconfig.nodescale),
   worldpanel(this, 100, 100),
@@ -119,6 +122,7 @@ RoomSimFrame::RoomSimFrame()
 	view->AppendSeparator();
 	view->AppendRadioItem(MAPGRID_MENU, _T("&Map Grid"));
 	view->AppendRadioItem(WORLDGRID_MENU, _T("&World Grid"));
+	view->AppendRadioItem(NODEGRID_MENU, _T("&Node Grid"));
 
 	wxMenuBar *menubar = new wxMenuBar();
 	menubar->Append(file, _T("&File"));
@@ -184,26 +188,23 @@ void RoomSimFrame::onMenuObjects(wxCommandEvent &evt) {
 }
 
 void RoomSimFrame::onMenuWorldGrid(wxCommandEvent &evt) {
-	showGrid(false);
+	showGrid(worldgridlayer);
 }
 
 void RoomSimFrame::onMenuMapGrid(wxCommandEvent &evt) {
-	showGrid(true);
+	showGrid(mapgridlayer);
 }
 
-void RoomSimFrame::showGrid(bool mapgrid) {
-	if (mapgrid == worldpanel.hasLayer(&mapgridlayer))
-		return;
+void RoomSimFrame::onMenuNodeGrid(wxCommandEvent &evt) {
+	showGrid(nodegridlayer);
+}
 
-	if (mapgrid) {
-		worldpanel.addLayer(&mapgridlayer);
-		worldpanel.removeLayer(&worldgridlayer);
-	} else {
-		worldpanel.addLayer(&worldgridlayer);
-		worldpanel.removeLayer(&mapgridlayer);
-	}
-
-	worldpanel.Refresh();
+void RoomSimFrame::showGrid(WorldPanelLayer &gridlayer) {
+	worldpanel.removeLayer(&worldgridlayer);
+	worldpanel.removeLayer(&mapgridlayer);
+	worldpanel.removeLayer(&nodegridlayer);
+	worldpanel.addLayer(&gridlayer);
+	Refresh();
 }
 
 bool RoomSimFrame::onWorldClicked(const Coord &coord) {

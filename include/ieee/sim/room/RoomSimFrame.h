@@ -4,6 +4,7 @@
 #include <wx/wx.h>
 #include "ieee/sim/room/RoomSimSettingsDialog.h"
 #include "ieee/sim/room/RobotPanelLayer.h"
+#include "ieee/sim/room/NodeGridPanelLayer.h"
 #include "ieee/sim/shared/WorldPanel.h"
 #include "ieee/sim/shared/GridPanelLayer.h"
 #include "ieee/sim/shared/ObjectPanelLayer.h"
@@ -40,6 +41,7 @@ namespace ieee {
 
 			GridPanelLayer worldgridlayer;
 			GridPanelLayer mapgridlayer;
+			NodeGridPanelLayer nodegridlayer;
 			ObjectPanelLayer objectlayer;
 			RobotPanelLayer robotlayer;
 			WorldPanel worldpanel;
@@ -60,8 +62,9 @@ namespace ieee {
 			void onMenuObjects(wxCommandEvent &event);
 			void onMenuWorldGrid(wxCommandEvent &event);
 			void onMenuMapGrid(wxCommandEvent &event);
+			void onMenuNodeGrid(wxCommandEvent &event);
 
-			void showGrid(bool mapgrid);
+			void showGrid(WorldPanelLayer &gridlayer);
 
 			DECLARE_EVENT_TABLE()
 	};

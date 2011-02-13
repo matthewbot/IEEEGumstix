@@ -17,7 +17,6 @@ namespace ieee {
 			void drawRobot(wxPaintDC &dc, const CoordScale &drawscale) const;
 			void drawPlan(wxPaintDC &dc, const CoordScale &drawscale) const;
 			void drawIdentifiedVictims(wxPaintDC &dc, const CoordScale &drawscale) const;
-			void drawNodeGrid(wxPaintDC &dc, const CoordScale &drawscale) const;
 
 			const Robot &robot;
 			const CoordScale &victimscale;

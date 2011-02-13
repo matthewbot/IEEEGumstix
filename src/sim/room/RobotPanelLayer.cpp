@@ -12,7 +12,6 @@ RobotPanelLayer::RobotPanelLayer(const Robot &robot, const CoordScale &victimsca
 int RobotPanelLayer::getWeight() const { return WEIGHT; }
 
 void RobotPanelLayer::render(wxPaintDC &dc, const CoordScale &drawscale) const {
-	drawNodeGrid(dc, drawscale);
 	drawIdentifiedVictims(dc, drawscale);
 	drawRobot(dc, drawscale);
 	drawPlan(dc, drawscale);
@@ -69,33 +68,4 @@ void RobotPanelLayer::drawIdentifiedVictims(wxPaintDC &dc, const CoordScale &dra
 		dc.DrawLine(pos.x-crossdelta, pos.y+crossdelta, pos.x+crossdelta+1, pos.y-crossdelta-1);
 	}
 }
-
-void RobotPanelLayer::drawNodeGrid(wxPaintDC &dc, const CoordScale &drawscale) const {
-	const float radius = min(drawscale.sx, drawscale.sy)*2;
-	const NodeGrid &nodegrid = robot.getPlanDebugInfo().nodegrid;
-
-	wxBrush brush;
-	for (int x=0; x<nodegrid.getWidth(); x++) {
-		for (int y=0; y<nodegrid.getHeight(); y++) {
-			Pos pos(x, y);
-			Node::Type type = nodegrid[pos].getType();
-
-			static const wxColour typecolors[] = {
-				wxColour(255, 255, 255), // OPEN
-				wxColour(240, 240, 80), // CLIMB
-				wxColour(50, 50, 50), // IMPASSABLE
-				wxColour(160, 160, 160) // UNKNOWN
-			};
-
-			brush.SetColour(typecolors[type]);
-			dc.SetBrush(brush);
-
-			Pos drawpos = drawscale.coordToPos(nodescale.posToCoord(pos));
-			dc.DrawCircle(drawpos.x, drawpos.y, radius);
-		}
-	}
-
-	dc.SetBrush(*wxWHITE_BRUSH);
-}
-
 
