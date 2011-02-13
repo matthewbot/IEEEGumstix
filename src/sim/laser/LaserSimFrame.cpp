@@ -1,5 +1,6 @@
 #include "ieee/sim/laser/LaserSimFrame.h"
 #include "ieee/drivers/LaserPlot.h"
+#include <sstream>
 
 using namespace ieee;
 using namespace std;
@@ -40,6 +41,8 @@ LaserSimFrame::LaserSimFrame()
 	sizer->Add(&rawreadingtext, 0, wxEXPAND);
 	SetSizer(sizer);
 
+	rawreadingtext.SetFont(wxFont(12, wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
+
 	thread.start();
 }
 
@@ -77,14 +80,13 @@ void LaserSimFrame::OnWorldGridUpdateEvent(wxCommandEvent& event) {
 
 	stringstream buf;
 	if (debug.rawreadings.size()) {
-		buf << "Raw readings: ";
+		buf << "Raw\t";
 		for (int laser=0; laser<debug.rawreadings.size(); laser++) {
 			const LaserTrack::LineData &linedata = debug.rawreadings[laser];
 			buf << linedata[linedata.size()/2] << "\t";
 		}
-		buf << "\t";
 	}
-	buf << thread.getCaptureTime() << " ms";
+	buf << "Time " << (int)thread.getCaptureTime() << " ms";
 
 	rawreadingtext.SetLabel(wxString(buf.str().c_str(), wxConvUTF8)); // eh...
 
