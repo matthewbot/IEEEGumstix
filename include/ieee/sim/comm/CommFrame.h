@@ -26,6 +26,7 @@ namespace ieee {
 			wxCheckBox syncanglecheck;
 			wxCheckBox syncspeedcheck;
 			wxCheckBox reversecheck;
+			wxCheckBox raisecheck;
 
 			CommWorkerThread thread;
 

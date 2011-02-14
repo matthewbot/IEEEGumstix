@@ -25,6 +25,7 @@ void WheelWidget::setSpeed(float speed) {
 
 void WheelWidget::OnPaint(wxPaintEvent &ev) {
 	wxPaintDC dc(this);
+
 	paintWheel(dc);
 	paintSpeedbar(dc);
 }

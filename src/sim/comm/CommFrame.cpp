@@ -10,7 +10,8 @@ enum {
 	ENABLED_CHECK,
 	SYNC_SPEED_CHECK,
 	SYNC_ANGLE_CHECK,
-	REVERSE_CHECK
+	REVERSE_CHECK,
+	RAISE_CHECK
 };
 
 BEGIN_EVENT_TABLE(CommFrame, wxFrame)
@@ -19,6 +20,7 @@ BEGIN_EVENT_TABLE(CommFrame, wxFrame)
 	EVT_CHECKBOX(SYNC_SPEED_CHECK, CommFrame::OnCheckEvent)
 	EVT_CHECKBOX(SYNC_ANGLE_CHECK, CommFrame::OnCheckEvent)
 	EVT_CHECKBOX(REVERSE_CHECK, CommFrame::OnCheckEvent)
+	EVT_CHECKBOX(RAISE_CHECK, CommFrame::OnCheckEvent)
 END_EVENT_TABLE()
 
 CommFrame::CommFrame()
@@ -28,9 +30,10 @@ CommFrame::CommFrame()
   bottomwidget(this, *this),
   centerpanel(this, -1),
   enabledcheck(&centerpanel, ENABLED_CHECK, _("Enabled")),
+  reversecheck(&centerpanel, REVERSE_CHECK, _("Reverse")),
   syncanglecheck(&centerpanel, SYNC_ANGLE_CHECK, _("Sync Angle")),
   syncspeedcheck(&centerpanel, SYNC_SPEED_CHECK, _("Sync Speed")),
-  reversecheck(&centerpanel, REVERSE_CHECK, _("Reverse")),
+  raisecheck(&centerpanel, RAISE_CHECK, _("Raise")),
   thread(*this) {
 	wxBoxSizer *centerpanel_sizer = new wxBoxSizer(wxVERTICAL);
 	centerpanel.SetSizer(centerpanel_sizer);
@@ -38,15 +41,15 @@ CommFrame::CommFrame()
 	centerpanel_sizer->Add(&syncanglecheck, 0, wxEXPAND);
 	centerpanel_sizer->Add(&syncspeedcheck, 0, wxEXPAND);
 	centerpanel_sizer->Add(&reversecheck, 0, wxEXPAND);
+	centerpanel_sizer->Add(&raisecheck, 0, wxEXPAND);
 
 	wxGridBagSizer *sizer = new wxGridBagSizer();
 	SetSizer(sizer);
 	sizer->Add(&leftwidget, wxGBPosition(0, 0), wxDefaultSpan, wxEXPAND);
 	sizer->Add(&rightwidget, wxGBPosition(0, 2), wxDefaultSpan, wxEXPAND);
-	sizer->Add(&centerpanel, wxGBPosition(0, 1), wxGBSpan(2, 1), wxEXPAND);
-	sizer->Add(&bottomwidget, wxGBPosition(2, 1), wxDefaultSpan, wxEXPAND);
-	sizer->AddGrowableRow(0, 1);
-	sizer->AddGrowableRow(2, 1);
+	sizer->Add(&centerpanel, wxGBPosition(0, 1), wxDefaultSpan, wxEXPAND);
+	sizer->Add(&bottomwidget, wxGBPosition(1, 1), wxDefaultSpan, wxEXPAND);
+	sizer->AddGrowableRow(1, 1);
 	for (int i=0; i<3; i++)
 		sizer->AddGrowableCol(i, 1);
 
@@ -105,6 +108,8 @@ void CommFrame::updatePacket() {
 		gp.rightwheel_speed = -gp.rightwheel_speed;
 		gp.backwheel_speed = -gp.backwheel_speed;
 	}
+
+	gp.retract = raisecheck.GetValue();
 
 	thread.setGumstixPacket(gp);
 }
