@@ -18,12 +18,14 @@ namespace ieee {
 
 			void updatePacket();
 			static int16_t toRawAngle(float angle);
-			static int16_t toRawSpeed(float speed);
+			static int16_t toRawSpeed(float speed, float angle);
 
 			WheelWidget leftwidget, rightwidget, bottomwidget;
 			wxPanel centerpanel;
 			wxCheckBox enabledcheck;
-			wxCheckBox synccheck;
+			wxCheckBox syncanglecheck;
+			wxCheckBox syncspeedcheck;
+			wxCheckBox reversecheck;
 
 			CommWorkerThread thread;
 
