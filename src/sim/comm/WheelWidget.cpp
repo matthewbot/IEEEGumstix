@@ -117,7 +117,7 @@ bool WheelWidget::checkSpeedbarClick(wxMouseEvent &evt) {
 
 wxPoint WheelWidget::getCircleCenter() const {
 	wxSize size = GetSize();
-	const int centerx = size.GetWidth()/2 - 14;
+	const int centerx = size.GetWidth()/2 - 8;
 	const int centery = size.GetHeight()/2;
 	return wxPoint(centerx, centery);
 }

@@ -4,6 +4,7 @@
 #include "ieee/sim/comm/CommWorkerThread.h"
 #include "ieee/sim/comm/WheelWidget.h"
 #include <wx/wx.h>
+#include <wx/notebook.h>
 #include <stdint.h>
 
 namespace ieee {
@@ -20,6 +21,9 @@ namespace ieee {
 			static int16_t toRawAngle(float angle);
 			static int16_t toRawSpeed(float speed, float angle);
 
+			wxNotebook notebook;
+
+			wxPanel *wheelpanel;
 			WheelWidget leftwidget, rightwidget, bottomwidget;
 			wxPanel centerpanel;
 			wxCheckBox enabledcheck;
@@ -27,6 +31,8 @@ namespace ieee {
 			wxCheckBox syncspeedcheck;
 			wxCheckBox reversecheck;
 			wxCheckBox raisecheck;
+
+			wxListCtrl *sensorlist;
 
 			CommWorkerThread thread;
 
