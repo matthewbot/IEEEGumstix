@@ -2,37 +2,25 @@
 #define COMMFRAME_H
 
 #include "ieee/sim/comm/CommWorkerThread.h"
-#include "ieee/sim/comm/WheelWidget.h"
+#include "ieee/sim/comm/SensorsTabPanel.h"
+#include "ieee/sim/comm/WheelTabPanel.h"
+#include <boost/scoped_ptr.hpp>
 #include <wx/wx.h>
 #include <wx/notebook.h>
 #include <stdint.h>
 
 namespace ieee {
-	class CommFrame : public wxFrame, CommWorkerThread::Callbacks, WheelWidget::Callbacks {
+	class CommFrame : public wxFrame, CommWorkerThread::Callbacks, WheelTabPanel::Callbacks {
 		public:
 			CommFrame();
 
 		private:
 			virtual void onSync(); // CommWorkerThread::Callbacks
-
-			virtual void onWheelChanged(WheelWidget *widget); // WheelWidget::Callbacks
-
-			void updatePacket();
-			static int16_t toRawAngle(float angle);
-			static int16_t toRawSpeed(float speed, float angle);
+			virtual void onWheelsMoved(); // WheelTabPanel::Callbacks
 
 			wxNotebook notebook;
-
-			wxPanel *wheelpanel;
-			WheelWidget leftwidget, rightwidget, bottomwidget;
-			wxPanel centerpanel;
-			wxCheckBox enabledcheck;
-			wxCheckBox syncanglecheck;
-			wxCheckBox syncspeedcheck;
-			wxCheckBox reversecheck;
-			wxCheckBox raisecheck;
-
-			wxListCtrl *sensorlist;
+			WheelTabPanel *wheelpanel; // wxNotebook insists on deleting these
+			SensorsTabPanel *sensorspanel;
 
 			CommWorkerThread thread;
 
