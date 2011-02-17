@@ -44,6 +44,8 @@ void SensorsTabPanel::readSensorData(const AVRPacket &avr) {
 
 	sensorlist.SetItem(SONAR1_ITEM, 1, wxString::Format(_("%i"), avr.sonar1_reading));
 	sensorlist.SetItem(SONAR2_ITEM, 1, wxString::Format(_("%i"), avr.sonar2_reading));
+	sensorlist.SetItem(SONAR1_ITEM, 2, wxString::Format(_("%.2f"), 0.131*avr.sonar1_reading));
+	sensorlist.SetItem(SONAR2_ITEM, 2, wxString::Format(_("%.2f"), 0.131*avr.sonar2_reading));
 }
 
 void SensorsTabPanel::writeSonarAngle(GumstixPacket &gp) const {
