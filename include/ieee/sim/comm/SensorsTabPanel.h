@@ -14,6 +14,7 @@ namespace ieee {
 
 		private:
 			wxListCtrl sensorlist;
+			wxCheckBox freezecheck;
 	};
 }
 
