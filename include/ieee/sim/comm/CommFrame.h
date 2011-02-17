@@ -10,13 +10,16 @@
 #include <stdint.h>
 
 namespace ieee {
-	class CommFrame : public wxFrame, CommWorkerThread::Callbacks, WheelTabPanel::Callbacks {
+	class CommFrame : public wxFrame, CommWorkerThread::Callbacks, WheelTabPanel::Callbacks, SensorsTabPanel::Callbacks {
 		public:
 			CommFrame();
 
 		private:
 			virtual void onSync(); // CommWorkerThread::Callbacks
 			virtual void onWheelsMoved(); // WheelTabPanel::Callbacks
+			virtual void onSonarAngleChanged(); // SensorsTabPanel::Callbacks
+
+			void updatePacket();
 
 			wxNotebook notebook;
 			WheelTabPanel *wheelpanel; // wxNotebook insists on deleting these

@@ -15,7 +15,7 @@ CommFrame::CommFrame()
 : wxFrame(NULL, -1, _("IEEE Comm"), wxDefaultPosition, wxSize(320, 240)),
   notebook(this, -1, wxDefaultPosition, wxDefaultSize, wxNB_RIGHT),
   wheelpanel(new WheelTabPanel(&notebook, *this)),
-  sensorspanel(new SensorsTabPanel(&notebook)),
+  sensorspanel(new SensorsTabPanel(&notebook, *this)),
   thread(*this) {
 	notebook.AddPage(wheelpanel, _("W"));
 	notebook.AddPage(sensorspanel, _("S"));
@@ -26,7 +26,7 @@ CommFrame::CommFrame()
 
 	CreateStatusBar();
 
-	onWheelsMoved();
+	updatePacket();
 	thread.start();
 }
 
@@ -44,10 +44,19 @@ void CommFrame::onSync() {
 }
 
 void CommFrame::onWheelsMoved() {
+	updatePacket();
+}
+
+void CommFrame::onSonarAngleChanged() {
+	updatePacket();
+}
+
+void CommFrame::updatePacket() {
 	GumstixPacket gp;
 	memset(&gp, 0, sizeof(GumstixPacket));
 
 	wheelpanel->writeWheelStates(gp);
+	sensorspanel->writeSonarAngle(gp);
 
 	thread.setGumstixPacket(gp);
 }

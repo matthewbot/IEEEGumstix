@@ -8,13 +8,21 @@ enum {
 };
 
 enum {
-	FREEZE_CHECK
+	FREEZE_CHECK,
+	SONAR_SPIN
 };
 
-SensorsTabPanel::SensorsTabPanel(wxWindow *parent)
+BEGIN_EVENT_TABLE(SensorsTabPanel, wxPanel)
+	EVT_SPINCTRL(SONAR_SPIN, SensorsTabPanel::OnSonarSpin)
+	EVT_TEXT_ENTER(SONAR_SPIN, SensorsTabPanel::OnSonarEnter)
+END_EVENT_TABLE()
+
+SensorsTabPanel::SensorsTabPanel(wxWindow *parent, Callbacks &callbacks)
 : wxPanel(parent, -1),
+  callbacks(callbacks),
+  sensorlist(this, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT),
   freezecheck(this, FREEZE_CHECK, _("Freeze")),
-  sensorlist(this, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT) {
+  sonaranglespin(this, SONAR_SPIN, _("0")) {
 	sensorlist.InsertColumn(0, _("Sensor"));
 	sensorlist.InsertColumn(1, _("Raw Value"));
 	sensorlist.InsertColumn(2, _("Calibrated Value"));
@@ -24,7 +32,10 @@ SensorsTabPanel::SensorsTabPanel(wxWindow *parent)
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	SetSizer(sizer);
 	sizer->Add(&sensorlist, 1, wxEXPAND);
+	sizer->Add(&sonaranglespin, 0, 0);
 	sizer->Add(&freezecheck, 0, wxEXPAND);
+
+	sonaranglespin.SetRange(-360, 360);
 }
 
 void SensorsTabPanel::readSensorData(const AVRPacket &avr) {
@@ -34,4 +45,17 @@ void SensorsTabPanel::readSensorData(const AVRPacket &avr) {
 	sensorlist.SetItem(SONAR1_ITEM, 1, wxString::Format(_("%i"), avr.sonar1_reading));
 	sensorlist.SetItem(SONAR2_ITEM, 1, wxString::Format(_("%i"), avr.sonar2_reading));
 }
+
+void SensorsTabPanel::writeSonarAngle(GumstixPacket &gp) const {
+	gp.sonar_angle = sonaranglespin.GetValue();
+}
+
+void SensorsTabPanel::OnSonarSpin(wxSpinEvent &evt) {
+	callbacks.onSonarAngleChanged();
+}
+
+void SensorsTabPanel::OnSonarEnter(wxCommandEvent &evt) {
+	callbacks.onSonarAngleChanged();
+}
+
 
