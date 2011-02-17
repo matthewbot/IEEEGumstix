@@ -26,6 +26,7 @@ CommFrame::CommFrame()
 
 	CreateStatusBar();
 
+	onWheelsMoved();
 	thread.start();
 }
 

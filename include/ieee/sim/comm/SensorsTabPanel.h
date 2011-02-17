@@ -2,6 +2,7 @@
 #define IEEE_SENSORSTABPANEL_H
 
 #include <wx/wx.h>
+#include <wx/listctrl.h>
 #include "ieee/drivers/SerialPackets.h"
 
 namespace ieee {

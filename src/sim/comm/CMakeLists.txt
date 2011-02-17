@@ -7,3 +7,6 @@ target_link_libraries(ieeecomm ieeeshared ieeesim ieeedrivers ${wxWidgets_LIBRAR
 
 install(TARGETS ieeecomm DESTINATION bin)
 
+include(IconLib)
+install_desktop_file(ieeecomm)
+
