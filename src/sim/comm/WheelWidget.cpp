@@ -93,8 +93,9 @@ bool WheelWidget::checkWheelClick(wxMouseEvent &evt) {
 	if (sqrt(mx*mx + my*my) > radius)
 		return false;
 
-	float dirval = atan2(-my, mx);
-	dir = doSnap(dirval, M_PI/24, M_PI/4);
+	dir = atan2(-my, mx);
+	if (!evt.ControlDown())
+		dir = doSnap(dir, M_PI/24, M_PI/4);
 
 	return true;
 }
