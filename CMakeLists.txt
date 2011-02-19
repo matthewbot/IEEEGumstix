@@ -12,6 +12,7 @@ include_directories(${Boost_INCLUDE_DIRS})
 # read all subdirectories
 add_subdirectory(src/shared)
 add_subdirectory(src/planner)
+add_subdirectory(src/controls)
 add_subdirectory(src/sim)
 add_subdirectory(src/drivers)
 
