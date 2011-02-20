@@ -6,8 +6,8 @@ using namespace std;
 
 DriveEquation::DriveEquation(const Config &config) : config(config) { }
 
-DriveEquation::Output DriveEquation::compute(const Motion &motion) const {
-	Output out;
+WheelsDriver::Output DriveEquation::compute(const Motion &motion) const {
+	WheelsDriver::Output out;
 	out.left = computeWheel(config.left, motion);
 	out.right = computeWheel(config.right, motion);
 	out.back = computeWheel(config.back, motion);
@@ -22,12 +22,12 @@ DriveEquation::Output DriveEquation::compute(const Motion &motion) const {
 	return out;
 }
 
-DriveEquation::WheelOutput DriveEquation::computeWheel(const WheelConfig &wconfig, const Motion &motion) const {
+WheelsDriver::WheelOutput DriveEquation::computeWheel(const WheelConfig &wconfig, const Motion &motion) const {
 	Vec2D wheelout;
 	wheelout.x = motion.vel.x + motion.angvel*(-wconfig.relpos.x*sin(motion.curangle) - wconfig.relpos.y*cos(motion.curangle));
 	wheelout.y = motion.vel.y + motion.angvel*(wconfig.relpos.x*cos(motion.curangle) - wconfig.relpos.y*sin(motion.curangle));
 
-	WheelOutput out;
+	WheelsDriver::WheelOutput out;
 	out.angle = wheelout.angle()+config.rotationoffset;
 	if (out.angle < 0)
 		out.angle += 2*M_PI;

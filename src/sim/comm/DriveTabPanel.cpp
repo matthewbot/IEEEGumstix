@@ -62,7 +62,7 @@ void DriveTabPanel::writeOutput(GumstixPacket &gp) const {
 	motion.curangle = curdirspin.GetValue()/180.0*M_PI;
 	motion.angvel = angvelspin.GetValue()/180.0*M_PI;
 
-	DriveEquation::Output out = driveequ.compute(motion);
+	WheelsDriver::Output out = driveequ.compute(motion);
 
 	gp.leftwheel_angle = toRawAngle(out.left.angle);
 	gp.rightwheel_angle = toRawAngle(out.right.angle);
@@ -109,7 +109,7 @@ DriveTabPanel::DriveEquationConfig::DriveEquationConfig() {
 	minspeed = .1;
 }
 
-int16_t DriveTabPanel::toRawAngle(float angle) { // TODO refactor shared code between WheelTabPanel out
+int16_t DriveTabPanel::toRawAngle(float angle) {
 	int val = (int)(angle/M_PI*1800);
 	if (val < 0)
 		val += 1800;

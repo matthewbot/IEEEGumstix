@@ -2,6 +2,7 @@
 #define DRIVEEQUATION_H
 
 #include "ieee/controls/Vec2D.h"
+#include "ieee/drivers/WheelsDriver.h"
 
 namespace ieee {
 	class DriveEquation {
@@ -20,15 +21,6 @@ namespace ieee {
 				float minspeed; // speeds below this the wheel will be given 0 effort
 			};
 
-			struct WheelOutput {
-				float angle;
-				float effort; // 0 to 1
-			};
-
-			struct Output {
-				WheelOutput left, right, back;
-			};
-
 			struct Motion {
 				Vec2D vel;
 
@@ -38,12 +30,12 @@ namespace ieee {
 
 			DriveEquation(const Config &config);
 
-			Output compute(const Motion &motion) const;
+			WheelsDriver::Output compute(const Motion &motion) const;
 
 		private:
 			const Config &config;
 
-			WheelOutput computeWheel(const WheelConfig &config, const Motion &motion) const;
+			WheelsDriver::WheelOutput computeWheel(const WheelConfig &config, const Motion &motion) const;
 	};
 }
 
