@@ -16,9 +16,11 @@ CommFrame::CommFrame()
   notebook(this, -1, wxDefaultPosition, wxDefaultSize, wxNB_RIGHT),
   wheelpanel(new WheelTabPanel(&notebook, *this)),
   sensorspanel(new SensorsTabPanel(&notebook, *this)),
+  drivetabpanel(new DriveTabPanel(&notebook, *this)),
   thread(*this) {
 	notebook.AddPage(wheelpanel, _("W"));
 	notebook.AddPage(sensorspanel, _("S"));
+	notebook.AddPage(drivetabpanel, _("D"));
 
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	sizer->Add(&notebook, 1, wxEXPAND);
@@ -51,15 +53,20 @@ void CommFrame::onSonarAngleChanged() {
 	updatePacket();
 }
 
+void CommFrame::onOutputChanged() {
+	updatePacket();
+}
+
 void CommFrame::updatePacket() {
 	GumstixPacket gp;
 	memset(&gp, 0, sizeof(GumstixPacket));
 
-	wheelpanel->writeWheelStates(gp);
+	if (notebook.GetSelection() == 0)
+		wheelpanel->writeWheelStates(gp);
+	else
+		drivetabpanel->writeOutput(gp);
 	sensorspanel->writeSonarAngle(gp);
 
 	thread.setGumstixPacket(gp);
 }
-
-
 
