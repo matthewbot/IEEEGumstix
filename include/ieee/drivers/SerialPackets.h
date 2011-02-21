@@ -45,6 +45,8 @@ namespace ieee {
 		uint16_t header; // always 0x1EEE
 		uint8_t  protoversion; // take version from top of protocol.txt multiply by 10.
 
+		bool servos_enabled;
+
 		// desired wheel angles. These will be smoothly ramped as needed
 		int16_t leftwheel_angle;
 		int16_t rightwheel_angle;

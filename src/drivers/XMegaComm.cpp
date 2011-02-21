@@ -47,7 +47,7 @@ bool XMegaComm::syncIn(AVRPacket &avr) {
 
 void XMegaComm::syncOut(GumstixPacket &gumstix) {
 	gumstix.header = 0x1EEE;
-	gumstix.protoversion = 1;
+	gumstix.protoversion = 2;
 	uint8_t *data = reinterpret_cast<uint8_t *>(&gumstix);
 	gumstix.checksum = checksum(data, sizeof(GumstixPacket)-1);
 	port.write(data, sizeof(GumstixPacket));
@@ -56,6 +56,9 @@ void XMegaComm::syncOut(GumstixPacket &gumstix) {
 bool XMegaComm::checkRecvbufPacket(int pos) {
 	const AVRPacket *packet = reinterpret_cast<const AVRPacket *>(&recvbuf[pos]);
 	if (packet->header != 0x1EEE)
+		return false;
+
+	if (packet->protoversion != 2)
 		return false;
 
 	if (packet->checksum != checksum(&recvbuf[pos], sizeof(AVRPacket)-1)) // -1 to not include the checksum byte in the checksum
