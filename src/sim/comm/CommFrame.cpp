@@ -65,7 +65,7 @@ void CommFrame::updatePacket() {
 
 CommFrame::WheelsDriverConfig::WheelsDriverConfig() {
 	left.minstop = right.minstop = back.minstop = 100;
-	right.maxstop = right.maxstop = back.maxstop = 1800;
+	left.maxstop = right.maxstop = back.maxstop = 1500;
 	left.offset = right.offset = back.offset = 0;
 }
 
