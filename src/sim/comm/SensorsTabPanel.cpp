@@ -4,7 +4,10 @@ using namespace ieee;
 
 enum {
 	SONAR1_ITEM,
-	SONAR2_ITEM
+	SONAR2_ITEM,
+	MAGX_ITEM,
+	MAGY_ITEM,
+	MAGZ_ITEM
 };
 
 enum {
@@ -28,6 +31,9 @@ SensorsTabPanel::SensorsTabPanel(wxWindow *parent, Callbacks &callbacks)
 	sensorlist.InsertColumn(2, _("Calibrated Value"));
 	sensorlist.InsertItem(SONAR1_ITEM, _("Sonar 1"));
 	sensorlist.InsertItem(SONAR2_ITEM, _("Sonar 2"));
+	sensorlist.InsertItem(MAGX_ITEM, _("Mag X"));
+	sensorlist.InsertItem(MAGY_ITEM, _("Mag Y"));
+	sensorlist.InsertItem(MAGZ_ITEM, _("Mag Z"));
 
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	SetSizer(sizer);
@@ -46,6 +52,10 @@ void SensorsTabPanel::readSensorData(const AVRPacket &avr) {
 	sensorlist.SetItem(SONAR2_ITEM, 1, wxString::Format(_("%i"), avr.sonar2_reading));
 	sensorlist.SetItem(SONAR1_ITEM, 2, wxString::Format(_("%.2f"), 0.131*avr.sonar1_reading));
 	sensorlist.SetItem(SONAR2_ITEM, 2, wxString::Format(_("%.2f"), 0.131*avr.sonar2_reading));
+
+	sensorlist.SetItem(MAGX_ITEM, 1, wxString::Format(_("%i"), avr.mag_x));
+	sensorlist.SetItem(MAGY_ITEM, 1, wxString::Format(_("%i"), avr.mag_y));
+	sensorlist.SetItem(MAGZ_ITEM, 1, wxString::Format(_("%i"), avr.mag_z));
 }
 
 void SensorsTabPanel::writeSonarAngle(GumstixPacket &gp) const {
