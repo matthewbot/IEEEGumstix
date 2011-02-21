@@ -28,7 +28,7 @@ namespace ieee {
 
 			WheelsDriver(const Config &config);
 
-			void writeOutput(const Output &output, GumstixPacket &gp);
+			void writeOutput(const Output &output, GumstixPacket &gp) const;
 
 		private:
 			const Config &config;

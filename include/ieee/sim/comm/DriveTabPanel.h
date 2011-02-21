@@ -1,22 +1,20 @@
 #ifndef DRIVETABPANEL_H
 #define DRIVETABPANEL_H
 
+#include "ieee/sim/comm/TabPanel.h"
 #include "ieee/controls/DriveEquation.h"
 #include "ieee/drivers/SerialPackets.h"
 #include <wx/wx.h>
 #include <wx/spinctrl.h>
 
 namespace ieee {
-	class DriveTabPanel : public wxPanel {
+	class DriveTabPanel : public TabPanel {
 		public:
-			class Callbacks {
-				public:
-					virtual void onOutputChanged() = 0;
-			};
+			DriveTabPanel(wxWindow *parent, TabPanel::Callbacks &callbacks);
 
-			DriveTabPanel(wxWindow *parent, Callbacks &callbacks);
-
-			void writeOutput(GumstixPacket &gp) const;
+			virtual char getTabCharacter() const; // TabPanel
+			virtual void onNewAVRPacket(const AVRPacket &ap); // TabPanel
+			virtual void updateGumstixPacket(GumstixPacket &gp, const WheelsDriver &wheelsdriver) const; // TabPanel
 
 		private:
 			void update();
@@ -33,7 +31,7 @@ namespace ieee {
 			wxSpinCtrl maxeffortspin;
 			wxCheckBox enablecheck;
 
-			Callbacks &callbacks;
+			TabPanel::Callbacks &callbacks;
 
 			struct DriveEquationConfig : DriveEquation::Config {
 				DriveEquationConfig();
@@ -46,8 +44,6 @@ namespace ieee {
 
 			void OnSpin(wxSpinEvent &evt);
 			void OnCommand(wxCommandEvent &evt);
-			static int16_t toRawAngle(float angle);
-			static int16_t toRawSpeed(float speed, float angle);
 	};
 }
 

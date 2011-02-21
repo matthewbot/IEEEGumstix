@@ -21,7 +21,7 @@ BEGIN_EVENT_TABLE(SensorsTabPanel, wxPanel)
 END_EVENT_TABLE()
 
 SensorsTabPanel::SensorsTabPanel(wxWindow *parent, Callbacks &callbacks)
-: wxPanel(parent, -1),
+: TabPanel(parent),
   callbacks(callbacks),
   sensorlist(this, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT),
   freezecheck(this, FREEZE_CHECK, _("Freeze")),
@@ -44,7 +44,9 @@ SensorsTabPanel::SensorsTabPanel(wxWindow *parent, Callbacks &callbacks)
 	sonaranglespin.SetRange(-360, 360);
 }
 
-void SensorsTabPanel::readSensorData(const AVRPacket &avr) {
+char SensorsTabPanel::getTabCharacter() const { return 'S'; }
+
+void SensorsTabPanel::onNewAVRPacket(const AVRPacket &avr) {
 	if (freezecheck.GetValue())
 		return;
 
@@ -58,16 +60,16 @@ void SensorsTabPanel::readSensorData(const AVRPacket &avr) {
 	sensorlist.SetItem(MAGZ_ITEM, 1, wxString::Format(_("%i"), avr.mag_z));
 }
 
-void SensorsTabPanel::writeSonarAngle(GumstixPacket &gp) const {
+void SensorsTabPanel::updateGumstixPacket(GumstixPacket &gp, const WheelsDriver &wheelsdriver) const {
 	gp.sonar_angle = sonaranglespin.GetValue();
 }
 
 void SensorsTabPanel::OnSonarSpin(wxSpinEvent &evt) {
-	callbacks.onSonarAngleChanged();
+	callbacks.onTabUpdated(this);
 }
 
 void SensorsTabPanel::OnSonarEnter(wxCommandEvent &evt) {
-	callbacks.onSonarAngleChanged();
+	callbacks.onTabUpdated(this);
 }
 
 

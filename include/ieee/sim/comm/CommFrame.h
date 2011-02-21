@@ -9,25 +9,29 @@
 #include <wx/wx.h>
 #include <wx/notebook.h>
 #include <stdint.h>
+#include <vector>
 
 namespace ieee {
-	class CommFrame : public wxFrame, CommWorkerThread::Callbacks, WheelTabPanel::Callbacks, SensorsTabPanel::Callbacks, DriveTabPanel::Callbacks {
+	class CommFrame : public wxFrame, CommWorkerThread::Callbacks, TabPanel::Callbacks {
 		public:
 			CommFrame();
 
 		private:
 			virtual void onSync(); // CommWorkerThread::Callbacks
-			virtual void onWheelsMoved(); // WheelTabPanel::Callbacks
-			virtual void onSonarAngleChanged(); // SensorsTabPanel::Callbacks
-			virtual void onOutputChanged(); // DriveTabPanel::Callbacks
+			virtual void onTabUpdated(TabPanel *tp); // TabPanel::Callbacks
 
 			void updatePacket();
 
 			wxNotebook notebook;
-			WheelTabPanel *wheelpanel; // wxNotebook insists on deleting these
-			SensorsTabPanel *sensorspanel;
-			DriveTabPanel *drivetabpanel;
+			typedef std::vector<TabPanel *> TabPanelVec;
+			TabPanelVec panels;
 
+			struct WheelsDriverConfig : WheelsDriver::Config {
+				WheelsDriverConfig();
+			};
+
+			WheelsDriverConfig wheelsdriverconf;
+			WheelsDriver wheelsdriver;
 			CommWorkerThread thread;
 
 			DECLARE_EVENT_TABLE()

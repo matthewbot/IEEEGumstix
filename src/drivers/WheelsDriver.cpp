@@ -6,7 +6,7 @@ using namespace std;
 
 WheelsDriver::WheelsDriver(const Config &config) : config(config) { }
 
-void WheelsDriver::writeOutput(const Output &output, GumstixPacket &gp) {
+void WheelsDriver::writeOutput(const Output &output, GumstixPacket &gp) const {
 	gp.leftwheel_angle = toRawAngle(output.left.angle);
 	gp.rightwheel_angle = toRawAngle(output.right.angle);
 	gp.backwheel_angle = toRawAngle(output.back.angle);

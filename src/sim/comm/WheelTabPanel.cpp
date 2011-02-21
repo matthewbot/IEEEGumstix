@@ -19,8 +19,8 @@ BEGIN_EVENT_TABLE(WheelTabPanel, wxPanel)
 	EVT_CHECKBOX(RAISE_CHECK, WheelTabPanel::OnCheckEvent)
 END_EVENT_TABLE()
 
-WheelTabPanel::WheelTabPanel(wxWindow *parent, Callbacks &callbacks)
-: wxPanel(parent, -1),
+WheelTabPanel::WheelTabPanel(wxWindow *parent, TabPanel::Callbacks &callbacks)
+: TabPanel(parent),
   callbacks(callbacks),
   leftwidget(this, *this),
   rightwidget(this, *this),
@@ -50,25 +50,26 @@ WheelTabPanel::WheelTabPanel(wxWindow *parent, Callbacks &callbacks)
 		sizer->AddGrowableCol(i, 1);
 }
 
-void WheelTabPanel::writeWheelStates(GumstixPacket &gp) const {
-	gp.leftwheel_angle = toRawAngle(leftwidget.getDirection());
-	gp.rightwheel_angle = toRawAngle(rightwidget.getDirection());
-	gp.backwheel_angle = toRawAngle(bottomwidget.getDirection());
+char WheelTabPanel::getTabCharacter() const { return 'W'; }
 
-	if (enabledcheck.GetValue()) {
-		gp.leftwheel_speed = toRawSpeed(leftwidget.getSpeed(), leftwidget.getDirection());
-		gp.rightwheel_speed = toRawSpeed(rightwidget.getSpeed(), rightwidget.getDirection());
-		gp.backwheel_speed = toRawSpeed(bottomwidget.getSpeed(), bottomwidget.getDirection());
-	}
+void WheelTabPanel::updateGumstixPacket(GumstixPacket &gp, const WheelsDriver &wheelsdriver) const {
+	if (!enabledcheck.GetValue())
+		return;
 
-	if (reversecheck.GetValue()) {
-		gp.leftwheel_speed = -gp.leftwheel_speed;
-		gp.rightwheel_speed = -gp.rightwheel_speed;
-		gp.backwheel_speed = -gp.backwheel_speed;
-	}
+	WheelsDriver::Output output;
+	output.left.angle = leftwidget.getDirection();
+	output.right.angle = rightwidget.getDirection();
+	output.back.angle = bottomwidget.getDirection();
+	output.left.effort = leftwidget.getSpeed();
+	output.right.effort = rightwidget.getSpeed();
+	output.back.effort = bottomwidget.getSpeed();
+
+	wheelsdriver.writeOutput(output, gp); // use the wheelsdriver to compute the angles
 
 	gp.retract = raisecheck.GetValue();
 }
+
+void WheelTabPanel::onNewAVRPacket(const AVRPacket &ap) { }
 
 void WheelTabPanel::update() {
 	if (syncanglecheck.GetValue()) {
@@ -83,7 +84,7 @@ void WheelTabPanel::update() {
 		rightwidget.setSpeed(speed);
 	}
 
-	callbacks.onWheelsMoved();
+	callbacks.onTabUpdated(this);
 }
 
 void WheelTabPanel::onWheelChanged(WheelWidget *widget) {

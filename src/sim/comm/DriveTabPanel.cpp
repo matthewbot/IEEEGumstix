@@ -26,7 +26,7 @@ BEGIN_EVENT_TABLE(DriveTabPanel, wxPanel)
 END_EVENT_TABLE()
 
 DriveTabPanel::DriveTabPanel(wxWindow *parent, Callbacks &callbacks)
-: wxPanel(parent, -1),
+: TabPanel(parent),
   xvellabel(this, -1, _("X Velocity")),
   xvelspin(this, XVEL_SPIN, _("0")),
   yvellabel(this, -1, _("Y Velocity")),
@@ -55,7 +55,12 @@ DriveTabPanel::DriveTabPanel(wxWindow *parent, Callbacks &callbacks)
 	sizer->Add(&enablecheck, 0, wxEXPAND);
 }
 
-void DriveTabPanel::writeOutput(GumstixPacket &gp) const {
+char DriveTabPanel::getTabCharacter() const { return 'D'; }
+
+void DriveTabPanel::updateGumstixPacket(GumstixPacket &gp, const WheelsDriver &wheelsdriver) const {
+	if (!enablecheck.GetValue())
+		return;
+
 	DriveEquation::Motion motion;
 	motion.vel.x = xvelspin.GetValue();
 	motion.vel.y = yvelspin.GetValue();
@@ -63,28 +68,17 @@ void DriveTabPanel::writeOutput(GumstixPacket &gp) const {
 	motion.angvel = angvelspin.GetValue()/180.0*M_PI;
 
 	WheelsDriver::Output out = driveequ.compute(motion);
-
-	gp.leftwheel_angle = toRawAngle(out.left.angle);
-	gp.rightwheel_angle = toRawAngle(out.right.angle);
-	gp.backwheel_angle = toRawAngle(out.back.angle);
-
-	if (enablecheck.GetValue()) {
-		gp.leftwheel_speed = toRawSpeed(out.left.effort, out.left.angle);
-		gp.rightwheel_speed = toRawSpeed(out.right.effort, out.right.angle);
-		gp.backwheel_speed = toRawSpeed(out.back.effort, out.back.angle);
-	} else {
-		gp.leftwheel_speed = 0;
-		gp.rightwheel_speed = 0;
-		gp.backwheel_speed = 0;
-	}
+	wheelsdriver.writeOutput(out, gp);
 }
 
+void DriveTabPanel::onNewAVRPacket(const AVRPacket &ap) { }
+
 void DriveTabPanel::OnSpin(wxSpinEvent &evt) {
-	callbacks.onOutputChanged();
+	callbacks.onTabUpdated(this);
 }
 
 void DriveTabPanel::OnCommand(wxCommandEvent &evt) {
-	callbacks.onOutputChanged();
+	callbacks.onTabUpdated(this);
 }
 
 DriveTabPanel::DriveEquationConfig::DriveEquationConfig() {
@@ -109,17 +103,3 @@ DriveTabPanel::DriveEquationConfig::DriveEquationConfig() {
 	minspeed = .1;
 }
 
-int16_t DriveTabPanel::toRawAngle(float angle) {
-	int val = (int)(angle/M_PI*1800);
-	if (val < 0)
-		val += 1800;
-	else if (val > 1800)
-		val -= 1800;
-	return (int16_t)val;
-}
-
-int16_t DriveTabPanel::toRawSpeed(float speed, float angle) {
-	if (angle < 0 || angle > M_PI)
-		speed = -speed;
-	return (int16_t)(speed*1000);
-}

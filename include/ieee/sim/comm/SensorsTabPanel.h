@@ -5,22 +5,19 @@
 #include <wx/listctrl.h>
 #include <wx/spinctrl.h>
 #include "ieee/drivers/SerialPackets.h"
+#include "ieee/sim/comm/TabPanel.h"
 
 namespace ieee {
-	class SensorsTabPanel : public wxPanel {
+	class SensorsTabPanel : public TabPanel {
 		public:
-			class Callbacks {
-				public:
-					virtual void onSonarAngleChanged() = 0;
-			};
+			SensorsTabPanel(wxWindow *parent, TabPanel::Callbacks &callbacks);
 
-			SensorsTabPanel(wxWindow *parent, Callbacks &callbacks);
-
-			void readSensorData(const AVRPacket &avr);
-			void writeSonarAngle(GumstixPacket &avr) const;
+			virtual char getTabCharacter() const; // TabPanel
+			virtual void onNewAVRPacket(const AVRPacket &ap); // TabPanel
+			virtual void updateGumstixPacket(GumstixPacket &gp, const WheelsDriver &wheelsdriver) const; // TabPanel
 
 		private:
-			Callbacks &callbacks;
+			TabPanel::Callbacks &callbacks;
 			wxListCtrl sensorlist;
 			wxCheckBox freezecheck;
 			wxSpinCtrl sonaranglespin;

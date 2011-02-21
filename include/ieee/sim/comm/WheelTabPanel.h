@@ -3,18 +3,18 @@
 
 #include <wx/wx.h>
 #include "ieee/sim/comm/WheelWidget.h"
+#include "ieee/sim/comm/TabPanel.h"
 #include "ieee/drivers/SerialPackets.h"
 
 namespace ieee {
-	class WheelTabPanel : public wxPanel, WheelWidget::Callbacks {
+	class WheelTabPanel : public TabPanel, WheelWidget::Callbacks {
 		public:
-			class Callbacks {
-				public:
-					virtual void onWheelsMoved() = 0;
-			};
-
-			WheelTabPanel(wxWindow *parent, Callbacks &callbacks);
+			WheelTabPanel(wxWindow *parent, TabPanel::Callbacks &callbacks);
 			void writeWheelStates(GumstixPacket &gp) const;
+
+			virtual char getTabCharacter() const; // TabPanel
+			virtual void onNewAVRPacket(const AVRPacket &ap); // TabPanel
+			virtual void updateGumstixPacket(GumstixPacket &gp, const WheelsDriver &wheelsdriver) const; // TabPanel
 
 		private:
 			virtual void onWheelChanged(WheelWidget *widget); // WheelWidget::Callbacks
@@ -23,7 +23,7 @@ namespace ieee {
 			static int16_t toRawAngle(float angle);
 			static int16_t toRawSpeed(float speed, float angle);
 
-			Callbacks &callbacks;
+			TabPanel::Callbacks &callbacks;
 
 			WheelWidget leftwidget, rightwidget, bottomwidget;
 			wxPanel centerpanel;

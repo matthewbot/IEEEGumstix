@@ -14,13 +14,14 @@ END_EVENT_TABLE()
 CommFrame::CommFrame()
 : wxFrame(NULL, -1, _("IEEE Comm"), wxDefaultPosition, wxSize(320, 240)),
   notebook(this, -1, wxDefaultPosition, wxDefaultSize, wxNB_RIGHT),
-  wheelpanel(new WheelTabPanel(&notebook, *this)),
-  sensorspanel(new SensorsTabPanel(&notebook, *this)),
-  drivetabpanel(new DriveTabPanel(&notebook, *this)),
+  wheelsdriver(wheelsdriverconf),
   thread(*this) {
-	notebook.AddPage(wheelpanel, _("W"));
-	notebook.AddPage(sensorspanel, _("S"));
-	notebook.AddPage(drivetabpanel, _("D"));
+	panels.push_back(new WheelTabPanel(&notebook, *this));
+	panels.push_back(new SensorsTabPanel(&notebook, *this));
+	panels.push_back(new DriveTabPanel(&notebook, *this));
+
+	for (TabPanelVec::iterator i = panels.begin(); i != panels.end(); ++i)
+		notebook.AddPage(*i, wxString((wxChar)(*i)->getTabCharacter()));
 
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	sizer->Add(&notebook, 1, wxEXPAND);
@@ -36,7 +37,8 @@ void CommFrame::OnSyncEvent(wxCommandEvent &) {
 	const AVRPacket &ap = thread.getAVRPacket();
 	SetStatusText(wxString::FromAscii(ap.debugoutput));
 
-	sensorspanel->readSensorData(ap);
+	for (TabPanelVec::iterator i = panels.begin(); i != panels.end(); ++i)
+		(*i)->onNewAVRPacket(ap);
 }
 
 void CommFrame::onSync() {
@@ -45,15 +47,7 @@ void CommFrame::onSync() {
 	AddPendingEvent(event);
 }
 
-void CommFrame::onWheelsMoved() {
-	updatePacket();
-}
-
-void CommFrame::onSonarAngleChanged() {
-	updatePacket();
-}
-
-void CommFrame::onOutputChanged() {
+void CommFrame::onTabUpdated(TabPanel *tp) {
 	updatePacket();
 }
 
@@ -61,12 +55,17 @@ void CommFrame::updatePacket() {
 	GumstixPacket gp;
 	memset(&gp, 0, sizeof(GumstixPacket));
 
-	if (notebook.GetSelection() == 0)
-		wheelpanel->writeWheelStates(gp);
-	else
-		drivetabpanel->writeOutput(gp);
-	sensorspanel->writeSonarAngle(gp);
+	gp.leftwheel_angle = gp.rightwheel_angle = gp.backwheel_angle = 900;
+
+	for (TabPanelVec::iterator i = panels.begin(); i != panels.end(); ++i)
+		(*i)->updateGumstixPacket(gp, wheelsdriver);
 
 	thread.setGumstixPacket(gp);
+}
+
+CommFrame::WheelsDriverConfig::WheelsDriverConfig() {
+	left.minstop = right.minstop = back.minstop = 100;
+	right.maxstop = right.maxstop = back.maxstop = 1800;
+	left.offset = right.offset = back.offset = 0;
 }
 
