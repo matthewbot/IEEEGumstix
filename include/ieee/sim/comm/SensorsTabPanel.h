@@ -1,11 +1,11 @@
 #ifndef IEEE_SENSORSTABPANEL_H
 #define IEEE_SENSORSTABPANEL_H
 
+#include "ieee/sim/comm/TabPanel.h"
+#include "ieee/drivers/avr/SerialPackets.h"
 #include <wx/wx.h>
 #include <wx/listctrl.h>
 #include <wx/spinctrl.h>
-#include "ieee/drivers/SerialPackets.h"
-#include "ieee/sim/comm/TabPanel.h"
 
 namespace ieee {
 	class SensorsTabPanel : public TabPanel {

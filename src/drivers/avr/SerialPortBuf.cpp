@@ -1,4 +1,4 @@
-#include "ieee/drivers/SerialPortBuf.h"
+#include "ieee/drivers/avr/SerialPortBuf.h"
 #include <cstring>
 #include <cassert>
 

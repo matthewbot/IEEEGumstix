@@ -2,7 +2,7 @@
 #define DRIVEEQUATION_H
 
 #include "ieee/controls/Vec2D.h"
-#include "ieee/drivers/WheelsDriver.h"
+#include "ieee/drivers/avr/WheelsDriver.h"
 
 namespace ieee {
 	class DriveEquation {

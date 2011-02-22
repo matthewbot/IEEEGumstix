@@ -4,7 +4,7 @@
 #include <wx/wx.h>
 #include "ieee/sim/comm/WheelWidget.h"
 #include "ieee/sim/comm/TabPanel.h"
-#include "ieee/drivers/SerialPackets.h"
+#include "ieee/drivers/avr/SerialPackets.h"
 
 namespace ieee {
 	class WheelTabPanel : public TabPanel, WheelWidget::Callbacks {

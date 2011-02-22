@@ -1,7 +1,7 @@
 #ifndef SERIALPORTBUF_H
 #define SERIALPORTBUF_H
 
-#include "ieee/drivers/SerialPort.h"
+#include "ieee/drivers/avr/SerialPort.h"
 #include <vector>
 
 namespace ieee {

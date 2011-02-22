@@ -3,7 +3,7 @@
 
 #include <string>
 #include <utility>
-#include "ieee/drivers/Image.h"
+#include "ieee/drivers/laser/Image.h"
 
 namespace ieee {
 	class V4LCapture {

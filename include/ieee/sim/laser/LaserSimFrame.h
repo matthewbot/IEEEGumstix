@@ -1,7 +1,7 @@
 #ifndef LASERSIMFRAME_H
 #define LASERSIMFRAME_H
 
-#include "ieee/drivers/LaserPlot.h"
+#include "ieee/drivers/laser/LaserPlot.h"
 #include "ieee/sim/laser/LaserSimWorkerThread.h"
 #include "ieee/sim/laser/LaserPanelLayer.h"
 #include "ieee/sim/laser/LaserImagePanel.h"

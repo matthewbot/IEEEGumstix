@@ -1,4 +1,4 @@
-#include "ieee/drivers/V4LCapture.h"
+#include "ieee/drivers/laser/V4LCapture.h"
 #include <sys/ioctl.h>
 #include <fcntl.h>
 #include <linux/videodev2.h>
@@ -41,7 +41,7 @@ V4LCapture::V4LCapture(int width, int height, const string &filename, int exposu
     if (ioctl(fd, VIDIOC_S_FMT, &fmt) == -1)
     	throw runtime_error("Can't set video format");
 
-    v4l2_requestbuffers reqbufs; // request only single buffer, we don't care about dropped frames and in fact always want the most recent image available
+    v4l2_requestbuffers reqbufs; // request buffers
     memset(&reqbufs, 0, sizeof(reqbufs));
     reqbufs.count  = bufs;
     reqbufs.type   = V4L2_BUF_TYPE_VIDEO_CAPTURE;

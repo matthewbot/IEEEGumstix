@@ -1,4 +1,4 @@
-#include "ieee/drivers/Image.h"
+#include "ieee/drivers/laser/Image.h"
 #include <cassert>
 #include <stdexcept>
 

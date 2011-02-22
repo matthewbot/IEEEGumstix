@@ -1,4 +1,4 @@
-#include "ieee/drivers/XMegaComm.h"
+#include "ieee/drivers/avr/XMegaComm.h"
 #include <cstring>
 
 using namespace ieee;

@@ -1,7 +1,7 @@
 #ifndef LASERTRACK_H
 #define LASERTRACK_H
 
-#include "ieee/drivers/Image.h"
+#include "ieee/drivers/laser/Image.h"
 #include <vector>
 #include <stdint.h>
 

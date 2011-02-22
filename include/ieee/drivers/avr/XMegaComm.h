@@ -1,9 +1,9 @@
 #ifndef XMEGACOMM_H
 #define XMEGACOMM_H
 
-#include "ieee/drivers/SerialPort.h"
-#include "ieee/drivers/SerialPackets.h"
-#include "ieee/drivers/SerialPortBuf.h"
+#include "ieee/drivers/avr/SerialPort.h"
+#include "ieee/drivers/avr/SerialPackets.h"
+#include "ieee/drivers/avr/SerialPortBuf.h"
 #include <boost/date_time/posix_time/posix_time_types.hpp>
 #include <vector>
 #include <string>

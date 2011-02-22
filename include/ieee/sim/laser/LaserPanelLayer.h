@@ -1,7 +1,7 @@
 #ifndef LASERPANELLAYER_H
 #define LASERPANELLAYER_H
 
-#include "ieee/drivers/LaserSensor.h"
+#include "ieee/drivers/laser/LaserSensor.h"
 #include "ieee/sim/shared/WorldPanelLayer.h"
 
 namespace ieee {

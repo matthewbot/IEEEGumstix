@@ -3,7 +3,7 @@
 
 #include "ieee/sim/comm/TabPanel.h"
 #include "ieee/controls/DriveEquation.h"
-#include "ieee/drivers/SerialPackets.h"
+#include "ieee/drivers/avr/SerialPackets.h"
 #include <wx/wx.h>
 #include <wx/spinctrl.h>
 

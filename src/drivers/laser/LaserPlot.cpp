@@ -1,4 +1,4 @@
-#include "ieee/drivers/LaserPlot.h"
+#include "ieee/drivers/laser/LaserPlot.h"
 #include <algorithm>
 #include <cassert>
 #include <cmath>

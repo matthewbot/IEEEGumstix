@@ -2,7 +2,7 @@
 #define IMAGEPANEL_H
 
 #include "ieee/sim/shared/WorldPanelLayer.h"
-#include "ieee/drivers/Image.h"
+#include "ieee/drivers/laser/Image.h"
 
 namespace ieee {
 	class ImagePanel : public wxPanel {

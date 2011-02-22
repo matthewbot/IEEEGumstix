@@ -1,4 +1,4 @@
-#include "ieee/drivers/CompassDriver.h"
+#include "ieee/drivers/avr/CompassDriver.h"
 #include <cmath>
 
 using namespace ieee;

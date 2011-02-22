@@ -1,4 +1,4 @@
-#include "ieee/drivers/LaserSensor.h"
+#include "ieee/drivers/laser/LaserSensor.h"
 #include <vector>
 
 using namespace ieee;

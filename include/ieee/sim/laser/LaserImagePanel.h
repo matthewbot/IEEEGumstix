@@ -2,7 +2,7 @@
 #define LASERIMAGEPANEL_H
 
 #include "ieee/sim/shared/ImagePanel.h"
-#include "ieee/drivers/LaserSensor.h"
+#include "ieee/drivers/laser/LaserSensor.h"
 
 namespace ieee {
 	class LaserImagePanel : public ImagePanel {

@@ -1,7 +1,7 @@
 #ifndef IEEE_WHEELSDRIVER_H
 #define IEEE_WHEELSDRIVER_H
 
-#include "ieee/drivers/SerialPackets.h"
+#include "ieee/drivers/avr/SerialPackets.h"
 #include <stdint.h>
 
 namespace ieee {

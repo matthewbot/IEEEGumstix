@@ -1,6 +1,8 @@
 #ifndef IMAGE_H
 #define IMAGE_H
 
+// might actually belong in shared
+
 #include <vector>
 #include <stdint.h>
 #include <cassert>

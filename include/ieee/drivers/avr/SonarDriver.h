@@ -1,7 +1,7 @@
 #ifndef IEEE_SONARDRIVER_H
 #define IEEE_SONARDRIVER_H
 
-#include "ieee/drivers/SerialPackets.h"
+#include "ieee/drivers/avr/SerialPackets.h"
 #include <vector>
 #include <utility>
 #include <stdint.h>

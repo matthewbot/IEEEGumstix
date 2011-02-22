@@ -1,7 +1,7 @@
 #ifndef COMMWORKERTHREAD_H
 #define COMMWORKERTHREAD_H
 
-#include "ieee/drivers/XMegaComm.h"
+#include "ieee/drivers/avr/XMegaComm.h"
 #include <boost/scoped_ptr.hpp>
 #include <wx/wx.h>
 #include <memory>

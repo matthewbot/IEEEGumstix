@@ -1,7 +1,7 @@
 #ifndef LASERPLOT_H
 #define LASERPLOT_H
 
-#include "ieee/drivers/LaserSensor.h"
+#include "ieee/drivers/laser/LaserSensor.h"
 #include "ieee/shared/WorldGrid.h"
 #include <boost/multi_array.hpp>
 

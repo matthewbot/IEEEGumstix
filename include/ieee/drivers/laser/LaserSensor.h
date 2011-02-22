@@ -1,9 +1,9 @@
 #ifndef LASERSENSOR_H
 #define LASERSENSOR_H
 
-#include "ieee/drivers/V4LCapture.h"
-#include "ieee/drivers/Image.h"
-#include "ieee/drivers/LaserTrack.h"
+#include "ieee/drivers/laser/V4LCapture.h"
+#include "ieee/drivers/laser/Image.h"
+#include "ieee/drivers/laser/LaserTrack.h"
 #include "ieee/shared/types.h"
 #include <vector>
 #include <memory>

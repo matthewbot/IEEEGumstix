@@ -1,7 +1,7 @@
 #ifndef LASERSIMWORKERTHREAD_H
 #define LASERSIMWORKERTHREAD_H
 
-#include "ieee/drivers/LaserSensor.h"
+#include "ieee/drivers/laser/LaserSensor.h"
 #include <wx/wx.h>
 #include <memory>
 

@@ -1,4 +1,4 @@
-#include "ieee/drivers/SerialPort.h"
+#include "ieee/drivers/avr/SerialPort.h"
 #include <termios.h>
 #include <errno.h>
 #include <fcntl.h>

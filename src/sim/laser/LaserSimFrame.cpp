@@ -1,5 +1,5 @@
 #include "ieee/sim/laser/LaserSimFrame.h"
-#include "ieee/drivers/LaserPlot.h"
+#include "ieee/drivers/laser/LaserPlot.h"
 #include <sstream>
 
 using namespace ieee;

@@ -1,7 +1,7 @@
 #ifndef IEEE_COMPASSDRIVER_H
 #define IEEE_COMAPSSDRIVER_H
 
-#include "ieee/drivers/SerialPackets.h"
+#include "ieee/drivers/avr/SerialPackets.h"
 
 namespace ieee {
 	class CompassDriver {

@@ -1,7 +1,7 @@
 #ifndef TABPANEL_H
 #define TABPANEL_H
 
-#include "ieee/drivers/WheelsDriver.h"
+#include "ieee/drivers/avr/WheelsDriver.h"
 #include <wx/wx.h>
 
 namespace ieee {
