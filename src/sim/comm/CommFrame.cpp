@@ -43,8 +43,8 @@ void CommFrame::OnSyncEvent(wxTimerEvent &) {
 }
 
 CommFrame::RobotConfig::RobotConfig() {
-	wheels.left.minstop = wheels.right.minstop = wheels.back.minstop = 100;
-	wheels.left.maxstop = wheels.right.maxstop = wheels.back.maxstop = 1500;
+	wheels.left.minstop = wheels.right.minstop = wheels.back.minstop = 0;
+	wheels.left.maxstop = wheels.right.maxstop = wheels.back.maxstop = 1800;
 	wheels.left.offset = wheels.right.offset = wheels.back.offset = 0;
 
 	sonar1.calpoints.push_back(SonarSensor::CalPoint(1000, 50));
