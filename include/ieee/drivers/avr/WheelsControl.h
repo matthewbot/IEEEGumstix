@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 namespace ieee {
-	class WheelsDriver {
+	class WheelsControl {
 		public:
 			struct WheelConfig {
 				int16_t minstop;
@@ -26,7 +26,7 @@ namespace ieee {
 				WheelOutput left, right, back;
 			};
 
-			WheelsDriver(const Config &config);
+			WheelsControl(const Config &config);
 
 			void writeOutput(const Output &output, GumstixPacket &gp) const;
 

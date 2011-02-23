@@ -2,7 +2,7 @@
 #define DRIVEEQUATION_H
 
 #include "ieee/controls/Vec2D.h"
-#include "ieee/drivers/avr/WheelsDriver.h"
+#include "ieee/drivers/avr/WheelsControl.h"
 
 namespace ieee {
 	class DriveEquation {
@@ -30,12 +30,12 @@ namespace ieee {
 
 			DriveEquation(const Config &config);
 
-			WheelsDriver::Output compute(const Motion &motion) const;
+			WheelsControl::Output compute(const Motion &motion) const;
 
 		private:
 			const Config &config;
 
-			WheelsDriver::WheelOutput computeWheel(const WheelConfig &config, const Motion &motion) const;
+			WheelsControl::WheelOutput computeWheel(const WheelConfig &config, const Motion &motion) const;
 	};
 }
 

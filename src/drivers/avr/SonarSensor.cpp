@@ -1,11 +1,11 @@
-#include "ieee/drivers/avr/SonarDriver.h"
+#include "ieee/drivers/avr/SonarSensor.h"
 
 using namespace ieee;
 using namespace std;
 
-SonarDriver::SonarDriver(const Config &config, int num) : config(config), num(num) { }
+SonarSensor::SonarSensor(const Config &config, int num) : config(config), num(num) { }
 
-std::pair<float, SonarDriver::ReadingStatus> SonarDriver::getReading(const AVRPacket &ap) const {
+std::pair<float, SonarSensor::ReadingStatus> SonarSensor::getReading(const AVRPacket &ap) const {
 	const std::vector<CalPoint> &calpoints = config.calpoints;
 	uint16_t reading = (num == 1) ? ap.sonar1_reading : ap.sonar2_reading;
 

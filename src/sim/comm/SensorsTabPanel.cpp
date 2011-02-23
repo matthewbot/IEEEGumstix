@@ -60,7 +60,7 @@ void SensorsTabPanel::onNewAVRPacket(const AVRPacket &avr) {
 	sensorlist.SetItem(MAGZ_ITEM, 1, wxString::Format(_("%i"), avr.mag_z));
 }
 
-void SensorsTabPanel::updateGumstixPacket(GumstixPacket &gp, const WheelsDriver &wheelsdriver) const {
+void SensorsTabPanel::updateGumstixPacket(GumstixPacket &gp, const WheelsControl &WheelsControl) const {
 	gp.sonar_angle = sonaranglespin.GetValue();
 }
 

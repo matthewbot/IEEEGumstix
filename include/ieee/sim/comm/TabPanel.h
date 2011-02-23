@@ -1,7 +1,7 @@
 #ifndef TABPANEL_H
 #define TABPANEL_H
 
-#include "ieee/drivers/avr/WheelsDriver.h"
+#include "ieee/drivers/avr/WheelsControl.h"
 #include <wx/wx.h>
 
 namespace ieee {
@@ -16,7 +16,7 @@ namespace ieee {
 
 			virtual char getTabCharacter() const = 0;
 			virtual void onNewAVRPacket(const AVRPacket &ap) = 0;
-			virtual void updateGumstixPacket(GumstixPacket &gp, const WheelsDriver &wheelsdriver) const = 0;
+			virtual void updateGumstixPacket(GumstixPacket &gp, const WheelsControl &wheelscontrol) const = 0;
 	};
 }
 

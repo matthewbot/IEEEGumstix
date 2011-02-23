@@ -52,11 +52,11 @@ WheelTabPanel::WheelTabPanel(wxWindow *parent, TabPanel::Callbacks &callbacks)
 
 char WheelTabPanel::getTabCharacter() const { return 'W'; }
 
-void WheelTabPanel::updateGumstixPacket(GumstixPacket &gp, const WheelsDriver &wheelsdriver) const {
+void WheelTabPanel::updateGumstixPacket(GumstixPacket &gp, const WheelsControl &wheelscontrol) const {
 	if (!enabledcheck.GetValue())
 		return;
 
-	WheelsDriver::Output output;
+	WheelsControl::Output output;
 	output.left.angle = leftwidget.getDirection();
 	output.right.angle = rightwidget.getDirection();
 	output.back.angle = bottomwidget.getDirection();
@@ -64,7 +64,7 @@ void WheelTabPanel::updateGumstixPacket(GumstixPacket &gp, const WheelsDriver &w
 	output.right.effort = rightwidget.getSpeed();
 	output.back.effort = bottomwidget.getSpeed();
 
-	wheelsdriver.writeOutput(output, gp); // use the wheelsdriver to compute the angles
+	wheelscontrol.writeOutput(output, gp);
 
 	gp.retract = raisecheck.GetValue();
 }

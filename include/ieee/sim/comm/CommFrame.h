@@ -26,12 +26,12 @@ namespace ieee {
 			typedef std::vector<TabPanel *> TabPanelVec;
 			TabPanelVec panels;
 
-			struct WheelsDriverConfig : WheelsDriver::Config {
-				WheelsDriverConfig();
+			struct WheelsControlConfig : WheelsControl::Config {
+				WheelsControlConfig();
 			};
 
-			WheelsDriverConfig wheelsdriverconf;
-			WheelsDriver wheelsdriver;
+			WheelsControlConfig wheelscontrolconf;
+			WheelsControl wheelscontrol;
 			CommWorkerThread thread;
 
 			DECLARE_EVENT_TABLE()

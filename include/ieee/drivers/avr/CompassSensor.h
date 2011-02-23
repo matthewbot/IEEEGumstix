@@ -1,10 +1,10 @@
-#ifndef IEEE_COMPASSDRIVER_H
-#define IEEE_COMAPSSDRIVER_H
+#ifndef IEEE_COMPASSSENSOR_H
+#define IEEE_COMAPSSSENSOR_H
 
 #include "ieee/drivers/avr/SerialPackets.h"
 
 namespace ieee {
-	class CompassDriver {
+	class CompassSensor {
 		public:
 			struct Config {
 				int16_t centerx;
@@ -12,7 +12,7 @@ namespace ieee {
 				float yscale; // scale of y axis with respect to x axis
 			};
 
-			CompassDriver(const Config &config);
+			CompassSensor(const Config &config);
 
 			float getAngle(const AVRPacket &ap) const;
 

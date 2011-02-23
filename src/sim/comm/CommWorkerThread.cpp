@@ -15,9 +15,9 @@ CommWorkerThread::CommWorkerThread(Callbacks &callbacks)
 	gumstixpacket.protoversion = 1;
 
     try {
-  		comm.reset(new XMegaComm());
+  		comm.reset(new AVRComm());
   	} catch (runtime_error &err) {
-  		strcpy(avrpacket.debugoutput, "Failed to initialize XMegaComm");
+  		strcpy(avrpacket.debugoutput, "Failed to initialize AVRComm");
   		callbacks.onSync();
   	}
 

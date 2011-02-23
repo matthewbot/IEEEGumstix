@@ -14,7 +14,7 @@ END_EVENT_TABLE()
 CommFrame::CommFrame()
 : wxFrame(NULL, -1, _("IEEE Comm"), wxDefaultPosition, wxSize(320, 240)),
   notebook(this, -1, wxDefaultPosition, wxDefaultSize, wxNB_RIGHT),
-  wheelsdriver(wheelsdriverconf),
+  wheelscontrol(wheelscontrolconf),
   thread(*this) {
 	panels.push_back(new WheelTabPanel(&notebook, *this));
 	panels.push_back(new SensorsTabPanel(&notebook, *this));
@@ -58,12 +58,12 @@ void CommFrame::updatePacket() {
 	gp.leftwheel_angle = gp.rightwheel_angle = gp.backwheel_angle = 900;
 
 	for (TabPanelVec::iterator i = panels.begin(); i != panels.end(); ++i)
-		(*i)->updateGumstixPacket(gp, wheelsdriver);
+		(*i)->updateGumstixPacket(gp, wheelscontrol);
 
 	thread.setGumstixPacket(gp);
 }
 
-CommFrame::WheelsDriverConfig::WheelsDriverConfig() {
+CommFrame::WheelsControlConfig::WheelsControlConfig() {
 	left.minstop = right.minstop = back.minstop = 100;
 	left.maxstop = right.maxstop = back.maxstop = 1500;
 	left.offset = right.offset = back.offset = 0;

@@ -1,7 +1,7 @@
 #ifndef COMMWORKERTHREAD_H
 #define COMMWORKERTHREAD_H
 
-#include "ieee/drivers/avr/XMegaComm.h"
+#include "ieee/drivers/avr/AVRComm.h"
 #include <boost/scoped_ptr.hpp>
 #include <wx/wx.h>
 #include <memory>
@@ -28,7 +28,7 @@ namespace ieee {
 			virtual ExitCode Entry();
 			Callbacks &callbacks;
 
-			boost::scoped_ptr<XMegaComm> comm;
+			boost::scoped_ptr<AVRComm> comm;
 
 			mutable wxCriticalSection critsect;
 			AVRPacket avrpacket;

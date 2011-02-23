@@ -7,7 +7,7 @@
 #include <stdint.h>
 
 namespace ieee {
-	class SonarDriver {
+	class SonarSensor {
 		public:
 			struct CalPoint {
 				uint16_t reading;
@@ -24,7 +24,7 @@ namespace ieee {
 				READING_FAR
 			};
 
-			SonarDriver(const Config &config, int num); // num for sonar 1 or sonar 2
+			SonarSensor(const Config &config, int num); // num for sonar 1 or sonar 2
 
 			std::pair<float, ReadingStatus> getReading(const AVRPacket &ap) const;
 

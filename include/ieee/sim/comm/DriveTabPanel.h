@@ -14,7 +14,7 @@ namespace ieee {
 
 			virtual char getTabCharacter() const; // TabPanel
 			virtual void onNewAVRPacket(const AVRPacket &ap); // TabPanel
-			virtual void updateGumstixPacket(GumstixPacket &gp, const WheelsDriver &wheelsdriver) const; // TabPanel
+			virtual void updateGumstixPacket(GumstixPacket &gp, const WheelsControl &WheelsControl) const; // TabPanel
 
 		private:
 			void update();

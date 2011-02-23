@@ -1,12 +1,12 @@
-#include "ieee/drivers/avr/WheelsDriver.h"
+#include "ieee/drivers/avr/WheelsControl.h"
 #include <cmath>
 
 using namespace ieee;
 using namespace std;
 
-WheelsDriver::WheelsDriver(const Config &config) : config(config) { }
+WheelsControl::WheelsControl(const Config &config) : config(config) { }
 
-void WheelsDriver::writeOutput(const Output &output, GumstixPacket &gp) const {
+void WheelsControl::writeOutput(const Output &output, GumstixPacket &gp) const {
 	gp.servos_enabled = true;
 
 	gp.leftwheel_angle = toRawAngle(output.left.angle, config.left);
@@ -18,7 +18,7 @@ void WheelsDriver::writeOutput(const Output &output, GumstixPacket &gp) const {
 	gp.backwheel_speed = toRawSpeed(output.back.effort, output.back.angle);
 }
 
-int16_t WheelsDriver::toRawAngle(float angle, const WheelConfig &wconf) {
+int16_t WheelsControl::toRawAngle(float angle, const WheelConfig &wconf) {
 	int val = (int)(angle/M_PI*1800);
 	if (val < 0)
 		val += 1800;
@@ -33,7 +33,7 @@ int16_t WheelsDriver::toRawAngle(float angle, const WheelConfig &wconf) {
 		return (int16_t)val;
 }
 
-int16_t WheelsDriver::toRawSpeed(float speed, float angle) {
+int16_t WheelsControl::toRawSpeed(float speed, float angle) {
 	if (angle < 0 || angle > M_PI)
 		speed = -speed;
 	return (int16_t)(speed*1000);

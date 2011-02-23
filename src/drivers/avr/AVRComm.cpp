@@ -1,18 +1,18 @@
-#include "ieee/drivers/avr/XMegaComm.h"
+#include "ieee/drivers/avr/AVRComm.h"
 #include <cstring>
 
 using namespace ieee;
 using namespace boost::posix_time;
 using namespace std;
 
-XMegaComm::XMegaComm(const string &device, time_duration timeout, int recvbuflen)
+AVRComm::AVRComm(const string &device, time_duration timeout, int recvbuflen)
 : port(device), timeout(timeout), recvbuf(recvbuflen) { }
 
-bool XMegaComm::ok() const {
+bool AVRComm::ok() const {
 	return microsec_clock::local_time() - lastpacket < timeout;
 }
 
-bool XMegaComm::sync(AVRPacket &avr, GumstixPacket &gumstix) {
+bool AVRComm::sync(AVRPacket &avr, GumstixPacket &gumstix) {
 	syncOut(gumstix);
 	bool synced = syncIn(avr);
 	if (synced)
@@ -20,7 +20,7 @@ bool XMegaComm::sync(AVRPacket &avr, GumstixPacket &gumstix) {
 	return synced;
 }
 
-bool XMegaComm::syncIn(AVRPacket &avr) {
+bool AVRComm::syncIn(AVRPacket &avr) {
 	recvbuf.fill(port); // pull new data into the receive buffer
 
 	int maxpos = recvbuf.getCount() - sizeof(AVRPacket); // determine the farthest back a packet could be based on size
@@ -45,7 +45,7 @@ bool XMegaComm::syncIn(AVRPacket &avr) {
 	return true;
 }
 
-void XMegaComm::syncOut(GumstixPacket &gumstix) {
+void AVRComm::syncOut(GumstixPacket &gumstix) {
 	gumstix.header = 0x1EEE;
 	gumstix.protoversion = 2;
 	uint8_t *data = reinterpret_cast<uint8_t *>(&gumstix);
@@ -53,7 +53,7 @@ void XMegaComm::syncOut(GumstixPacket &gumstix) {
 	port.write(data, sizeof(GumstixPacket));
 }
 
-bool XMegaComm::checkRecvbufPacket(int pos) {
+bool AVRComm::checkRecvbufPacket(int pos) {
 	const AVRPacket *packet = reinterpret_cast<const AVRPacket *>(&recvbuf[pos]);
 	if (packet->header != 0x1EEE)
 		return false;
@@ -67,7 +67,7 @@ bool XMegaComm::checkRecvbufPacket(int pos) {
 	return true;
 }
 
-uint8_t XMegaComm::checksum(const uint8_t *data, int length) {
+uint8_t AVRComm::checksum(const uint8_t *data, int length) {
 	int sum=0;
 	while (length--)
 		sum += *data++;

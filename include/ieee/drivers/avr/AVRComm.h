@@ -1,5 +1,5 @@
-#ifndef XMEGACOMM_H
-#define XMEGACOMM_H
+#ifndef AVRCOMM_H
+#define AVRCOMM_H
 
 #include "ieee/drivers/avr/SerialPort.h"
 #include "ieee/drivers/avr/SerialPackets.h"
@@ -10,9 +10,9 @@
 #include <stdint.h>
 
 namespace ieee {
-	class XMegaComm {
+	class AVRComm {
 		public:
-			XMegaComm(const std::string &device="", boost::posix_time::time_duration timeout=boost::posix_time::millisec(200), int recvbuflen=128);
+			AVRComm(const std::string &device="", boost::posix_time::time_duration timeout=boost::posix_time::millisec(200), int recvbuflen=128);
 
 			bool ok() const;
 

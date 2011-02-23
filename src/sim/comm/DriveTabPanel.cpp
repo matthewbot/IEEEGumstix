@@ -57,7 +57,7 @@ DriveTabPanel::DriveTabPanel(wxWindow *parent, Callbacks &callbacks)
 
 char DriveTabPanel::getTabCharacter() const { return 'D'; }
 
-void DriveTabPanel::updateGumstixPacket(GumstixPacket &gp, const WheelsDriver &wheelsdriver) const {
+void DriveTabPanel::updateGumstixPacket(GumstixPacket &gp, const WheelsControl &wheelscontrol) const {
 	if (!enablecheck.GetValue())
 		return;
 
@@ -67,8 +67,8 @@ void DriveTabPanel::updateGumstixPacket(GumstixPacket &gp, const WheelsDriver &w
 	motion.curangle = curdirspin.GetValue()/180.0*M_PI;
 	motion.angvel = angvelspin.GetValue()/180.0*M_PI;
 
-	WheelsDriver::Output out = driveequ.compute(motion);
-	wheelsdriver.writeOutput(out, gp);
+	WheelsControl::Output out = driveequ.compute(motion);
+	wheelscontrol.writeOutput(out, gp);
 }
 
 void DriveTabPanel::onNewAVRPacket(const AVRPacket &ap) { }
