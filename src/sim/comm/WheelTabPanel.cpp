@@ -55,6 +55,13 @@ void WheelTabPanel::onSync(AVRRobot &robot) {
 	output.left.angle = leftwidget.getDirection();
 	output.right.angle = rightwidget.getDirection();
 	output.back.angle = bottomwidget.getDirection();
+
+	if (reversecheck.GetValue()) {
+		output.left.angle = M_PI + output.left.angle;
+		output.right.angle = M_PI + output.right.angle;
+		output.back.angle = M_PI + output.back.angle;
+	}
+
 	output.left.effort = leftwidget.getSpeed();
 	output.right.effort = rightwidget.getSpeed();
 	output.back.effort = bottomwidget.getSpeed();

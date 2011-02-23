@@ -22,6 +22,7 @@ namespace ieee {
 			wxSpinCtrl xvelspin;
 			wxStaticText yvellabel;
 			wxSpinCtrl yvelspin;
+			wxPanel curdirpanel;
 			wxStaticText curdirlabel;
 			wxSpinCtrl curdirspin;
 			wxStaticText angvellabel;
@@ -29,6 +30,7 @@ namespace ieee {
 			wxStaticText maxeffortlabel;
 			wxSpinCtrl maxeffortspin;
 			wxCheckBox enablecheck;
+			wxCheckBox compasscheck;
 
 			struct DriveEquationConfig : DriveEquation::Config {
 				DriveEquationConfig();

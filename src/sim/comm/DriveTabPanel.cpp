@@ -15,6 +15,7 @@ DriveTabPanel::DriveTabPanel(wxWindow *parent)
   maxeffortlabel(this, -1, _("Max Effort")),
   maxeffortspin(this, -1, _("0")),
   enablecheck(this, -1, _("Enable")),
+  compasscheck(this, -1, _("Compass")),
   driveequ(equconf) {
 	wxFlexGridSizer *sizer = new wxFlexGridSizer(2, 5);
 	SetSizer(sizer);
@@ -36,6 +37,11 @@ char DriveTabPanel::getTabCharacter() const { return 'D'; }
 void DriveTabPanel::onSync(AVRRobot &robot) {
 	if (!enablecheck.GetValue())
 		return;
+
+	if (compasscheck.GetValue()) {
+		float angle = robot.getCompassAngle()/M_PI*180;
+		curdirspin.SetValue((int)angle);
+	}
 
 	DriveEquation::Motion motion;
 	motion.vel.x = xvelspin.GetValue();
