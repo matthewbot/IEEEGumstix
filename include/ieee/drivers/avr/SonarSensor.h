@@ -12,6 +12,8 @@ namespace ieee {
 			struct CalPoint {
 				uint16_t reading;
 				float dist;
+
+				inline CalPoint(uint16_t reading, float dist) : reading(reading), dist(dist) { }
 			};
 
 			struct Config {
@@ -26,7 +28,8 @@ namespace ieee {
 
 			SonarSensor(const Config &config, int num); // num for sonar 1 or sonar 2
 
-			std::pair<float, ReadingStatus> getReading(const AVRPacket &ap) const;
+			typedef std::pair<float, ReadingStatus> DistanceStatus;
+			DistanceStatus getReading(const AVRPacket &ap) const;
 
 		private:
 			const Config &config;

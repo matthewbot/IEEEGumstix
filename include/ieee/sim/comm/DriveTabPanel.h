@@ -3,18 +3,17 @@
 
 #include "ieee/sim/comm/TabPanel.h"
 #include "ieee/controls/DriveEquation.h"
-#include "ieee/drivers/avr/SerialPackets.h"
+#include "ieee/drivers/avr/AVRRobot.h"
 #include <wx/wx.h>
 #include <wx/spinctrl.h>
 
 namespace ieee {
 	class DriveTabPanel : public TabPanel {
 		public:
-			DriveTabPanel(wxWindow *parent, TabPanel::Callbacks &callbacks);
+			DriveTabPanel(wxWindow *parent);
 
 			virtual char getTabCharacter() const; // TabPanel
-			virtual void onNewAVRPacket(const AVRPacket &ap); // TabPanel
-			virtual void updateGumstixPacket(GumstixPacket &gp, const WheelsControl &WheelsControl) const; // TabPanel
+			virtual void onSync(AVRRobot &robot); // TabPanel
 
 		private:
 			void update();
@@ -31,19 +30,12 @@ namespace ieee {
 			wxSpinCtrl maxeffortspin;
 			wxCheckBox enablecheck;
 
-			TabPanel::Callbacks &callbacks;
-
 			struct DriveEquationConfig : DriveEquation::Config {
 				DriveEquationConfig();
 			};
 
 			DriveEquationConfig equconf;
 			DriveEquation driveequ;
-
-			DECLARE_EVENT_TABLE()
-
-			void OnSpin(wxSpinEvent &evt);
-			void OnCommand(wxCommandEvent &evt);
 	};
 }
 

@@ -4,26 +4,18 @@
 #include <wx/wx.h>
 #include "ieee/sim/comm/WheelWidget.h"
 #include "ieee/sim/comm/TabPanel.h"
-#include "ieee/drivers/avr/SerialPackets.h"
+#include "ieee/drivers/avr/AVRRobot.h"
 
 namespace ieee {
 	class WheelTabPanel : public TabPanel, WheelWidget::Callbacks {
 		public:
-			WheelTabPanel(wxWindow *parent, TabPanel::Callbacks &callbacks);
-			void writeWheelStates(GumstixPacket &gp) const;
+			WheelTabPanel(wxWindow *parent);
 
 			virtual char getTabCharacter() const; // TabPanel
-			virtual void onNewAVRPacket(const AVRPacket &ap); // TabPanel
-			virtual void updateGumstixPacket(GumstixPacket &gp, const WheelsControl &WheelsControl) const; // TabPanel
+			virtual void onSync(AVRRobot &robot); // TabPanel
 
 		private:
-			virtual void onWheelChanged(WheelWidget *widget); // WheelWidget::Callbacks
-
-			void update();
-			static int16_t toRawAngle(float angle);
-			static int16_t toRawSpeed(float speed, float angle);
-
-			TabPanel::Callbacks &callbacks;
+			virtual void onWheelChanged(WheelWidget *wheel); // WheelWidget::Callbacks
 
 			WheelWidget leftwidget, rightwidget, bottomwidget;
 			wxPanel centerpanel;
@@ -32,6 +24,8 @@ namespace ieee {
 			wxCheckBox syncspeedcheck;
 			wxCheckBox reversecheck;
 			wxCheckBox raisecheck;
+
+			void handleSyncChecks();
 
 			DECLARE_EVENT_TABLE()
 			void OnCheckEvent(wxCommandEvent &);

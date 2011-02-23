@@ -12,14 +12,6 @@ bool AVRComm::ok() const {
 	return microsec_clock::local_time() - lastpacket < timeout;
 }
 
-bool AVRComm::sync(AVRPacket &avr, GumstixPacket &gumstix) {
-	syncOut(gumstix);
-	bool synced = syncIn(avr);
-	if (synced)
-		while (syncIn(avr)) { }
-	return synced;
-}
-
 bool AVRComm::syncIn(AVRPacket &avr) {
 	recvbuf.fill(port); // pull new data into the receive buffer
 

@@ -4,21 +4,23 @@ using namespace ieee;
 using namespace std;
 
 enum {
-	SYNC_EVENT
+	SYNC_TIMER
 };
 
 BEGIN_EVENT_TABLE(CommFrame, wxFrame)
-	EVT_MENU(SYNC_EVENT, CommFrame::OnSyncEvent)
+	EVT_TIMER(SYNC_TIMER, CommFrame::OnSyncEvent)
 END_EVENT_TABLE()
 
 CommFrame::CommFrame()
 : wxFrame(NULL, -1, _("IEEE Comm"), wxDefaultPosition, wxSize(320, 240)),
+  synctimer(this, SYNC_TIMER),
   notebook(this, -1, wxDefaultPosition, wxDefaultSize, wxNB_RIGHT),
-  wheelscontrol(wheelscontrolconf),
-  thread(*this) {
-	panels.push_back(new WheelTabPanel(&notebook, *this));
-	panels.push_back(new SensorsTabPanel(&notebook, *this));
-	panels.push_back(new DriveTabPanel(&notebook, *this));
+  robot(robotconfig) {
+	synctimer.Start(40);
+
+	panels.push_back(new WheelTabPanel(&notebook));
+	panels.push_back(new SensorsTabPanel(&notebook));
+	panels.push_back(new DriveTabPanel(&notebook));
 
 	for (TabPanelVec::iterator i = panels.begin(); i != panels.end(); ++i)
 		notebook.AddPage(*i, wxString((wxChar)(*i)->getTabCharacter()));
@@ -28,44 +30,27 @@ CommFrame::CommFrame()
 	SetSizer(sizer);
 
 	CreateStatusBar();
-
-	updatePacket();
-	thread.start();
 }
 
-void CommFrame::OnSyncEvent(wxCommandEvent &) {
-	const AVRPacket &ap = thread.getAVRPacket();
-	SetStatusText(wxString::FromAscii(ap.debugoutput));
+void CommFrame::OnSyncEvent(wxTimerEvent &) {
+	while (robot.syncIn()) { }
+	SetStatusText(wxString::FromAscii(robot.getAVRPacket().debugoutput));
 
 	for (TabPanelVec::iterator i = panels.begin(); i != panels.end(); ++i)
-		(*i)->onNewAVRPacket(ap);
+		(*i)->onSync(robot);
+
+	robot.syncOut();
 }
 
-void CommFrame::onSync() {
-	// this is the best thing I can find short of defining my own event class (assuming thats possible?)
-	wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, SYNC_EVENT);
-	AddPendingEvent(event);
-}
+CommFrame::RobotConfig::RobotConfig() {
+	wheels.left.minstop = wheels.right.minstop = wheels.back.minstop = 100;
+	wheels.left.maxstop = wheels.right.maxstop = wheels.back.maxstop = 1500;
+	wheels.left.offset = wheels.right.offset = wheels.back.offset = 0;
 
-void CommFrame::onTabUpdated(TabPanel *tp) {
-	updatePacket();
-}
+	sonar1.calpoints.push_back(SonarSensor::CalPoint(1000, 50));
+	sonar2.calpoints.push_back(SonarSensor::CalPoint(1000, 50));
 
-void CommFrame::updatePacket() {
-	GumstixPacket gp;
-	memset(&gp, 0, sizeof(GumstixPacket));
-
-	gp.leftwheel_angle = gp.rightwheel_angle = gp.backwheel_angle = 900;
-
-	for (TabPanelVec::iterator i = panels.begin(); i != panels.end(); ++i)
-		(*i)->updateGumstixPacket(gp, wheelscontrol);
-
-	thread.setGumstixPacket(gp);
-}
-
-CommFrame::WheelsControlConfig::WheelsControlConfig() {
-	left.minstop = right.minstop = back.minstop = 100;
-	left.maxstop = right.maxstop = back.maxstop = 1500;
-	left.offset = right.offset = back.offset = 0;
+	compass.centerx = compass.centery = 0;
+	compass.yscale = 1;
 }
 

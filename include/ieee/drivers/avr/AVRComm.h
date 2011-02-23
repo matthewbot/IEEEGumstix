@@ -16,7 +16,6 @@ namespace ieee {
 
 			bool ok() const;
 
-			bool sync(AVRPacket &avr, GumstixPacket &gumstix);
 			bool syncIn(AVRPacket &avr);
 			void syncOut(GumstixPacket &gumstix);
 

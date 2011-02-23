@@ -2,44 +2,20 @@
 
 using namespace ieee;
 
-enum {
-	XVEL_SPIN,
-	YVEL_SPIN,
-	CURDIR_SPIN,
-	ANGVEL_SPIN,
-	MAXEFFORT_SPIN,
-	ENABLE_CHECK
-};
-
-BEGIN_EVENT_TABLE(DriveTabPanel, wxPanel)
-	EVT_SPINCTRL(XVEL_SPIN, DriveTabPanel::OnSpin)
-	EVT_TEXT_ENTER(XVEL_SPIN, DriveTabPanel::OnCommand)
-	EVT_SPINCTRL(YVEL_SPIN, DriveTabPanel::OnSpin)
-	EVT_TEXT_ENTER(YVEL_SPIN, DriveTabPanel::OnCommand)
-	EVT_SPINCTRL(CURDIR_SPIN, DriveTabPanel::OnSpin)
-	EVT_TEXT_ENTER(CURDIR_SPIN, DriveTabPanel::OnCommand)
-	EVT_SPINCTRL(ANGVEL_SPIN, DriveTabPanel::OnSpin)
-	EVT_TEXT_ENTER(ANGVEL_SPIN, DriveTabPanel::OnCommand)
-	EVT_SPINCTRL(MAXEFFORT_SPIN, DriveTabPanel::OnSpin)
-	EVT_TEXT_ENTER(MAXEFFORT_SPIN, DriveTabPanel::OnCommand)
-	EVT_CHECKBOX(ENABLE_CHECK, DriveTabPanel::OnCommand)
-END_EVENT_TABLE()
-
-DriveTabPanel::DriveTabPanel(wxWindow *parent, Callbacks &callbacks)
+DriveTabPanel::DriveTabPanel(wxWindow *parent)
 : TabPanel(parent),
   xvellabel(this, -1, _("X Velocity")),
-  xvelspin(this, XVEL_SPIN, _("0")),
+  xvelspin(this, -1, _("0")),
   yvellabel(this, -1, _("Y Velocity")),
-  yvelspin(this, YVEL_SPIN, _("0")),
+  yvelspin(this, -1, _("0")),
   curdirlabel(this, -1, _("Current Dir")),
-  curdirspin(this, CURDIR_SPIN, _("0")),
+  curdirspin(this, -1, _("0")),
   angvellabel(this, -1, _("Angular Vel")),
-  angvelspin(this, ANGVEL_SPIN, _("0")),
+  angvelspin(this, -1, _("0")),
   maxeffortlabel(this, -1, _("Max Effort")),
-  maxeffortspin(this, MAXEFFORT_SPIN, _("0")),
-  enablecheck(this, ENABLE_CHECK, _("Enable")),
-  driveequ(equconf),
-  callbacks(callbacks) {
+  maxeffortspin(this, -1, _("0")),
+  enablecheck(this, -1, _("Enable")),
+  driveequ(equconf) {
 	wxFlexGridSizer *sizer = new wxFlexGridSizer(2, 5);
 	SetSizer(sizer);
 	sizer->Add(&xvellabel, 0, wxEXPAND);
@@ -57,7 +33,7 @@ DriveTabPanel::DriveTabPanel(wxWindow *parent, Callbacks &callbacks)
 
 char DriveTabPanel::getTabCharacter() const { return 'D'; }
 
-void DriveTabPanel::updateGumstixPacket(GumstixPacket &gp, const WheelsControl &wheelscontrol) const {
+void DriveTabPanel::onSync(AVRRobot &robot) {
 	if (!enablecheck.GetValue())
 		return;
 
@@ -68,17 +44,7 @@ void DriveTabPanel::updateGumstixPacket(GumstixPacket &gp, const WheelsControl &
 	motion.angvel = angvelspin.GetValue()/180.0*M_PI;
 
 	WheelsControl::Output out = driveequ.compute(motion);
-	wheelscontrol.writeOutput(out, gp);
-}
-
-void DriveTabPanel::onNewAVRPacket(const AVRPacket &ap) { }
-
-void DriveTabPanel::OnSpin(wxSpinEvent &evt) {
-	callbacks.onTabUpdated(this);
-}
-
-void DriveTabPanel::OnCommand(wxCommandEvent &evt) {
-	callbacks.onTabUpdated(this);
+	robot.setWheels(out);
 }
 
 DriveTabPanel::DriveEquationConfig::DriveEquationConfig() {

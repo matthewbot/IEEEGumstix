@@ -4,33 +4,26 @@
 using namespace ieee;
 
 enum {
-	ENABLED_CHECK,
-	SYNC_SPEED_CHECK,
-	SYNC_ANGLE_CHECK,
-	REVERSE_CHECK,
-	RAISE_CHECK
+	SYNCANGLE_CHECK,
+	SYNCSPEED_CHECK
 };
 
 BEGIN_EVENT_TABLE(WheelTabPanel, wxPanel)
-	EVT_CHECKBOX(ENABLED_CHECK, WheelTabPanel::OnCheckEvent)
-	EVT_CHECKBOX(SYNC_SPEED_CHECK, WheelTabPanel::OnCheckEvent)
-	EVT_CHECKBOX(SYNC_ANGLE_CHECK, WheelTabPanel::OnCheckEvent)
-	EVT_CHECKBOX(REVERSE_CHECK, WheelTabPanel::OnCheckEvent)
-	EVT_CHECKBOX(RAISE_CHECK, WheelTabPanel::OnCheckEvent)
+	EVT_CHECKBOX(SYNCANGLE_CHECK, WheelTabPanel::OnCheckEvent)
+	EVT_CHECKBOX(SYNCSPEED_CHECK, WheelTabPanel::OnCheckEvent)
 END_EVENT_TABLE()
 
-WheelTabPanel::WheelTabPanel(wxWindow *parent, TabPanel::Callbacks &callbacks)
+WheelTabPanel::WheelTabPanel(wxWindow *parent)
 : TabPanel(parent),
-  callbacks(callbacks),
   leftwidget(this, *this),
   rightwidget(this, *this),
   bottomwidget(this, *this),
   centerpanel(this, -1),
-  enabledcheck(&centerpanel, ENABLED_CHECK, _("Enabled")),
-  reversecheck(&centerpanel, REVERSE_CHECK, _("Reverse")),
-  syncanglecheck(&centerpanel, SYNC_ANGLE_CHECK, _("S Angle")),
-  syncspeedcheck(&centerpanel, SYNC_SPEED_CHECK, _("S Speed")),
-  raisecheck(&centerpanel, RAISE_CHECK, _("Raise")) {
+  enabledcheck(&centerpanel, -1, _("Enabled")),
+  reversecheck(&centerpanel, -1, _("Reverse")),
+  syncanglecheck(&centerpanel, SYNCANGLE_CHECK, _("S Angle")),
+  syncspeedcheck(&centerpanel, SYNCSPEED_CHECK, _("S Speed")),
+  raisecheck(&centerpanel, -1, _("Raise")) {
 	wxBoxSizer *centerpanel_sizer = new wxBoxSizer(wxVERTICAL);
 	centerpanel.SetSizer(centerpanel_sizer);
 	centerpanel_sizer->Add(&enabledcheck, 0, wxEXPAND);
@@ -52,9 +45,11 @@ WheelTabPanel::WheelTabPanel(wxWindow *parent, TabPanel::Callbacks &callbacks)
 
 char WheelTabPanel::getTabCharacter() const { return 'W'; }
 
-void WheelTabPanel::updateGumstixPacket(GumstixPacket &gp, const WheelsControl &wheelscontrol) const {
+void WheelTabPanel::onSync(AVRRobot &robot) {
 	if (!enabledcheck.GetValue())
 		return;
+
+	handleSyncChecks();
 
 	WheelsControl::Output output;
 	output.left.angle = leftwidget.getDirection();
@@ -63,15 +58,20 @@ void WheelTabPanel::updateGumstixPacket(GumstixPacket &gp, const WheelsControl &
 	output.left.effort = leftwidget.getSpeed();
 	output.right.effort = rightwidget.getSpeed();
 	output.back.effort = bottomwidget.getSpeed();
+	robot.setWheels(output);
 
-	wheelscontrol.writeOutput(output, gp);
-
-	gp.retract = raisecheck.GetValue();
+	robot.setUpDown(raisecheck.GetValue());
 }
 
-void WheelTabPanel::onNewAVRPacket(const AVRPacket &ap) { }
+void WheelTabPanel::onWheelChanged(WheelWidget *widget) {
+	handleSyncChecks();
+}
 
-void WheelTabPanel::update() {
+void WheelTabPanel::OnCheckEvent(wxCommandEvent &) {
+	handleSyncChecks();
+}
+
+void WheelTabPanel::handleSyncChecks() {
 	if (syncanglecheck.GetValue()) {
 		float dir = bottomwidget.getDirection();
 		leftwidget.setDirection(dir);
@@ -83,28 +83,5 @@ void WheelTabPanel::update() {
 		leftwidget.setSpeed(speed);
 		rightwidget.setSpeed(speed);
 	}
-
-	callbacks.onTabUpdated(this);
-}
-
-void WheelTabPanel::onWheelChanged(WheelWidget *widget) {
-	update();
-}
-
-void WheelTabPanel::OnCheckEvent(wxCommandEvent &) {
-	update();
-}
-
-int16_t WheelTabPanel::toRawAngle(float angle) {
-	int val = (int)(angle/M_PI*1800);
-	if (val < 0)
-		val += 1800;
-	return (int16_t)val;
-}
-
-int16_t WheelTabPanel::toRawSpeed(float speed, float angle) {
-	if (angle < 0)
-		speed = -speed;
-	return (int16_t)(speed*1000);
 }
 
