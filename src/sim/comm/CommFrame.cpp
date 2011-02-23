@@ -36,6 +36,9 @@ void CommFrame::OnSyncEvent(wxTimerEvent &) {
 	while (robot.syncIn()) { }
 	SetStatusText(wxString::FromAscii(robot.getAVRPacket().debugoutput));
 
+	GumstixPacket &gp = robot.getGumstixPacket();
+	gp.leftwheel_speed = gp.rightwheel_speed = gp.backwheel_speed = 0; // zero all speeds so that if no panel is writing them motors stop
+
 	for (TabPanelVec::iterator i = panels.begin(); i != panels.end(); ++i)
 		(*i)->onSync(robot);
 
@@ -50,7 +53,8 @@ CommFrame::RobotConfig::RobotConfig() {
 	sonar1.calpoints.push_back(SonarSensor::CalPoint(1000, 50));
 	sonar2.calpoints.push_back(SonarSensor::CalPoint(1000, 50));
 
-	compass.centerx = compass.centery = 0;
-	compass.yscale = 1;
+	compass.centerx = -170;
+	compass.centery = 1150;
+	compass.yscale = .94;
 }
 

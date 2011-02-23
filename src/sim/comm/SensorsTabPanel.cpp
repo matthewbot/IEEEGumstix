@@ -7,14 +7,18 @@ enum {
 	SONAR2_ITEM,
 	MAGX_ITEM,
 	MAGY_ITEM,
-	MAGZ_ITEM
+	MAGZ_ITEM,
+	MAGANGLE_ITEM,
 };
 
 SensorsTabPanel::SensorsTabPanel(wxWindow *parent)
 : TabPanel(parent),
   sensorlist(this, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT),
   freezecheck(this, -1, _("Freeze")),
-  sonaranglespin(this, -1, _("0")) {
+  sonaranglepanel(this),
+  sonaranglelabel(&sonaranglepanel, -1, _("Stepper")),
+  sonaranglespin(&sonaranglepanel, -1, _("0")),
+  compasssync(&sonaranglepanel, -1, _("Mag Sync")) {
 	sensorlist.InsertColumn(0, _("Sensor"));
 	sensorlist.InsertColumn(1, _("Raw Value"));
 	sensorlist.InsertColumn(2, _("Calibrated Value"));
@@ -23,12 +27,19 @@ SensorsTabPanel::SensorsTabPanel(wxWindow *parent)
 	sensorlist.InsertItem(MAGX_ITEM, _("Mag X"));
 	sensorlist.InsertItem(MAGY_ITEM, _("Mag Y"));
 	sensorlist.InsertItem(MAGZ_ITEM, _("Mag Z"));
+	sensorlist.InsertItem(MAGANGLE_ITEM, _("Mag Angle"));
+
+	wxBoxSizer *sonaranglepanel_sizer = new wxBoxSizer(wxHORIZONTAL);
+	sonaranglepanel.SetSizer(sonaranglepanel_sizer);
+	sonaranglepanel_sizer->Add(&sonaranglelabel);
+	sonaranglepanel_sizer->Add(&sonaranglespin);
+	sonaranglepanel_sizer->Add(&compasssync);
 
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	SetSizer(sizer);
 	sizer->Add(&sensorlist, 1, wxEXPAND);
-	sizer->Add(&sonaranglespin, 0, 0);
 	sizer->Add(&freezecheck, 0, wxEXPAND);
+	sizer->Add(&sonaranglepanel, 0, 0);
 
 	sonaranglespin.SetRange(-360, 360);
 }
@@ -49,7 +60,11 @@ void SensorsTabPanel::onSync(AVRRobot &robot) {
 	sensorlist.SetItem(MAGX_ITEM, 1, wxString::Format(_("%i"), ap.mag_x));
 	sensorlist.SetItem(MAGY_ITEM, 1, wxString::Format(_("%i"), ap.mag_y));
 	sensorlist.SetItem(MAGZ_ITEM, 1, wxString::Format(_("%i"), ap.mag_z));
+	float angle = robot.getCompassAngle()/M_PI*180;
+	sensorlist.SetItem(MAGANGLE_ITEM, 2, wxString::Format(_("%.2f"), angle));
 
-	robot.setSonarAngle(sonaranglespin.GetValue() / 180 * M_PI);
+	if (compasssync.GetValue())
+		sonaranglespin.SetValue(-(int)round(angle));
+	robot.setSonarAngle(sonaranglespin.GetValue()/180.0*M_PI);
 }
 

@@ -18,7 +18,10 @@ namespace ieee {
 		private:
 			wxListCtrl sensorlist;
 			wxCheckBox freezecheck;
+			wxPanel sonaranglepanel;
+			wxStaticText sonaranglelabel;
 			wxSpinCtrl sonaranglespin;
+			wxCheckBox compasssync;
 	};
 }
 
