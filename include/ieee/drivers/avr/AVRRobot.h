@@ -10,7 +10,7 @@ namespace ieee {
 	class AVRRobot {
 		public:
 			typedef WheelsControl::Output WheelsOutput;
-			typedef SonarSensor::DistanceStatus SonarDistStatus;
+			typedef SonarSensor::Reading SonarReading;
 
 			struct Config {
 				CompassSensor::Config compass;
@@ -27,8 +27,8 @@ namespace ieee {
 			void disableAll(); // disables servos, steppers, and lasers
 
 			float getCompassAngle() const;
-			SonarDistStatus getSonar1() const;
-			SonarDistStatus getSonar2() const;
+			SonarReading getSonar1() const;
+			SonarReading getSonar2() const;
 
 			void setWheels(const WheelsOutput &wheels);
 

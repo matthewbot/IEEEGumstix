@@ -58,8 +58,8 @@ void SensorsTabPanel::onSync(AVRRobot &robot) {
 
 	sensorlist.SetItem(SONAR1_ITEM, 1, wxString::Format(_("%i"), ap.sonar1_reading));
 	sensorlist.SetItem(SONAR2_ITEM, 1, wxString::Format(_("%i"), ap.sonar2_reading));
-	sensorlist.SetItem(SONAR1_ITEM, 2, wxString::Format(_("%.2f"), robot.getSonar1().first));
-	sensorlist.SetItem(SONAR2_ITEM, 2, wxString::Format(_("%.2f"), robot.getSonar2().first));
+	sensorlist.SetItem(SONAR1_ITEM, 2, wxString::Format(_("%.2f"), robot.getSonar1().dist));
+	sensorlist.SetItem(SONAR2_ITEM, 2, wxString::Format(_("%.2f"), robot.getSonar2().dist));
 
 	sensorlist.SetItem(MAGX_ITEM, 1, wxString::Format(_("%i"), ap.mag_x));
 	sensorlist.SetItem(MAGY_ITEM, 1, wxString::Format(_("%i"), ap.mag_y));

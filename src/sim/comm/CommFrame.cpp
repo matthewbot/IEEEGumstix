@@ -49,11 +49,13 @@ CommFrame::RobotConfig::RobotConfig() {
 	wheels.left.maxstop = wheels.right.maxstop = wheels.back.maxstop = 1800;
 	wheels.left.offset = wheels.right.offset = wheels.back.offset = 0;
 
-	sonar1.calpoints.push_back(SonarSensor::CalPoint(1000, 50));
-	sonar2.calpoints.push_back(SonarSensor::CalPoint(1000, 50));
+	sonar1.alpha = 1;
+	sonar1.beta = 0;
+	sonar2.alpha = 1;
+	sonar2.beta = 0;
 
-	compass.centerx = -170;
-	compass.centery = 1150;
-	compass.yscale = .94;
+	compass.centerx = 825;
+	compass.centery = 1200;
+	compass.yscale = .985;
 }
 

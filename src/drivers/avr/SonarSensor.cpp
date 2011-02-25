@@ -5,28 +5,18 @@ using namespace std;
 
 SonarSensor::SonarSensor(const Config &config, int num) : config(config), num(num) { }
 
-SonarSensor::DistanceStatus SonarSensor::getReading(const AVRPacket &ap) const {
-	const std::vector<CalPoint> &calpoints = config.calpoints;
+SonarSensor::Reading SonarSensor::getReading(const AVRPacket &ap) const {
 	uint16_t reading = (num == 1) ? ap.sonar1_reading : ap.sonar2_reading;
+	float dist = config.alpha * reading + config.beta;
 
-	if (reading < calpoints.front().reading) {
-		return make_pair(calpoints.front().dist, READING_SHORT);
-	} else if (reading > calpoints.back().reading) {
-		return make_pair(calpoints.back().dist, READING_FAR);
-	}
+	ReadingStatus status;
+	if (reading < config.short_reading)
+		status = READING_SHORT;
+	else if (reading > config.far_reading)
+		status = READING_FAR;
+	else
+		status = READING_GOOD;
 
-	std::vector<CalPoint>::const_iterator calentry;
-	for (calentry = calpoints.begin(); calentry != calpoints.end()-1; ++calentry) {
-		if (reading < calentry[1].reading)
-			break;
-	}
-
-	const CalPoint &first = calentry[0];
-	const CalPoint &second = calentry[1];
-
-	float ratio = (float)(reading - first.reading) / (second.reading - first.reading);
-	float dist = first.dist + ratio*(second.dist - first.dist);
-
-	return make_pair(dist, READING_GOOD);
+	return Reading(dist, status);
 }
 

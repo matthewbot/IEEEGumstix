@@ -9,15 +9,11 @@
 namespace ieee {
 	class SonarSensor {
 		public:
-			struct CalPoint {
-				uint16_t reading;
-				float dist;
-
-				inline CalPoint(uint16_t reading, float dist) : reading(reading), dist(dist) { }
-			};
-
 			struct Config {
-				std::vector<CalPoint> calpoints;
+				float alpha, beta; // distance = reading*alpha + beta
+
+				int16_t short_reading;
+				int16_t far_reading;
 			};
 
 			enum ReadingStatus {
@@ -28,8 +24,15 @@ namespace ieee {
 
 			SonarSensor(const Config &config, int num); // num for sonar 1 or sonar 2
 
-			typedef std::pair<float, ReadingStatus> DistanceStatus;
-			DistanceStatus getReading(const AVRPacket &ap) const;
+			struct Reading {
+				float dist;
+				ReadingStatus status;
+
+				inline Reading() { }
+				inline Reading(float dist, ReadingStatus status) : dist(dist), status(status) { }
+			};
+
+			Reading getReading(const AVRPacket &ap) const;
 
 		private:
 			const Config &config;

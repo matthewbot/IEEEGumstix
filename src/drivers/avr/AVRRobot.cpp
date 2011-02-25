@@ -30,11 +30,11 @@ float AVRRobot::getCompassAngle() const {
 	return compass.getAngle(ap);
 }
 
-AVRRobot::SonarDistStatus AVRRobot::getSonar1() const {
+AVRRobot::SonarReading AVRRobot::getSonar1() const {
 	return sonar1.getReading(ap);
 }
 
-AVRRobot::SonarDistStatus AVRRobot::getSonar2() const {
+AVRRobot::SonarReading AVRRobot::getSonar2() const {
 	return sonar2.getReading(ap);
 }
 
