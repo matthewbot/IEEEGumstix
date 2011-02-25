@@ -9,6 +9,7 @@ enum {
 	MAGY_ITEM,
 	MAGZ_ITEM,
 	MAGANGLE_ITEM,
+	BATTVOLTS_ITEM
 };
 
 SensorsTabPanel::SensorsTabPanel(wxWindow *parent)
@@ -18,7 +19,8 @@ SensorsTabPanel::SensorsTabPanel(wxWindow *parent)
   sonaranglepanel(this),
   sonaranglelabel(&sonaranglepanel, -1, _("Stepper")),
   sonaranglespin(&sonaranglepanel, -1, _("0")),
-  compasssync(&sonaranglepanel, -1, _("Mag Sync")) {
+  compasssync(&sonaranglepanel, -1, _("Mag Sync")),
+  stepperen(&sonaranglepanel, -1, _("En")) {
 	sensorlist.InsertColumn(0, _("Sensor"));
 	sensorlist.InsertColumn(1, _("Raw Value"));
 	sensorlist.InsertColumn(2, _("Calibrated Value"));
@@ -28,12 +30,14 @@ SensorsTabPanel::SensorsTabPanel(wxWindow *parent)
 	sensorlist.InsertItem(MAGY_ITEM, _("Mag Y"));
 	sensorlist.InsertItem(MAGZ_ITEM, _("Mag Z"));
 	sensorlist.InsertItem(MAGANGLE_ITEM, _("Mag Angle"));
+	sensorlist.InsertItem(BATTVOLTS_ITEM, _("Batt V"));
 
 	wxBoxSizer *sonaranglepanel_sizer = new wxBoxSizer(wxHORIZONTAL);
 	sonaranglepanel.SetSizer(sonaranglepanel_sizer);
 	sonaranglepanel_sizer->Add(&sonaranglelabel);
 	sonaranglepanel_sizer->Add(&sonaranglespin);
 	sonaranglepanel_sizer->Add(&compasssync);
+	sonaranglepanel_sizer->Add(&stepperen);
 
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	SetSizer(sizer);
@@ -63,8 +67,11 @@ void SensorsTabPanel::onSync(AVRRobot &robot) {
 	float angle = robot.getCompassAngle()/M_PI*180;
 	sensorlist.SetItem(MAGANGLE_ITEM, 2, wxString::Format(_("%.2f"), angle));
 
+	sensorlist.SetItem(BATTVOLTS_ITEM, 1, wxString::Format(_("%.2f"), ap.batt_volts / 1000.0));
+
 	if (compasssync.GetValue())
 		sonaranglespin.SetValue(-(int)round(angle));
 	robot.setSonarAngle(sonaranglespin.GetValue()/180.0*M_PI);
+	robot.setStepperEnabled(stepperen.GetValue());
 }
 

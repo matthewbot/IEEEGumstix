@@ -21,6 +21,11 @@ void AVRRobot::syncOut() {
 	return comm.syncOut(gp);
 }
 
+void AVRRobot::disableAll() {
+	gp.enable_bits = 0;
+	gp.leftwheel_effort = gp.rightwheel_effort = gp.backwheel_effort = 0;
+}
+
 float AVRRobot::getCompassAngle() const {
 	return compass.getAngle(ap);
 }
@@ -39,9 +44,17 @@ void AVRRobot::setWheels(const WheelsOutput &wheels) {
 
 void AVRRobot::setSonarAngle(float angle) {
 	gp.sonar_angle = angle/M_PI*1800; // so simple we can just put this in here directly
+	gp.enable_bits |= ENABLE_STEPPER;
 }
 
 void AVRRobot::setUpDown(bool updown) {
-	gp.retract = updown; // TODO.. stuff in serial packets needs to be renamed for better consistency
+	gp.updown_lift = updown;
+}
+
+void AVRRobot::setStepperEnabled(bool enabled) {
+	if (enabled)
+		gp.enable_bits |= ENABLE_STEPPER;
+	else
+		gp.enable_bits &= ~ENABLE_STEPPER;
 }
 

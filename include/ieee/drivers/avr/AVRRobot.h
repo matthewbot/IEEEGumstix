@@ -24,12 +24,17 @@ namespace ieee {
 			bool syncIn();
 			void syncOut();
 
+			void disableAll(); // disables servos, steppers, and lasers
+
 			float getCompassAngle() const;
 			SonarDistStatus getSonar1() const;
 			SonarDistStatus getSonar2() const;
 
 			void setWheels(const WheelsOutput &wheels);
+
 			void setSonarAngle(float angle);
+			void setStepperEnabled(bool enabled=true);
+
 			void setUpDown(bool up);
 
 			inline GumstixPacket &getGumstixPacket() { return gp; }

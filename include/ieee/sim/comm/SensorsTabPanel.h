@@ -22,6 +22,7 @@ namespace ieee {
 			wxStaticText sonaranglelabel;
 			wxSpinCtrl sonaranglespin;
 			wxCheckBox compasssync;
+			wxCheckBox stepperen;
 	};
 }
 

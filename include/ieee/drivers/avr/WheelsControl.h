@@ -34,7 +34,7 @@ namespace ieee {
 			const Config &config;
 
 			static int16_t toRawAngle(float angle, const WheelConfig &wconf);
-			static int16_t toRawSpeed(float effort, float angle);
+			static int16_t toRawEffort(float effort, float angle);
 	};
 }
 

@@ -1,6 +1,6 @@
 [Desktop Entry]
-Name=LaserSim
-Type=IEEEComm
+Name=IEEEComm
+Type=Application
 Exec=${CMAKE_INSTALL_PREFIX}/bin/ieeecomm
 Categories=Application;
 

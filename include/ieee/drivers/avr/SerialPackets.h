@@ -1,12 +1,15 @@
 #ifndef SERIALPACKETS_H
 #define SERIALPACKETS_H
 
+#define PROTOCOL_VERSION 3
+#define AVRPACKET_DEBUGOUTPUT_SIZE 32
+
 #include <stdint.h>
 
 namespace ieee {
 	struct AVRPacket {
 		uint16_t header; // always 0x1EEE
-		uint8_t  protoversion; // take version from top of protocol.txt multiply by 10.
+		uint8_t  protoversion;
 
 		// signed running totals of mouse sensor data. Wrap around is ok.
 		int32_t leftmouse_x;
@@ -14,15 +17,14 @@ namespace ieee {
 		int32_t rightmouse_x;
 		int32_t rightmouse_y;
 
-		// current orientation of wheels, following the angles from misc notes in protocol.txt
+		// surface quality data
+		uint8_t leftmouse_squal;
+		uint8_t rightmouse_squal;
+
+		// current orientation of wheels, 0-3600
 		int16_t leftwheel_angle;
 		int16_t rightwheel_angle;
 		int16_t backwheel_angle;
-
-		// current speed of wheels
-		int16_t leftwheel_speed;
-		int16_t rightwheel_speed;
-		int16_t backwheel_speed;
 
 		// sonar reading, as a raw, uncalibrated value
 		uint16_t sonar1_reading;
@@ -34,35 +36,38 @@ namespace ieee {
 		int16_t mag_y;
 		int16_t mag_z;
 
-		uint8_t ledsensors[3]; // a raw uncalibrated reading from each of the LED sensors
+		uint16_t batt_volts; // battery voltage in millivolts
 
-		char debugoutput[32]; // a null-terminated debugging message that the gumstix will put on the LCD/wireless/mission log
+		char debugoutput[AVRPACKET_DEBUGOUTPUT_SIZE]; // a null-terminated debugging message that the gumstix will put on the LCD/wireless/mission log
 
 		uint8_t checksum; // 8-bit sum of all other bytes
 	} __attribute__((__packed__));
+
+	enum {
+		ENABLE_SERVOS = 0x01,
+		ENABLE_LASERS = 0x02,
+		ENABLE_STEPPER = 0x04
+	};
 
 	struct GumstixPacket {
 		uint16_t header; // always 0x1EEE
 		uint8_t  protoversion; // take version from top of protocol.txt multiply by 10.
 
-		bool servos_enabled;
+		uint8_t enable_bits; // enable bits for servos, lasers, and the stepper
 
-		// desired wheel angles. These will be smoothly ramped as needed
+		// desired wheel angles
 		int16_t leftwheel_angle;
 		int16_t rightwheel_angle;
 		int16_t backwheel_angle;
 
-		// desired wheel velocities. These will be smoothly ramped as needed.
-		int16_t leftwheel_speed;
-		int16_t rightwheel_speed;
-		int16_t backwheel_speed;
+		// desired wheel efforts
+		int16_t leftwheel_effort;
+		int16_t rightwheel_effort;
+		int16_t backwheel_effort;
 
 		uint16_t sonar_angle; // desired sonar angle
 
-		uint8_t laser_bitmask; // a 1 in the nth bit corresponds to the nth laser from the top being active.
-
-		// true if the retractor is desired to be raised, false if not.
-		bool retract;
+		bool updown_lift; // true to lift updown, false to lower
 
 		uint8_t checksum;
 	} __attribute__((__packed__));

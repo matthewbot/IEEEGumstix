@@ -49,8 +49,7 @@ void DriveTabPanel::onSync(AVRRobot &robot) {
 	motion.curangle = curdirspin.GetValue()/180.0*M_PI;
 	motion.angvel = angvelspin.GetValue()/180.0*M_PI;
 
-	WheelsControl::Output out = driveequ.compute(motion);
-	robot.setWheels(out);
+	robot.setWheels(driveequ.compute(motion));
 }
 
 DriveTabPanel::DriveEquationConfig::DriveEquationConfig() {

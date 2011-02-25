@@ -39,7 +39,7 @@ bool AVRComm::syncIn(AVRPacket &avr) {
 
 void AVRComm::syncOut(GumstixPacket &gumstix) {
 	gumstix.header = 0x1EEE;
-	gumstix.protoversion = 2;
+	gumstix.protoversion = PROTOCOL_VERSION;
 	uint8_t *data = reinterpret_cast<uint8_t *>(&gumstix);
 	gumstix.checksum = checksum(data, sizeof(GumstixPacket)-1);
 	port.write(data, sizeof(GumstixPacket));
@@ -50,7 +50,7 @@ bool AVRComm::checkRecvbufPacket(int pos) {
 	if (packet->header != 0x1EEE)
 		return false;
 
-	if (packet->protoversion != 2)
+	if (packet->protoversion != PROTOCOL_VERSION)
 		return false;
 
 	if (packet->checksum != checksum(&recvbuf[pos], sizeof(AVRPacket)-1)) // -1 to not include the checksum byte in the checksum

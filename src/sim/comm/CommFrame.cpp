@@ -36,8 +36,7 @@ void CommFrame::OnSyncEvent(wxTimerEvent &) {
 	while (robot.syncIn()) { }
 	SetStatusText(wxString::FromAscii(robot.getAVRPacket().debugoutput));
 
-	GumstixPacket &gp = robot.getGumstixPacket();
-	gp.leftwheel_speed = gp.rightwheel_speed = gp.backwheel_speed = 0; // zero all speeds so that if no panel is writing them motors stop
+	robot.disableAll(); // disable everything, tabs then enable what is currently in use
 
 	for (TabPanelVec::iterator i = panels.begin(); i != panels.end(); ++i)
 		(*i)->onSync(robot);
