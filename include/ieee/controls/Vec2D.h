@@ -2,6 +2,9 @@
 #define VEC2D_H
 
 #include <cmath>
+#include <istream>
+#include <ostream>
+#include "ieee/shared/types.h" // this probably belongs in here actually
 
 namespace ieee {
 	struct Vec2D {
@@ -16,11 +19,13 @@ namespace ieee {
 		inline Vec2D operator+(const Vec2D &vec) const { return Vec2D(x + vec.x, y + vec.y); }
 		inline Vec2D operator-(const Vec2D &vec) const { return Vec2D(x - vec.x, y - vec.y); }
 		inline Vec2D operator*(float val) const { return Vec2D(x * val, y * val); }
+		inline Vec2D operator/(float val) const { return Vec2D(x / val, y / val); }
 		inline Vec2D operator-() const { return Vec2D(-x, -y); }
 
 		inline Vec2D &operator+=(const Vec2D &vec) { x += vec.x; y += vec.y; }
 		inline Vec2D &operator-=(const Vec2D &vec) { x -= vec.x; y -= vec.y; }
 		inline Vec2D &operator*=(float val) { x *= val; y *= val; }
+		inline Vec2D &operator/=(float val) { x /= val; y /= val; }
 
 		inline float dot(const Vec2D &vec) const { return x * vec.x + y * vec.y; }
 
@@ -28,7 +33,13 @@ namespace ieee {
 			float c = cos(angle), s = sin(angle);
 			return Vec2D(x*c+y*s, y*c-x*s);
 		}
+
+		inline Vec2D unit() { return *this / magnitude(); }
 	};
+
+	inline std::ostream &operator<<(std::ostream &out, const Vec2D &vec) {
+		out << "<" << vec.x << "," << vec.y << ">";
+	}
 }
 
 #endif
