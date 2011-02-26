@@ -27,6 +27,8 @@ namespace ieee {
 			void disableAll(); // disables servos, steppers, and lasers
 
 			float getCompassAngle() const;
+			void calibrateCompassOffset(float desireddir=0);
+
 			SonarReading getSonar1() const;
 			SonarReading getSonar2() const;
 

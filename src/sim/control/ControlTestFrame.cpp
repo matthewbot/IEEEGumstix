@@ -33,10 +33,15 @@ ControlTestFrame::ControlTestFrame()
 
 	try {
 		robotptr.reset(new AVRRobot(robotconfig));
+
+		while (!robotptr->syncIn()) { } // TODO hack!!!
+		robotptr->calibrateCompassOffset();
 	} catch (std::exception &ex) {
 		cerr << "Exception while creating AVRRobot: " << endl << ex.what() << endl;
 		SetStatusText(_("Failed to create AVRRobot"));
 	}
+
+
 }
 
 void ControlTestFrame::OnSyncEvent(wxTimerEvent &evt) {

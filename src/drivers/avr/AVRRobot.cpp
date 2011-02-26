@@ -30,6 +30,10 @@ float AVRRobot::getCompassAngle() const {
 	return compass.getAngle(ap);
 }
 
+void AVRRobot::calibrateCompassOffset(float angle) {
+	compass.calibrateOffset(ap, angle);
+}
+
 AVRRobot::SonarReading AVRRobot::getSonar1() const {
 	return sonar1.getReading(ap);
 }
