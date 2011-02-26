@@ -30,6 +30,7 @@ DriveTabPanel::DriveTabPanel(wxWindow *parent)
 	sizer->Add(&maxeffortlabel, 0, wxEXPAND);
 	sizer->Add(&maxeffortspin, 0, wxEXPAND);
 	sizer->Add(&enablecheck, 0, wxEXPAND);
+	sizer->Add(&compasscheck, 0, wxEXPAND);
 }
 
 char DriveTabPanel::getTabCharacter() const { return 'D'; }
