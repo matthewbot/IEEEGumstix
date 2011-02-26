@@ -12,6 +12,9 @@ namespace ieee {
 
 		inline Vec2D() { }
 		inline Vec2D(float x, float y) : x(x), y(y) { }
+		inline Vec2D(const Coord &c) : x(c.x), y(c.y) { }
+
+		inline operator Coord() const { return Coord(x, y); }
 
 		inline float magnitude() const { return sqrt(x*x + y*y); }
 		inline float angle() const { return atan2(y, x); }

@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=ControlTest
+Type=Application
+Exec=${CMAKE_INSTALL_PREFIX}/bin/controltest
+Categories=Application;
+

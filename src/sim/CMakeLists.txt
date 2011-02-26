@@ -8,6 +8,7 @@ include(${wxWidgets_USE_FILE})
 add_subdirectory(room)
 add_subdirectory(laser)
 add_subdirectory(comm)
+add_subdirectory(control)
 
 add_subdirectory(shared)
 

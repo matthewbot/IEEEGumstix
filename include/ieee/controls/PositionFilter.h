@@ -40,7 +40,7 @@ namespace ieee {
 			};
 
 			const Output &update(const Input &input);
-			inline const Output &getOutput() { return output; }
+			inline const Output &getOutput() const { return output; }
 
 		private:
 			Output output;
