@@ -62,7 +62,7 @@ ControlTestFrame::PositionControllerConfig::PositionControllerConfig() {
 	driveequ.back.relpos.y = 0;
 
 	const float outscale = .1;
-	const float outoffset = .5;
+	const float outoffset = .7;
 	driveequ.left.outscale = outscale;
 	driveequ.left.outoffset = outoffset;
 	driveequ.right.outscale = outscale;
@@ -72,6 +72,8 @@ ControlTestFrame::PositionControllerConfig::PositionControllerConfig() {
 
 	driveequ.rotationoffset = M_PI/2;
 	driveequ.minspeed = .1;
+
+	stopdist = 10;
 }
 
 ControlTestFrame::AVRRobotConfig::AVRRobotConfig() {
@@ -79,13 +81,13 @@ ControlTestFrame::AVRRobotConfig::AVRRobotConfig() {
 	wheels.left.maxstop = wheels.right.maxstop = wheels.back.maxstop = 1800;
 	wheels.left.offset = wheels.right.offset = wheels.back.offset = 0;
 
-	sonar1.alpha = 1;
-	sonar1.beta = 0;
-	sonar2.alpha = 1;
-	sonar2.beta = 0;
+	sonar1.alpha = .3078;
+	sonar1.beta = -53.11357 + 3.5;
+	sonar2.alpha = .26518;
+	sonar2.beta = -50.10155 + 3.5;
 
-	compass.centerx = 825;
-	compass.centery = 1200;
-	compass.yscale = .985;
+	compass.centerx = 894;
+	compass.centery = 1212;
+	compass.yscale = .9575;
 }
 
