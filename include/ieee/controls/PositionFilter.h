@@ -10,6 +10,9 @@ namespace ieee {
 			struct Config {
 				float roomwidth;
 				float roomheight;
+
+				Vec2D sonaroffset;
+				float sonarstepperrad;
 			};
 
 			PositionFilter(const Config &config);

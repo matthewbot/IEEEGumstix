@@ -58,6 +58,8 @@ void ControlTestFrame::OnSyncEvent(wxTimerEvent &evt) {
 
 ControlTestFrame::PositionControllerConfig::PositionControllerConfig() {
 	posfilter.roomwidth = posfilter.roomheight = 100;
+	posfilter.sonaroffset = Vec2D(4, 0);
+	posfilter.sonarstepperrad = 2.5f;
 
 	driveequ.left.relpos.x = 3.1903;
 	driveequ.left.relpos.y = 5.5257;

@@ -15,9 +15,11 @@ float PositionFilter::sonarDirToRad(SonarDir dir) {
 }
 
 const PositionFilter::Output &PositionFilter::update(const Input &input) {
+	output.dir = input.compassdir;
+
 	Vec2D sonarpos;
-	const float s1dist = input.sonar1.dist;
-	const float s2dist = input.sonar2.dist;
+	const float s1dist = input.sonar1.dist + config.sonarstepperrad;
+	const float s2dist = input.sonar2.dist + config.sonarstepperrad;
 
 	switch (input.cursonardir) {
 		case SONARDIR_EAST:
@@ -44,9 +46,7 @@ const PositionFilter::Output &PositionFilter::update(const Input &input) {
 			sonarpos = output.pos;
 			break;
 	}
-	output.pos = sonarpos;
-
-	output.dir = input.compassdir;
+	output.pos = sonarpos - config.sonaroffset.rotate(output.dir);
 
 	return output;
 }
