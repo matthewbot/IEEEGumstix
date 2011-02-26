@@ -16,5 +16,6 @@ IMAGE_INSTALL += " \
   mplayer \
   espeak \
   ieeegumstix \
+  x11vnc \
  "
 
