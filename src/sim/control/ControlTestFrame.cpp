@@ -20,14 +20,21 @@ ControlTestFrame::ControlTestFrame()
   gridscale(.1, .1, -.5, -.5),
   panel(this, 100, 100),
   gridlayer(grid, gridscale),
-  posconlayer(poscontrol),
+  posconlayer(*this, poscontrol),
+  optionspanel(this, -1),
+  drivecheck(&optionspanel, -1, _("Drive")),
   synctimer(this, SYNC_TIMER) {
 	panel.addLayer(&gridlayer);
 	panel.addLayer(&posconlayer);
 
+	wxBoxSizer *optionspanel_sizer = new wxBoxSizer(wxHORIZONTAL);
+	optionspanel.SetSizer(optionspanel_sizer);
+	optionspanel_sizer->Add(&drivecheck, 0, wxEXPAND);
+
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	SetSizer(sizer);
 	sizer->Add(&panel, 1, wxEXPAND);
+	sizer->Add(&optionspanel, 0, wxEXPAND);
 
 	synctimer.Start(40);
 
@@ -40,8 +47,6 @@ ControlTestFrame::ControlTestFrame()
 		cerr << "Exception while creating AVRRobot: " << endl << ex.what() << endl;
 		SetStatusText(_("Failed to create AVRRobot"));
 	}
-
-
 }
 
 void ControlTestFrame::OnSyncEvent(wxTimerEvent &evt) {
@@ -51,9 +56,22 @@ void ControlTestFrame::OnSyncEvent(wxTimerEvent &evt) {
 
 	while (robot.syncIn()) { }
 	poscontrol.update(robot);
+
+	if (!drivecheck.GetValue()) {
+		GumstixPacket &gp = robot.getGumstixPacket();
+		gp.leftwheel_effort = gp.rightwheel_effort = gp.backwheel_effort = 0;
+	}
+
 	robot.syncOut();
 
 	panel.Refresh();
+}
+
+void ControlTestFrame::onCommand(const Coord &coord, float dir) {
+	PositionController::Command command;
+	command.destpos = coord;
+	command.speed = 1.5;
+	poscontrol.setCommand(command);
 }
 
 ControlTestFrame::PositionControllerConfig::PositionControllerConfig() {

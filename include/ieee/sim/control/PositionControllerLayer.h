@@ -7,7 +7,12 @@
 namespace ieee {
 	class PositionControllerLayer : public WorldPanelLayer {
 		public:
-			PositionControllerLayer(const PositionController &poscontrol);
+			class Callbacks {
+				public:
+					virtual void onCommand(const Coord &coord, float dir)=0;
+			};
+
+			PositionControllerLayer(Callbacks &callbacks, const PositionController &poscontrol);
 
 			static const int WEIGHT = 0;
 			virtual int getWeight() const; // WorldPanelLayer
@@ -17,14 +22,17 @@ namespace ieee {
 			virtual bool leftUp(const Coord &pos);
 
 		private:
-			void renderRobot(wxPaintDC &dc, const CoordScale &drawscale) const;
-			void renderDragCommand(wxPaintDC &dc, const CoordScale &drawscale) const;
-
-			const PositionController &poscontrol;
+			Callbacks &callbacks;
 
 			bool dragging;
 			Coord startcoord;
 			Coord endcoord;
+
+			void renderRobot(wxPaintDC &dc, const CoordScale &drawscale) const;
+			void renderControllerCommand(wxPaintDC &dc, const CoordScale &drawscale) const;
+			void renderDragCommand(wxPaintDC &dc, const CoordScale &drawscale) const;
+
+			const PositionController &poscontrol;
 	};
 }
 

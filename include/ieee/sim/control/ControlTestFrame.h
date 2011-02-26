@@ -11,7 +11,7 @@
 #include <boost/scoped_ptr.hpp>
 
 namespace ieee {
-	class ControlTestFrame : public wxFrame {
+	class ControlTestFrame : public wxFrame, PositionControllerLayer::Callbacks {
 		public:
 			ControlTestFrame();
 
@@ -37,7 +37,12 @@ namespace ieee {
 			GridPanelLayer gridlayer;
 			PositionControllerLayer posconlayer;
 
+			wxPanel optionspanel;
+			wxCheckBox drivecheck;
+
 			wxTimer synctimer;
+
+			virtual void onCommand(const Coord &coord, float dir); // PositionControllerLayer::Callbacks
 
 			DECLARE_EVENT_TABLE()
 			void OnSyncEvent(wxTimerEvent &evt);

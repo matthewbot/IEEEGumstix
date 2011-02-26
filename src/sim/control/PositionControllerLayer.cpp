@@ -2,13 +2,14 @@
 
 using namespace ieee;
 
-PositionControllerLayer::PositionControllerLayer(const PositionController &poscontrol)
-: poscontrol(poscontrol) { }
+PositionControllerLayer::PositionControllerLayer(Callbacks &callbacks, const PositionController &poscontrol)
+: callbacks(callbacks), poscontrol(poscontrol) { }
 
 int PositionControllerLayer::getWeight() const { return WEIGHT; }
 
 void PositionControllerLayer::render(wxPaintDC &dc, const CoordScale &drawscale) const {
 	renderRobot(dc, drawscale);
+	renderControllerCommand(dc, drawscale);
 	renderDragCommand(dc, drawscale);
 }
 
@@ -27,6 +28,23 @@ void PositionControllerLayer::renderRobot(wxPaintDC &dc, const CoordScale &draws
 	points[2].x = (int)(pos.x + thickness*cos(dir - 5*M_PI/4));
 	points[2].y = (int)(pos.y - thickness*sin(dir - 5*M_PI/4));
 	dc.DrawPolygon(3, points);
+}
+
+void PositionControllerLayer::renderControllerCommand(wxPaintDC &dc, const CoordScale &drawscale) const {
+	if (!poscontrol.getStarted())
+		return;
+	const PositionController::Command &command = poscontrol.getCommand();
+
+	Pos pos = drawscale.coordToPos(command.destpos);
+	const float dir = 0;
+
+	dc.DrawCircle(pos.x, pos.y, 4);
+
+	const float len = 8;
+	const float endx = pos.x+len*cos(dir);
+	const float endy = pos.y-len*sin(dir);
+	dc.DrawLine(pos.x, pos.y, endx, endy);
+	dc.DrawCircle(endx, endy, 1);
 }
 
 void PositionControllerLayer::renderDragCommand(wxPaintDC &dc, const CoordScale &drawscale) const {
@@ -53,6 +71,9 @@ bool PositionControllerLayer::mouseMotion(const Coord &coord) {
 }
 
 bool PositionControllerLayer::leftUp(const Coord &coord) {
+	float angle = atan2(-(endcoord.y - startcoord.y), endcoord.x - startcoord.x);
+	callbacks.onCommand(startcoord, angle);
+
 	dragging = false;
 	return true;
 }
