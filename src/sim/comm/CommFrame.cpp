@@ -1,6 +1,7 @@
 #include "ieee/sim/comm/CommFrame.h"
 
 using namespace ieee;
+using namespace boost;
 using namespace std;
 
 enum {
@@ -14,8 +15,7 @@ END_EVENT_TABLE()
 CommFrame::CommFrame()
 : wxFrame(NULL, -1, _("IEEE Comm"), wxDefaultPosition, wxSize(320, 240)),
   synctimer(this, SYNC_TIMER),
-  notebook(this, -1, wxDefaultPosition, wxDefaultSize, wxNB_RIGHT),
-  robot(robotconfig) {
+  notebook(this, -1, wxDefaultPosition, wxDefaultSize, wxNB_RIGHT) {
 	synctimer.Start(40);
 
 	panels.push_back(new WheelTabPanel(&notebook));
@@ -30,9 +30,20 @@ CommFrame::CommFrame()
 	SetSizer(sizer);
 
 	CreateStatusBar();
+
+	try {
+		robotptr.reset(new AVRRobot(robotconfig));
+	} catch (std::exception &ex) {
+		cerr << "Exception while creating AVRRobot: " << endl << ex.what() << endl;
+		SetStatusText(_("Failed to create AVRRobot"));
+	}
 }
 
 void CommFrame::OnSyncEvent(wxTimerEvent &) {
+	if (!robotptr)
+		return;
+	AVRRobot &robot = *robotptr;
+
 	while (robot.syncIn()) { }
 	SetStatusText(wxString::FromAscii(robot.getAVRPacket().debugoutput));
 

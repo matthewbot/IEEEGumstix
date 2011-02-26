@@ -26,7 +26,7 @@ namespace ieee {
 			};
 
 			RobotConfig robotconfig;
-			AVRRobot robot;
+			boost::scoped_ptr<AVRRobot> robotptr;
 
 			DECLARE_EVENT_TABLE()
 			void OnSyncEvent(wxTimerEvent &);
