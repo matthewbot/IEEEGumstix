@@ -51,13 +51,14 @@ bool ObjectPanelLayer::leftDown(const Coord &coord) {
 	return dragging;
 }
 
-void ObjectPanelLayer::leftUp() {
+bool ObjectPanelLayer::leftUp() {
 	dragging = false;
+	return false;
 }
 
-void ObjectPanelLayer::mouseMotion(const Coord &coord) {
+bool ObjectPanelLayer::mouseMotion(const Coord &coord) {
 	if (!dragging)
-		return;
+		return false;
 
 	Pos pos = gridscale.coordToPos(coord);
 
@@ -76,5 +77,7 @@ void ObjectPanelLayer::mouseMotion(const Coord &coord) {
 		callbacks.onWorldDragged(pos);
 		lastdragpos = pos;
 	}
+
+	return false; // callbacks will redraw us if needed
 }
 

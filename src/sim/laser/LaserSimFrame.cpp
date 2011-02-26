@@ -24,7 +24,7 @@ LaserSimFrame::LaserSimFrame()
   laserlayer(readings),
   rawreadingtext(this, -1, _("")),
   notebook(this, MAIN_NOTEBOOK, wxDefaultPosition, wxDefaultSize, wxNB_RIGHT),
-  gridworldpanel(new WorldPanel(&notebook)),
+  gridworldpanel(new WorldPanel(&notebook, 100, 100)),
   laserimagepanel(new LaserImagePanel(&notebook)),
   greenimagepanel(new ImagePanel(&notebook)),
   rawimagepanel(new ImagePanel(&notebook)) {

@@ -18,7 +18,7 @@ ControlTestFrame::ControlTestFrame()
   poscontrol(poscontrolconfig),
   grid(10, 10),
   gridscale(.1, .1, -.5, -.5),
-  panel(this),
+  panel(this, 100, 100),
   gridlayer(grid, gridscale),
   posconlayer(poscontrol),
   synctimer(this, SYNC_TIMER) {

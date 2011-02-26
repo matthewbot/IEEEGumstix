@@ -20,8 +20,8 @@ namespace ieee {
 			virtual void render(wxPaintDC &dc, const CoordScale &drawscale) const;
 
 			virtual bool leftDown(const Coord &coord);
-			virtual void leftUp();
-			virtual void mouseMotion(const Coord &coord);
+			virtual bool leftUp();
+			virtual bool mouseMotion(const Coord &coord);
 
 		private:
 			const World &world;

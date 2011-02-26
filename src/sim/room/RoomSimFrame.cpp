@@ -45,7 +45,7 @@ RoomSimFrame::RoomSimFrame()
   mapgridlayer(robot.getMap(), robot.getGridScale()),
   objectlayer(world, robot.getGridScale(), *this),
   robotlayer(robot, robot.getGridScale(), robot.getVictimScale()),
-  worldpanel(this),
+  worldpanel(this, 100, 100),
   selectedid(-1),
   buttonpanel(this),
   stepbutton(&buttonpanel, STEP_BUTTON, _("Step")),

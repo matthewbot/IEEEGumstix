@@ -7,13 +7,16 @@
 namespace ieee {
 	class WorldPanel : public wxPanel {
 		public:
-			WorldPanel(wxWindow *parent);
+			WorldPanel(wxWindow *parent, float roomwidth, float roomheight);
 
 			void addLayer(WorldPanelLayer *layer); // WorldPanel doesn't take ownership
 			bool hasLayer(WorldPanelLayer *layer);
 			void removeLayer(WorldPanelLayer *layer);
 
 		private:
+			CoordScale getDrawScale() const;
+			float roomwidth, roomheight;
+
 			typedef std::vector<WorldPanelLayer *> LayerVec;
 			LayerVec layers;
 

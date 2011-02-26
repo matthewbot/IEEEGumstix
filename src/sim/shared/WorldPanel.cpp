@@ -11,8 +11,10 @@ BEGIN_EVENT_TABLE(WorldPanel, wxPanel)
 	EVT_PAINT(WorldPanel::OnPaint)
 END_EVENT_TABLE()
 
-WorldPanel::WorldPanel(wxWindow *parent)
-: wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE) { }
+WorldPanel::WorldPanel(wxWindow *parent, float roomwidth, float roomheight)
+: wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE),
+  roomwidth(roomwidth),
+  roomheight(roomheight) { }
 
 void WorldPanel::addLayer(WorldPanelLayer *layer) {
 	int newweight = layer->getWeight();
@@ -39,11 +41,7 @@ bool WorldPanel::hasLayer(WorldPanelLayer *layer) {
 
 void WorldPanel::OnPaint(wxPaintEvent &event) {
 	wxPaintDC dc(this);
-
-	wxCoord w, h;
-	GetSize(&w, &h);
-
-	CoordScale drawscale(w/100.0f, h/100.0f);
+	CoordScale drawscale = getDrawScale();
 
 	for (LayerVec::iterator i = layers.begin(); i != layers.end(); ++i) {
 		(*i)->render(dc, drawscale);
@@ -52,35 +50,46 @@ void WorldPanel::OnPaint(wxPaintEvent &event) {
 }
 
 void WorldPanel::OnLeftDown(wxMouseEvent &event) {
-	wxCoord w, h;
-	GetSize(&w, &h);
-
-	CoordScale drawscale(w/100.0f, h/100.0f);
-
-	Coord coord = drawscale.posToCoord(event.GetX(), event.GetY());
-
+	Coord coord = getDrawScale().posToCoord(event.GetX(), event.GetY());
+	bool redraw = false;
 	for (LayerVec::iterator i = layers.begin(); i != layers.end(); ++i) {
-		if ((*i)->leftDown(coord))
+		if ((*i)->leftDown(coord)) {
+			redraw = true;
 			break;
+		}
 	}
+
+	if (redraw)
+		Refresh();
 }
 
 void WorldPanel::OnLeftUp(wxMouseEvent &event) {
+	Coord coord = getDrawScale().posToCoord(event.GetX(), event.GetY());
+	bool redraw = false;
 	for (LayerVec::iterator i = layers.begin(); i != layers.end(); ++i) {
-		(*i)->leftUp();
+		if ((*i)->leftUp(coord))
+			redraw = true;
 	}
+
+	if (redraw)
+		Refresh();
 }
 
 void WorldPanel::OnMotion(wxMouseEvent &event) {
+	Coord coord = getDrawScale().posToCoord(event.GetX(), event.GetY());
+	bool redraw = false;
+	for (LayerVec::iterator i = layers.begin(); i != layers.end(); ++i) {
+		if ((*i)->mouseMotion(coord))
+			redraw = true;
+	}
+
+	if (redraw)
+		Refresh();
+}
+
+CoordScale WorldPanel::getDrawScale() const {
 	wxCoord w, h;
 	GetSize(&w, &h);
-
-	CoordScale drawscale(w/100.0f, h/100.0f);
-
-	Coord coord = drawscale.posToCoord(event.GetX(), event.GetY());
-
-	for (LayerVec::iterator i = layers.begin(); i != layers.end(); ++i) {
-		(*i)->mouseMotion(coord);
-	}
+	return CoordScale(w/roomwidth, h/roomheight);
 }
 
