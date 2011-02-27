@@ -23,7 +23,7 @@ WheelsControl::Output DriveEquation::compute(const Motion &motion) const {
 }
 
 WheelsControl::WheelOutput DriveEquation::computeWheel(const WheelConfig &wconfig, const Motion &motion) const {
-	Vec2D relvel = motion.vel.rotate(motion.curangle);
+	Vec2D relvel = motion.vel.rotate(-motion.curangle);
 
 	Vec2D wheelout;
 	wheelout.x = relvel.x + motion.angvel*(-wconfig.relpos.x*sin(motion.curangle) - wconfig.relpos.y*cos(motion.curangle));

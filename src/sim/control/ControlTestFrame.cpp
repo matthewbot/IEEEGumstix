@@ -70,7 +70,7 @@ void ControlTestFrame::OnSyncEvent(wxTimerEvent &evt) {
 void ControlTestFrame::onCommand(const Coord &coord, float dir) {
 	PositionController::Command command;
 	command.destpos = coord;
-	command.speed = 1.5;
+	command.speed = .2;
 	poscontrol.setCommand(command);
 }
 
