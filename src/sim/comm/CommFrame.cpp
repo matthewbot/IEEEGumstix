@@ -21,6 +21,7 @@ CommFrame::CommFrame()
 	panels.push_back(new WheelTabPanel(&notebook));
 	panels.push_back(new SensorsTabPanel(&notebook));
 	panels.push_back(new DriveTabPanel(&notebook));
+	panels.push_back(new DumpTabPanel(&notebook));
 
 	for (TabPanelVec::iterator i = panels.begin(); i != panels.end(); ++i)
 		notebook.AddPage(*i, wxString((wxChar)(*i)->getTabCharacter()));
@@ -65,8 +66,8 @@ CommFrame::RobotConfig::RobotConfig() {
 	sonar2.alpha = .26518;
 	sonar2.beta = -50.10155 + 3.5;
 
-	compass.centerx = 1040;
-	compass.centery = 2400;
-	compass.yscale = .9625;
+	compass.centerx = 57.500;
+	compass.centery = 281.5;
+	compass.yscale = 1.0644;
 }
 

@@ -1,9 +1,11 @@
 #ifndef COMMFRAME_H
 #define COMMFRAME_H
 
+#include "ieee/sim/comm/TabPanel.h"
 #include "ieee/sim/comm/SensorsTabPanel.h"
 #include "ieee/sim/comm/WheelTabPanel.h"
 #include "ieee/sim/comm/DriveTabPanel.h"
+#include "ieee/sim/comm/DumpTabPanel.h"
 #include <boost/scoped_ptr.hpp>
 #include <wx/wx.h>
 #include <wx/notebook.h>

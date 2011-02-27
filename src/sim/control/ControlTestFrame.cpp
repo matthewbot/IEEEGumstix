@@ -111,8 +111,8 @@ ControlTestFrame::AVRRobotConfig::AVRRobotConfig() {
 	sonar2.alpha = .26518;
 	sonar2.beta = -50.10155 + 3.5;
 
-	compass.centerx = 894;
-	compass.centery = 1212;
-	compass.yscale = .9575;
+	compass.centerx = 57.500;
+	compass.centery = 281.5;
+	compass.yscale = 1.0644;
 }
 
