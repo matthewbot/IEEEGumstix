@@ -33,6 +33,7 @@ namespace ieee {
 			SonarReading getSonar2() const;
 
 			void setWheels(const WheelsOutput &wheels);
+			WheelsOutput getCurrentWheels() const;
 
 			void setSonarAngle(float angle);
 			void setStepperEnabled(bool enabled=true);

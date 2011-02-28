@@ -46,6 +46,10 @@ void AVRRobot::setWheels(const WheelsOutput &wheels) {
 	wheelscontrol.writeOutput(wheels, gp);
 }
 
+AVRRobot::WheelsOutput AVRRobot::getCurrentWheels() const {
+	return wheelscontrol.readOutput(ap);
+}
+
 void AVRRobot::setSonarAngle(float angle) {
 	gp.sonar_angle = angle/M_PI*1800; // so simple we can just put this in here directly
 	gp.enable_bits |= ENABLE_STEPPER;

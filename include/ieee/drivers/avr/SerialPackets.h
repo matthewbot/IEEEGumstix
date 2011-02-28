@@ -1,7 +1,7 @@
 #ifndef SERIALPACKETS_H
 #define SERIALPACKETS_H
 
-#define PROTOCOL_VERSION 3
+#define PROTOCOL_VERSION 4
 #define AVRPACKET_DEBUGOUTPUT_SIZE 32
 
 #include <stdint.h>
@@ -25,6 +25,11 @@ namespace ieee {
 		int16_t leftwheel_angle;
 		int16_t rightwheel_angle;
 		int16_t backwheel_angle;
+
+		// current wheel efforts
+		int16_t leftwheel_effort;
+		int16_t rightwheel_effort;
+		int16_t backwheel_effort;
 
 		// sonar reading, as a raw, uncalibrated value
 		uint16_t sonar1_reading;

@@ -24,17 +24,23 @@ namespace ieee {
 
 			struct Output {
 				WheelOutput left, right, back;
+
+				WheelOutput &getWheel(int num); // 0=left, 1=right, 2=back
 			};
 
 			WheelsControl(const Config &config);
 
 			void writeOutput(const Output &output, GumstixPacket &gp) const;
+			Output readOutput(const AVRPacket &ap) const;
 
 		private:
 			const Config &config;
 
 			static int16_t toRawAngle(float angle, const WheelConfig &wconf);
 			static int16_t toRawEffort(float effort, float angle);
+
+			static float fromRawAngle(int16_t angle, int16_t effort, const WheelConfig &wconf);
+			static float fromRawEffort(int16_t effort);
 	};
 }
 
