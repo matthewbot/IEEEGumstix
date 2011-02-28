@@ -1,7 +1,12 @@
 #include "ieee/drivers/avr/AVRRobot.h"
+#include <boost/date_time.hpp>
+#include <boost/thread.hpp>
 #include <cstring>
 
 using namespace ieee;
+using namespace boost;
+using namespace boost::posix_time;
+using namespace std;
 
 AVRRobot::AVRRobot(const Config &config)
 : comm(),
@@ -15,6 +20,24 @@ AVRRobot::AVRRobot(const Config &config)
 
 bool AVRRobot::syncIn() {
 	return comm.syncIn(ap);
+}
+
+void AVRRobot::syncIOWait(int count) {
+	for (int i=0; i<count; i++) {
+		ptime start = microsec_clock::local_time();
+		while (true) {
+			comm.syncOut(gp);
+			if (comm.syncIn(ap))
+				break;
+
+			if (microsec_clock::local_time() - start > milliseconds(500))
+				throw runtime_error("AVRRobot failed to sync");
+
+			this_thread::sleep(milliseconds(50));
+		}
+
+		while (comm.syncIn(ap)) { }
+	}
 }
 
 void AVRRobot::syncOut() {

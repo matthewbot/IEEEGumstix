@@ -4,5 +4,5 @@ project(Sim)
 file(GLOB sources "*.cpp")
 
 add_library(ieeesim ${sources})
-target_link_libraries(ieeesim ieeeshared ${wxWidgets_LIBRARIES})
+target_link_libraries(ieeesim ieeeshared ${wxWidgets_LIBRARIES} ${Boost_LIBRARIES})
 

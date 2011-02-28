@@ -22,6 +22,7 @@ namespace ieee {
 			AVRRobot(const Config &config);
 
 			bool syncIn();
+			void syncIOWait(int count=1); // throws exception if no sync in 25 ms, repeats full sync count times
 			void syncOut();
 
 			void disableAll(); // disables servos, steppers, and lasers

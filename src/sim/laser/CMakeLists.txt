@@ -3,7 +3,7 @@ project(LaserSim)
 
 file(GLOB sources "*.cpp")
 add_executable(lasersim ${sources})
-target_link_libraries(lasersim ieeeshared ieeesim ieeedrivers ${wxWidgets_LIBRARIES})
+target_link_libraries(lasersim ieeeshared ieeesim ieeedrivers ${wxWidgets_LIBRARIES} ${Boost_LIBRARIES})
 
 install(TARGETS lasersim DESTINATION bin)
 

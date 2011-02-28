@@ -4,7 +4,7 @@ project(RoomSim)
 # gather all the source files and build an executable
 file(GLOB sources "*.cpp")
 add_executable(roomsim ${sources})
-target_link_libraries(roomsim ieeeshared ieeeplanner ieeesim ${wxWidgets_LIBRARIES})
+target_link_libraries(roomsim ieeeshared ieeeplanner ieeesim ${wxWidgets_LIBRARIES} ${Boost_LIBRARIES})
 
 install(TARGETS roomsim DESTINATION bin)
 
