@@ -6,8 +6,6 @@ using namespace std;
 
 CompassSensor::CompassSensor(const Config &config) : config(config), offset(0) { }
 
-#include <iostream>
-
 float CompassSensor::getAngle(const AVRPacket &ap, const WheelsControl &wheels) const {
 	WheelsControl::Output wheelsout = wheels.readOutput(ap);
 
@@ -21,8 +19,6 @@ float CompassSensor::getAngle(const AVRPacket &ap, const WheelsControl &wheels) 
 	magy -= polyval(config.leftwheel_offset.magy, angleWrap(wheelsout.left.angle));
 	magy -= polyval(config.rightwheel_offset.magy, angleWrap(wheelsout.right.angle));
 	magy -= polyval(config.backwheel_offset.magy, angleWrap(wheelsout.back.angle));
-
-	cout << "magx " << magx << " magy " << magy << " leftangle " << wheelsout.left.angle << endl;
 
 	float xaxis = magx - config.centerx;
 	float yaxis = (magy - config.centery)*config.yscale;

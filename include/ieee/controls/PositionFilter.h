@@ -48,6 +48,9 @@ namespace ieee {
 		private:
 			Output output;
 			const Config &config;
+
+			Vec2D lastsonarpos;
+			Vec2D updateSonarPos(const Input &input);
 	};
 }
 

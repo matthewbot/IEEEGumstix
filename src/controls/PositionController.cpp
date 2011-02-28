@@ -19,35 +19,59 @@ void PositionController::stop() {
 }
 
 void PositionController::update(AVRRobot &robot) {
-	// update the position filter
+	updatePositionFilter(robot);
+
+	if (!start)
+		return;
+
+	Vec2D velvec = computeVelocityVector();
+
+	// set up the motion
+	DriveEquation::Motion motion;
+	motion.curangle = posfilter.getOutput().dir;
+	motion.vel = velvec;
+	motion.angvel = 0;
+	robot.setWheels(driveequ.compute(motion)); // compute the wheel outputs and set them
+}
+
+void PositionController::updatePositionFilter(AVRRobot &robot) {
+	// update position filter
 	PositionFilter::Input posin;
 	posin.cursonardir = PositionFilter::SONARDIR_EAST;
 	posin.sonar1 = robot.getSonar1();
 	posin.sonar2 = robot.getSonar2();
 	posin.compassdir = robot.getCompassAngle();
-	const PositionFilter::Output &posout = posfilter.update(posin);
+	const PositionFilter::Output &out = posfilter.update(posin);
 
-	// calculate the stepper motor position using the robot's orientation
-	robot.setSonarAngle(PositionFilter::sonarDirToRad(posin.cursonardir) - posout.dir);
+	// keep the stepper following the position filter's desired sonar orientation
+	robot.setSonarAngle(PositionFilter::sonarDirToRad(out.sonardir) - out.dir);
+}
 
-	// if we haven't been told to start, we stop here
-	if (!start)
-		return;
+static float angdiff(float anglea, float angleb) {
+	float diff = anglea - angleb;
+	while (diff < 0)
+		diff += 2*M_PI;
+	while (diff >= 2*M_PI)
+		diff -= 2*M_PI;
+	return diff;
+}
 
-	// compute the motion
-	DriveEquation::Motion motion;
-	motion.curangle = posout.dir;
+Vec2D PositionController::computeVelocityVector() {
+	// compute the distance
+	Vec2D distvec = command.destpos - posfilter.getOutput().pos;
+	float dist = distvec.magnitude();
 
-	// start from the motion vector
-	Vec2D motionvec = command.destpos - posout.pos;
-	if (motionvec.magnitude() < config.stopdist) { // if we're close enough already
-		motion.vel = Vec2D(0, 0); // stop
-		motion.angvel = 0;
+	// compute the desired velocity vector
+	Vec2D velvec;
+	if (dist < config.stopdist) {
+		velvec = Vec2D(0, 0);
+	} else if (dist < config.lockdist && abs(angdiff(distvec.angle(), lastvelvec.angle())) < config.lockangdiff) {
+		velvec = lastvelvec;
 	} else {
-		motion.vel = motionvec.unit() * command.speed; // set up motion
-		motion.angvel = 0;
+		velvec = distvec.unit() * command.speed;
 	}
 
-	robot.setWheels(driveequ.compute(motion)); // compute the wheel outputs and set them
+	lastvelvec = velvec;
+	return velvec;
 }
 

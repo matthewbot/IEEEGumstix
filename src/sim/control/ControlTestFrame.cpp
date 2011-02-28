@@ -100,7 +100,9 @@ ControlTestFrame::PositionControllerConfig::PositionControllerConfig() {
 	driveequ.rotationoffset = M_PI/2;
 	driveequ.minspeed = .1;
 
-	stopdist = 10;
+	lockdist = 20;
+	lockangdiff = M_PI/4;
+	stopdist = 3;
 }
 
 ControlTestFrame::AVRRobotConfig::AVRRobotConfig() {
@@ -115,14 +117,14 @@ ControlTestFrame::AVRRobotConfig::AVRRobotConfig() {
 	sonar2.alpha = .26518;
 	sonar2.beta = -50.10155 + 3.5;
 
-	compass.centerx = 204.26;
-	compass.centery = 92.898;
-	compass.yscale = 1.0037;
-	compass.leftwheel_offset.magx += -0.35999, 6.58014, -49.68741, 206.44643, -523.28899, 824.64117, -766.87722, 397.08822, -114.75798, 3.22681;
-	compass.leftwheel_offset.magy += -3.0764, 46.1999, -288.8646, 971.4253, -1899.0372, 2185.6556, -1425.3537, 473.9252, -116.4624, 2.2518;
-	compass.rightwheel_offset.magx += -1.4085, 22.0113, -146.5448, 540.8970, -1205.7032, 1653.9614, -1353.2702, 604.1224, -101.1374, 1.7001;
-	compass.rightwheel_offset.magy += 3.1626, -47.9573, 306.5287, -1072.9989, 2236.3373, -2818.2724, 2073.0765, -805.0540, 102.8950, -1.1871;
-	compass.backwheel_offset.magx += -0.94414, 12.30830, -64.99283, 175.33200, -244.83722, 140.21278, 31.50476, -64.51520, 2.68270, -0.20292;
-	compass.backwheel_offset.magy += 0.74264, -9.29949, 44.60206, -94.78007, 48.08379, 154.88016, -288.62041, 176.29711, -35.34805, 2.52520;
+	compass.centerx = 198.68;
+	compass.centery = 47.52;
+	compass.yscale = 1.0631;
+	compass.leftwheel_offset.magx += -0.97367, -1.01313, 21.84237, -13.18883, -21.30770, -1.84136;
+	compass.leftwheel_offset.magy += -7.8588, 57.2176, -129.1713, 111.0248, -81.0347, 1.0370;
+	compass.rightwheel_offset.magx += -2.3619, 18.1477, -47.1516, 54.6400, -11.5349, -2.3130;
+	compass.rightwheel_offset.magy += -2.1977, 20.6271, -65.0001, 88.1855, -72.0203, 8.2104;
+	compass.backwheel_offset.magx += -1.91791, 12.60694, -24.89343, 16.92729, -12.33935, -0.35387;
+	compass.backwheel_offset.magy += -0.423544, 5.234523, -18.306325, 19.816709, -7.516840, -0.073927;
 }
 

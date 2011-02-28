@@ -3,7 +3,7 @@
 
 using namespace ieee;
 
-PositionFilter::PositionFilter(const Config &config) : config(config) {
+PositionFilter::PositionFilter(const Config &config) : config(config), lastsonarpos(0, 0) {
 	output.pos = Vec2D(0, 0);
 	output.dir = 0;
 	output.sonardir = SONARDIR_INDETERMINATE;
@@ -16,6 +16,15 @@ float PositionFilter::sonarDirToRad(SonarDir dir) {
 
 const PositionFilter::Output &PositionFilter::update(const Input &input) {
 	output.dir = input.compassdir;
+	output.pos = updateSonarPos(input);
+	output.sonardir = SONARDIR_EAST;
+
+	return output;
+}
+
+Vec2D PositionFilter::updateSonarPos(const Input &input) {
+	if (input.cursonardir == SONARDIR_INDETERMINATE)
+		return lastsonarpos;
 
 	Vec2D sonarpos;
 	const float s1dist = input.sonar1.dist + config.sonarstepperrad;
@@ -41,13 +50,12 @@ const PositionFilter::Output &PositionFilter::update(const Input &input) {
 			sonarpos.y = config.roomheight - s1dist;
 			sonarpos.x = config.roomwidth - s2dist;
 			break;
-
-		case SONARDIR_INDETERMINATE:
-			sonarpos = output.pos;
-			break;
 	}
-	output.pos = sonarpos - config.sonaroffset.rotate(output.dir);
 
-	return output;
+	sonarpos -= config.sonaroffset.rotate(output.dir);
+
+	lastsonarpos = sonarpos;
+	return sonarpos;
 }
+
 
