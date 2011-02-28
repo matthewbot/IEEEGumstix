@@ -50,11 +50,11 @@ void AVRRobot::disableAll() {
 }
 
 float AVRRobot::getCompassAngle() const {
-	return compass.getAngle(ap);
+	return compass.getAngle(ap, wheelscontrol);
 }
 
 void AVRRobot::calibrateCompassOffset(float angle) {
-	compass.calibrateOffset(ap, angle);
+	compass.calibrateOffset(ap, wheelscontrol, angle);
 }
 
 AVRRobot::SonarReading AVRRobot::getSonar1() const {
