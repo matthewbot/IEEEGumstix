@@ -5,6 +5,7 @@
 #include "ieee/drivers/avr/CompassSensor.h"
 #include "ieee/drivers/avr/SonarSensor.h"
 #include "ieee/drivers/avr/WheelsControl.h"
+#include "ieee/drivers/avr/StepperControl.h"
 
 namespace ieee {
 	class AVRRobot {
@@ -17,6 +18,7 @@ namespace ieee {
 				SonarSensor::Config sonar1;
 				SonarSensor::Config sonar2;
 				WheelsControl::Config wheels;
+				StepperControl::Config stepper;
 			};
 
 			AVRRobot(const Config &config);
@@ -38,6 +40,7 @@ namespace ieee {
 
 			void setSonarAngle(float angle);
 			void setStepperEnabled(bool enabled=true);
+			float getCurSonarAngle() const;
 
 			void setUpDown(bool up);
 
@@ -54,6 +57,7 @@ namespace ieee {
 			SonarSensor sonar1;
 			SonarSensor sonar2;
 			WheelsControl wheelscontrol;
+			StepperControl steppercontrol;
 	};
 }
 

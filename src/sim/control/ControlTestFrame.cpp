@@ -126,5 +126,8 @@ ControlTestFrame::AVRRobotConfig::AVRRobotConfig() {
 	compass.rightwheel_offset.magy += -2.1977, 20.6271, -65.0001, 88.1855, -72.0203, 8.2104;
 	compass.backwheel_offset.magx += -1.91791, 12.60694, -24.89343, 16.92729, -12.33935, -0.35387;
 	compass.backwheel_offset.magy += -0.423544, 5.234523, -18.306325, 19.816709, -7.516840, -0.073927;
+
+	stepper.wrapangle = M_PI/2;
+	stepper.stepsize = 1.8/180*M_PI;
 }
 

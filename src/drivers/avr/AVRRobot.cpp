@@ -13,7 +13,8 @@ AVRRobot::AVRRobot(const Config &config)
   compass(config.compass),
   sonar1(config.sonar1, 1),
   sonar2(config.sonar2, 2),
-  wheelscontrol(config.wheels) {
+  wheelscontrol(config.wheels),
+  steppercontrol(config.stepper) {
 	memset(&gp, 0, sizeof(gp));
 	memset(&ap, 0, sizeof(ap));
 }
@@ -74,18 +75,18 @@ AVRRobot::WheelsOutput AVRRobot::getCurrentWheels() const {
 }
 
 void AVRRobot::setSonarAngle(float angle) {
-	gp.sonar_angle = angle/M_PI*1800; // so simple we can just put this in here directly
-	gp.enable_bits |= ENABLE_STEPPER;
+	steppercontrol.setAngle(gp, angle);
+}
+
+float AVRRobot::getCurSonarAngle() const {
+	return steppercontrol.getCurAngle(ap);
+}
+
+void AVRRobot::setStepperEnabled(bool enabled) {
+	steppercontrol.setEnabled(gp, enabled);
 }
 
 void AVRRobot::setUpDown(bool updown) {
 	gp.updown_lift = updown;
-}
-
-void AVRRobot::setStepperEnabled(bool enabled) {
-	if (enabled)
-		gp.enable_bits |= ENABLE_STEPPER;
-	else
-		gp.enable_bits &= ~ENABLE_STEPPER;
 }
 

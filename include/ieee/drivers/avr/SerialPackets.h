@@ -1,7 +1,7 @@
 #ifndef SERIALPACKETS_H
 #define SERIALPACKETS_H
 
-#define PROTOCOL_VERSION 5
+#define PROTOCOL_VERSION 6
 #define AVRPACKET_DEBUGOUTPUT_SIZE 32
 
 #include <stdint.h>
@@ -34,7 +34,7 @@ namespace ieee {
 		// sonar reading, as a raw, uncalibrated value
 		uint16_t sonar1_reading;
 		uint16_t sonar2_reading;
-		int16_t sonar_angle;  // angle of sonar1
+		int16_t stepper_pos;  // angle of sonar1
 
 		// magnetometer readings
 		int16_t mag_x;
@@ -70,7 +70,7 @@ namespace ieee {
 		int16_t rightwheel_effort;
 		int16_t backwheel_effort;
 
-		int16_t sonar_angle; // desired sonar angle
+		int16_t stepper_pos; // desired sonar angle
 
 		bool updown_lift; // true to lift updown, false to lower
 
