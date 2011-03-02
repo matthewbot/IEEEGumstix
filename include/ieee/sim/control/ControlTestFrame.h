@@ -39,12 +39,14 @@ namespace ieee {
 
 			wxPanel optionspanel;
 			wxCheckBox drivecheck;
+			wxButton resetbutton;
 
 			wxTimer synctimer;
 
 			virtual void onCommand(const Coord &coord, float dir); // PositionControllerLayer::Callbacks
 
 			DECLARE_EVENT_TABLE()
+			void OnResetEvent(wxCommandEvent &evt);
 			void OnSyncEvent(wxTimerEvent &evt);
 	};
 }

@@ -37,6 +37,7 @@ namespace ieee {
 
 			void setWheels(const WheelsOutput &wheels);
 			WheelsOutput getCurrentWheels() const;
+			void setWheelAngles(float left, float right, float back);
 
 			void setSonarAngle(float angle);
 			void setStepperEnabled(bool enabled=true);

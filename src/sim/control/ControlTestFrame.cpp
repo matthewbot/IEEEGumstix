@@ -8,10 +8,12 @@ using namespace boost::assign;
 using namespace std;
 
 enum {
-	SYNC_TIMER
+	SYNC_TIMER,
+	RESET_BUTTON
 };
 
 BEGIN_EVENT_TABLE(ControlTestFrame, wxFrame)
+	EVT_BUTTON(RESET_BUTTON, ControlTestFrame::OnResetEvent)
 	EVT_TIMER(SYNC_TIMER, ControlTestFrame::OnSyncEvent)
 END_EVENT_TABLE()
 
@@ -25,6 +27,7 @@ ControlTestFrame::ControlTestFrame()
   posconlayer(*this, poscontrol),
   optionspanel(this, -1),
   drivecheck(&optionspanel, -1, _("Drive")),
+  resetbutton(&optionspanel, RESET_BUTTON, _("Reset"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT),
   synctimer(this, SYNC_TIMER) {
 	panel.addLayer(&gridlayer);
 	panel.addLayer(&posconlayer);
@@ -32,6 +35,7 @@ ControlTestFrame::ControlTestFrame()
 	wxBoxSizer *optionspanel_sizer = new wxBoxSizer(wxHORIZONTAL);
 	optionspanel.SetSizer(optionspanel_sizer);
 	optionspanel_sizer->Add(&drivecheck, 0, wxEXPAND);
+	optionspanel_sizer->Add(&resetbutton, 0, wxEXPAND);
 
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	SetSizer(sizer);
@@ -43,12 +47,19 @@ ControlTestFrame::ControlTestFrame()
 	try {
 		robotptr.reset(new AVRRobot(robotconfig));
 
+		robotptr->setWheelAngles(M_PI/2, M_PI/2, M_PI/2);
 		robotptr->syncIOWait(20);
 		robotptr->calibrateCompassOffset();
 	} catch (std::exception &ex) {
 		cerr << "Exception while creating AVRRobot: " << endl << ex.what() << endl;
 		SetStatusText(_("Failed to create AVRRobot"));
 	}
+}
+
+void ControlTestFrame::OnResetEvent(wxCommandEvent &evt) {
+	if (!robotptr)
+		return;
+	robotptr->calibrateCompassOffset();
 }
 
 void ControlTestFrame::OnSyncEvent(wxTimerEvent &evt) {
@@ -127,7 +138,6 @@ ControlTestFrame::AVRRobotConfig::AVRRobotConfig() {
 	compass.rightwheel_offset.magy += 0.087533, 2.294021, -10.848735, 16.962901, -38.659120, 8.029173;
 	compass.backwheel_offset.magx += -0.51772, 4.10939, -8.35313, 3.73830, -9.84221, 0.27012;
 	compass.backwheel_offset.magy += 0.46597, -2.08954, 2.30283, -1.12453, -11.01647, 0.65481;
-
 
 	stepper.wrapangle = M_PI/2;
 	stepper.stepsize = 1.8/180*M_PI;

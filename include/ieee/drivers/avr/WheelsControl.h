@@ -1,5 +1,5 @@
-#ifndef IEEE_WHEELSDRIVER_H
-#define IEEE_WHEELSDRIVER_H
+#ifndef WHEELSCONTROL_H
+#define WHEELSCONTROL_H
 
 #include "ieee/drivers/avr/SerialPackets.h"
 #include <stdint.h>

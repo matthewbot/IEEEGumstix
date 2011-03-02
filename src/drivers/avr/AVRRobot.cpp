@@ -70,6 +70,15 @@ void AVRRobot::setWheels(const WheelsOutput &wheels) {
 	wheelscontrol.writeOutput(wheels, gp);
 }
 
+void AVRRobot::setWheelAngles(float left, float right, float back) {
+	WheelsOutput wheels;
+	wheels.left.effort = wheels.right.effort = wheels.back.effort = 0;
+	wheels.left.angle = left;
+	wheels.right.angle = right;
+	wheels.back.angle = back;
+	wheelscontrol.writeOutput(wheels, gp);
+}
+
 AVRRobot::WheelsOutput AVRRobot::getCurrentWheels() const {
 	return wheelscontrol.readOutput(ap);
 }
