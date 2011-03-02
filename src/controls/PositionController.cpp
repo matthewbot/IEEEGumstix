@@ -19,9 +19,9 @@ void PositionController::stop() {
 }
 
 void PositionController::update(AVRRobot &robot) {
-	updatePositionFilter(robot);
+	const PositionFilter::Output &posout = updatePositionFilter(robot);
 
-	if (!start)
+	if (!posout.ok || !start)
 		return;
 
 	Vec2D velvec = computeVelocityVector();
@@ -32,12 +32,12 @@ void PositionController::update(AVRRobot &robot) {
 	motion.vel = velvec;
 	motion.angvel = 0;
 	robot.setWheels(driveequ.compute(motion)); // compute the wheel outputs and set them
-}
+};
 
-void PositionController::updatePositionFilter(AVRRobot &robot) {
+const PositionFilter::Output &PositionController::updatePositionFilter(AVRRobot &robot) {
 	// update position filter
 	PositionFilter::Input posin;
-	posin.cursonardir = PositionFilter::SONARDIR_EAST;
+	posin.cursonardir = PositionFilter::radToSonarDir(robot.getCurSonarAngle() + posfilter.getOutput().dir);
 	posin.sonar1 = robot.getSonar1();
 	posin.sonar2 = robot.getSonar2();
 	posin.compassdir = robot.getCompassAngle();
@@ -45,6 +45,7 @@ void PositionController::updatePositionFilter(AVRRobot &robot) {
 
 	// keep the stepper following the position filter's desired sonar orientation
 	robot.setSonarAngle(PositionFilter::sonarDirToRad(out.sonardir) - out.dir);
+	return out;
 }
 
 static float angdiff(float anglea, float angleb) {

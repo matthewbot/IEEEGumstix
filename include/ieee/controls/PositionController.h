@@ -47,7 +47,7 @@ namespace ieee {
 			bool start;
 			Vec2D lastvelvec;
 
-			void updatePositionFilter(AVRRobot &robot);
+			const PositionFilter::Output &updatePositionFilter(AVRRobot &robot);
 			Vec2D computeVelocityVector();
 	};
 }

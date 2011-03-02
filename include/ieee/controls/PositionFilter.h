@@ -11,8 +11,10 @@ namespace ieee {
 				float roomwidth;
 				float roomheight;
 
-				Vec2D sonaroffset;
-				float sonarstepperrad;
+				Vec2D sonaroffset; // sonar position relative to the robot
+				float sonarstepperrad; // sonar distance from center of stepper
+
+				float sonarmindist; // sonars are always kept pointing farther than this from the wall
 			};
 
 			PositionFilter(const Config &config);
@@ -26,6 +28,7 @@ namespace ieee {
 			};
 
 			static float sonarDirToRad(SonarDir dir);
+			static SonarDir radToSonarDir(float rad);
 
 			struct Input {
 				SonarDir cursonardir;
@@ -38,6 +41,7 @@ namespace ieee {
 			struct Output {
 				Vec2D pos;
 				float dir;
+				bool ok;
 
 				SonarDir sonardir;
 			};
@@ -51,6 +55,7 @@ namespace ieee {
 
 			Vec2D lastsonarpos;
 			Vec2D updateSonarPos(const Input &input);
+			SonarDir computeSonarDir(const Vec2D &pos, SonarDir curdir) const;
 	};
 }
 
