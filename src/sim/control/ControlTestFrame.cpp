@@ -83,7 +83,8 @@ void ControlTestFrame::OnSyncEvent(wxTimerEvent &evt) {
 void ControlTestFrame::onCommand(const Coord &coord, float dir) {
 	PositionController::Command command;
 	command.destpos = coord;
-	command.speed = 12;
+	command.destdir = dir;
+	command.speed = 14;
 	poscontrol.setCommand(command);
 }
 
@@ -112,9 +113,12 @@ ControlTestFrame::PositionControllerConfig::PositionControllerConfig() {
 	driveequ.rotationoffset = M_PI/2;
 	driveequ.minspeed = .1;
 
-	lockdist = 30;
+	lockdist = 15;
 	lockangdiff = M_PI/4;
-	stopdist = 5;
+	stopdist = 3;
+
+	angvelfactor = 1;
+	maxangvel = 1;
 }
 
 ControlTestFrame::AVRRobotConfig::AVRRobotConfig() {

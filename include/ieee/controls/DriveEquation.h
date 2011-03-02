@@ -23,9 +23,10 @@ namespace ieee {
 
 			struct Motion {
 				Vec2D vel;
-
-				float curangle; // orientation of robot
+				float curdir; // orientation of robot
 				float angvel;
+
+				static const Motion stop;
 			};
 
 			DriveEquation(const Config &config);

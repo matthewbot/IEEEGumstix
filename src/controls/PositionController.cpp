@@ -2,12 +2,16 @@
 
 using namespace ieee;
 
+static float angdiff(float anglea, float angleb); // TODO put this somewhere else
+
 PositionController::PositionController(const Config &config)
 : config(config),
   command(Vec2D(0, 0), 0),
   driveequ(config.driveequ),
   posfilter(config.posfilter),
-  start(false) { }
+  start(false) {
+	lastmotion = DriveEquation::Motion::stop;
+}
 
 void PositionController::setCommand(const Command &command) {
 	this->command = command;
@@ -21,17 +25,13 @@ void PositionController::stop() {
 void PositionController::update(AVRRobot &robot) {
 	const PositionFilter::Output &posout = updatePositionFilter(robot);
 
-	if (!posout.ok || !start)
-		return;
-
-	Vec2D velvec = computeVelocityVector();
-
-	// set up the motion
 	DriveEquation::Motion motion;
-	motion.curangle = posfilter.getOutput().dir;
-	motion.vel = velvec;
-	motion.angvel = 0;
-	robot.setWheels(driveequ.compute(motion)); // compute the wheel outputs and set them
+	if (posout.ok && start)
+		motion = computeMotion();
+	else
+		motion = DriveEquation::Motion::stop;
+
+	robot.setWheels(driveequ.compute(motion));
 };
 
 const PositionFilter::Output &PositionController::updatePositionFilter(AVRRobot &robot) {
@@ -48,31 +48,43 @@ const PositionFilter::Output &PositionController::updatePositionFilter(AVRRobot 
 	return out;
 }
 
-static float angdiff(float anglea, float angleb) {
-	float diff = anglea - angleb;
-	while (diff < 0)
-		diff += 2*M_PI;
-	while (diff >= 2*M_PI)
-		diff -= 2*M_PI;
-	return diff;
-}
+#include <iostream>
 
-Vec2D PositionController::computeVelocityVector() {
-	// compute the distance
+using namespace std;
+
+DriveEquation::Motion PositionController::computeMotion() {
 	Vec2D distvec = command.destpos - posfilter.getOutput().pos;
 	float dist = distvec.magnitude();
 
-	// compute the desired velocity vector
-	Vec2D velvec;
+	DriveEquation::Motion motion;
 	if (dist < config.stopdist) {
-		velvec = Vec2D(0, 0);
-	} else if (dist < config.lockdist && abs(angdiff(distvec.angle(), lastvelvec.angle())) < config.lockangdiff) {
-		velvec = lastvelvec;
+		motion.vel = Vec2D(0, 0);
+		motion.angvel = 0;
+		motion.curdir = 0;
+	} else if (dist < config.lockdist && abs(angdiff(distvec.angle(), lastmotion.vel.angle())) < config.lockangdiff) {
+		motion = lastmotion;
 	} else {
-		velvec = distvec.unit() * command.speed;
+		motion.curdir = posfilter.getOutput().dir;
+		motion.vel = distvec.unit()*command.speed;
+		motion.angvel = angdiff(command.destdir, motion.curdir)*config.angvelfactor;
+		if (motion.angvel > config.maxangvel)
+			motion.angvel = config.maxangvel;
+		else if (motion.angvel < -config.maxangvel)
+			motion.angvel = -config.maxangvel;
+
+		cout << "angvel " << motion.angvel << endl;
 	}
 
-	lastvelvec = velvec;
-	return velvec;
+	lastmotion = motion;
+	return motion;
+}
+
+static float angdiff(float anglea, float angleb) {
+	float diff = anglea - angleb;
+	while (diff <= -M_PI)
+		diff += M_PI*2;
+	while (diff > M_PI)
+		diff -= M_PI*2;
+	return diff;
 }
 

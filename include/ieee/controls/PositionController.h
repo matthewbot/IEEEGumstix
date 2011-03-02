@@ -15,12 +15,16 @@ namespace ieee {
 				float lockdist; // the desired desired velocity vector won't be recomputed as long as we're closer than this distance
 				float lockangdiff; // the maximum difference between the desired velocity and the locked velocity before we're temporarily "unlocked"
 				float stopdist;
+
+				float angvelfactor; // angular error * factor = desired angular velocity
+				float maxangvel; // angular velocity never exceeds this
 			};
 
 			PositionController(const Config &config);
 
 			struct Command {
 				Vec2D destpos;
+				float destdir;
 				float speed;
 
 				inline Command() { }
@@ -45,10 +49,10 @@ namespace ieee {
 			PositionFilter posfilter;
 
 			bool start;
-			Vec2D lastvelvec;
+			DriveEquation::Motion lastmotion;
 
 			const PositionFilter::Output &updatePositionFilter(AVRRobot &robot);
-			Vec2D computeVelocityVector();
+			DriveEquation::Motion computeMotion();
 	};
 }
 

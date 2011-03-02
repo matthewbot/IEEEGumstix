@@ -3,7 +3,7 @@
 using namespace ieee;
 
 PositionControllerLayer::PositionControllerLayer(Callbacks &callbacks, const PositionController &poscontrol)
-: callbacks(callbacks), poscontrol(poscontrol) { }
+: callbacks(callbacks), poscontrol(poscontrol), dragging(false), lastangle(0) { }
 
 int PositionControllerLayer::getWeight() const { return WEIGHT; }
 
@@ -36,7 +36,7 @@ void PositionControllerLayer::renderControllerCommand(wxPaintDC &dc, const Coord
 	const PositionController::Command &command = poscontrol.getCommand();
 
 	Pos pos = drawscale.coordToPos(command.destpos);
-	const float dir = 0;
+	const float dir = command.destdir;
 
 	dc.DrawCircle(pos.x, pos.y, 4);
 
@@ -71,9 +71,14 @@ bool PositionControllerLayer::mouseMotion(const Coord &coord) {
 }
 
 bool PositionControllerLayer::leftUp(const Coord &coord) {
-	float angle = atan2(-(endcoord.y - startcoord.y), endcoord.x - startcoord.x);
+	float angle;
+	if ((Vec2D(startcoord) - Vec2D(endcoord)).magnitude() < .1)
+		angle = lastangle;
+	else
+		angle = atan2(-(endcoord.y - startcoord.y), endcoord.x - startcoord.x);
 	callbacks.onCommand(startcoord, angle);
 
+	lastangle = angle;
 	dragging = false;
 	return true;
 }

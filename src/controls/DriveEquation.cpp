@@ -23,11 +23,11 @@ WheelsControl::Output DriveEquation::compute(const Motion &motion) const {
 }
 
 WheelsControl::WheelOutput DriveEquation::computeWheel(const WheelConfig &wconfig, const Motion &motion) const {
-	Vec2D relvel = motion.vel.rotate(-motion.curangle);
+	Vec2D relvel = motion.vel.rotate(-motion.curdir);
 
 	Vec2D wheelout;
-	wheelout.x = relvel.x + motion.angvel*(-wconfig.relpos.x*sin(motion.curangle) - wconfig.relpos.y*cos(motion.curangle));
-	wheelout.y = -relvel.y + motion.angvel*(wconfig.relpos.x*cos(motion.curangle) - wconfig.relpos.y*sin(motion.curangle));
+	wheelout.x = relvel.x + motion.angvel*(-wconfig.relpos.x*sin(motion.curdir) - wconfig.relpos.y*cos(motion.curdir));
+	wheelout.y = -relvel.y + motion.angvel*(wconfig.relpos.x*cos(motion.curdir) - wconfig.relpos.y*sin(motion.curdir));
 
 	WheelsControl::WheelOutput out;
 	out.angle = wheelout.angle()+config.rotationoffset;
@@ -49,4 +49,6 @@ WheelsControl::WheelOutput DriveEquation::computeWheel(const WheelConfig &wconfi
 
 	return out;
 }
+
+const DriveEquation::Motion DriveEquation::Motion::stop = { Vec2D(0, 0), 0, 0 };
 

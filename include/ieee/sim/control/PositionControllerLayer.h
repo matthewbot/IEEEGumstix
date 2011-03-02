@@ -27,6 +27,7 @@ namespace ieee {
 			bool dragging;
 			Coord startcoord;
 			Coord endcoord;
+			float lastangle;
 
 			void renderRobot(wxPaintDC &dc, const CoordScale &drawscale) const;
 			void renderControllerCommand(wxPaintDC &dc, const CoordScale &drawscale) const;
