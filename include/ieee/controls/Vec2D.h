@@ -4,6 +4,7 @@
 #include <cmath>
 #include <istream>
 #include <ostream>
+#include "ieee/controls/Angle.h"
 #include "ieee/shared/types.h" // this probably belongs in here actually
 
 namespace ieee {
@@ -17,7 +18,7 @@ namespace ieee {
 		inline operator Coord() const { return Coord(x, y); }
 
 		inline float magnitude() const { return sqrt(x*x + y*y); }
-		inline float angle() const { return atan2(y, x); }
+		inline Angle angle() const { return Angle(atan2(y, x)); }
 
 		inline Vec2D operator+(const Vec2D &vec) const { return Vec2D(x + vec.x, y + vec.y); }
 		inline Vec2D operator-(const Vec2D &vec) const { return Vec2D(x - vec.x, y - vec.y); }
@@ -32,8 +33,10 @@ namespace ieee {
 
 		inline float dot(const Vec2D &vec) const { return x * vec.x + y * vec.y; }
 
-		inline Vec2D rotate(float angle) const {
-			float c = cos(angle), s = sin(angle);
+		inline Vec2D rotate(float angle) const { return rotate(Angle(angle)); }
+
+		inline Vec2D rotate(Angle angle) const {
+			float c = angle.cos(), s = angle.sin();
 			return Vec2D(x*c+y*s, y*c-x*s);
 		}
 

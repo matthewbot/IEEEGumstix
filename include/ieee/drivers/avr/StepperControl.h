@@ -7,7 +7,6 @@ namespace ieee {
 	class StepperControl {
 		public:
 			struct Config {
-				float wrapangle; // wrap to negative positions at this value
 				float stepsize; // size of a step in radians
 			};
 

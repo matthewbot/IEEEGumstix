@@ -38,7 +38,7 @@ namespace ieee {
 			PositionControllerLayer posconlayer;
 
 			wxPanel optionspanel;
-			wxCheckBox drivecheck;
+			wxButton stopbutton;
 			wxButton resetbutton;
 
 			wxTimer synctimer;
@@ -46,6 +46,7 @@ namespace ieee {
 			virtual void onCommand(const Coord &coord, float dir); // PositionControllerLayer::Callbacks
 
 			DECLARE_EVENT_TABLE()
+			void OnStopEvent(wxCommandEvent &evt);
 			void OnResetEvent(wxCommandEvent &evt);
 			void OnSyncEvent(wxTimerEvent &evt);
 	};

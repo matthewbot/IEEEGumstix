@@ -9,10 +9,12 @@ using namespace std;
 
 enum {
 	SYNC_TIMER,
+	STOP_BUTTON,
 	RESET_BUTTON
 };
 
 BEGIN_EVENT_TABLE(ControlTestFrame, wxFrame)
+	EVT_BUTTON(STOP_BUTTON, ControlTestFrame::OnStopEvent)
 	EVT_BUTTON(RESET_BUTTON, ControlTestFrame::OnResetEvent)
 	EVT_TIMER(SYNC_TIMER, ControlTestFrame::OnSyncEvent)
 END_EVENT_TABLE()
@@ -26,7 +28,7 @@ ControlTestFrame::ControlTestFrame()
   gridlayer(grid, gridscale),
   posconlayer(*this, poscontrol),
   optionspanel(this, -1),
-  drivecheck(&optionspanel, -1, _("Drive")),
+  stopbutton(&optionspanel, STOP_BUTTON, _("Stop"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT),
   resetbutton(&optionspanel, RESET_BUTTON, _("Reset"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT),
   synctimer(this, SYNC_TIMER) {
 	panel.addLayer(&gridlayer);
@@ -34,7 +36,7 @@ ControlTestFrame::ControlTestFrame()
 
 	wxBoxSizer *optionspanel_sizer = new wxBoxSizer(wxHORIZONTAL);
 	optionspanel.SetSizer(optionspanel_sizer);
-	optionspanel_sizer->Add(&drivecheck, 0, wxEXPAND);
+	optionspanel_sizer->Add(&stopbutton, 0, wxEXPAND);
 	optionspanel_sizer->Add(&resetbutton, 0, wxEXPAND);
 
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
@@ -56,6 +58,11 @@ ControlTestFrame::ControlTestFrame()
 	}
 }
 
+void ControlTestFrame::OnStopEvent(wxCommandEvent &evt) {
+	poscontrol.stop();
+	panel.Refresh();
+}
+
 void ControlTestFrame::OnResetEvent(wxCommandEvent &evt) {
 	if (!robotptr)
 		return;
@@ -70,11 +77,6 @@ void ControlTestFrame::OnSyncEvent(wxTimerEvent &evt) {
 	while (robot.syncIn()) { }
 	poscontrol.update(robot);
 
-	if (!drivecheck.GetValue()) {
-		GumstixPacket &gp = robot.getGumstixPacket();
-		gp.leftwheel_effort = gp.rightwheel_effort = gp.backwheel_effort = 0;
-	}
-
 	robot.syncOut();
 
 	panel.Refresh();
@@ -83,7 +85,7 @@ void ControlTestFrame::OnSyncEvent(wxTimerEvent &evt) {
 void ControlTestFrame::onCommand(const Coord &coord, float dir) {
 	PositionController::Command command;
 	command.destpos = coord;
-	command.destdir = dir;
+	command.destheading = Angle(dir);
 	command.speed = 14;
 	poscontrol.setCommand(command);
 }
@@ -93,6 +95,7 @@ ControlTestFrame::PositionControllerConfig::PositionControllerConfig() {
 	posfilter.sonaroffset = Vec2D(4, 0);
 	posfilter.sonarstepperrad = 2.5f;
 	posfilter.sonarmindist = 30;
+	posfilter.posbufsize = 3;
 
 	driveequ.left.relpos.x = 3.1903;
 	driveequ.left.relpos.y = 5.5257;
@@ -110,15 +113,19 @@ ControlTestFrame::PositionControllerConfig::PositionControllerConfig() {
 	driveequ.back.outscale = outscale;
 	driveequ.back.outoffset = outoffset;
 
-	driveequ.rotationoffset = M_PI/2;
+	driveequ.rotationoffset = Angle(M_PI/2);
 	driveequ.minspeed = .1;
 
 	lockdist = 15;
 	lockangdiff = M_PI/4;
+	lockspeed = 10;
 	stopdist = 3;
 
 	angvelfactor = 1;
 	maxangvel = 1;
+
+	maxturndist = .1;
+	turnspeed = 1;
 }
 
 ControlTestFrame::AVRRobotConfig::AVRRobotConfig() {
@@ -127,23 +134,23 @@ ControlTestFrame::AVRRobotConfig::AVRRobotConfig() {
 	wheels.left.offset = 40;
 	wheels.right.offset = 0;
 	wheels.back.offset = 70;
+	wheels.turnhysteresis = 150;
 
 	sonar1.alpha = .3078;
 	sonar1.beta = -53.11357 + 3.5;
 	sonar2.alpha = .26518;
 	sonar2.beta = -50.10155 + 3.5;
 
-	compass.centerx = 255;
-	compass.centery = 11.42;
-	compass.yscale = 1.0013;
-	compass.leftwheel_offset.magx += 1.105413, -17.766327, 67.379417, -61.844683, -0.033371, -2.222486;
-	compass.leftwheel_offset.magy += -9.2314, 65.9709, -145.6980, 118.5804, -74.1991, 2.2407;
-	compass.rightwheel_offset.magx += -0.68205, 5.15608, -11.20517, 10.77148, 12.03845, -4.65361;
-	compass.rightwheel_offset.magy += 0.087533, 2.294021, -10.848735, 16.962901, -38.659120, 8.029173;
-	compass.backwheel_offset.magx += -0.51772, 4.10939, -8.35313, 3.73830, -9.84221, 0.27012;
-	compass.backwheel_offset.magy += 0.46597, -2.08954, 2.30283, -1.12453, -11.01647, 0.65481;
+	compass.centerx = -126.16;
+	compass.centery = 242.57;
+	compass.yscale = .9568;
+	compass.leftwheel_offset.magx += -0.72880, 1.03260, 28.29561, -140.05029, 238.21493, -7.61922;
+	compass.leftwheel_offset.magy += -6.7594, 57.4896, -178.8064, 241.6305, -103.1244, -3.5440;
+	compass.rightwheel_offset.magx += 1.0366, -8.7516, 25.4013, -27.4524, 15.4142, 1.2577;
+	compass.rightwheel_offset.magy += -3.3286, 29.0120, -95.1656, 149.4331, -117.6783, -4.2431;
+	compass.backwheel_offset.magx += -0.73648, 8.29814, -27.30958, 30.65160, -28.18682, 2.86296;
+	compass.backwheel_offset.magy += -0.70298, 0.22097, 13.25488, -24.32732, -10.30858, 2.56629;
 
-	stepper.wrapangle = M_PI/2;
-	stepper.stepsize = 1.8/180*M_PI;
+	stepper.stepsize = 1.5/180*M_PI;
 }
 

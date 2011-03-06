@@ -2,6 +2,7 @@
 #define DRIVEEQUATION_H
 
 #include "ieee/controls/Vec2D.h"
+#include "ieee/controls/Angle.h"
 #include "ieee/drivers/avr/WheelsControl.h"
 
 namespace ieee {
@@ -17,13 +18,13 @@ namespace ieee {
 			struct Config {
 				WheelConfig left, right, back;
 
-				float rotationoffset; // wheels are rotated this much relative to the frame
+				Angle rotationoffset; // wheels are rotated this much relative to the frame
 				float minspeed; // speeds below this the wheel will be given 0 effort
 			};
 
 			struct Motion {
 				Vec2D vel;
-				float curdir; // orientation of robot
+				Angle curdir; // orientation of robot
 				float angvel;
 
 				static const Motion stop;

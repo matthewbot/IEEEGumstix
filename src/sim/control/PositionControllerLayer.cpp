@@ -1,6 +1,8 @@
 #include "ieee/sim/control/PositionControllerLayer.h"
+#include <cmath>
 
 using namespace ieee;
+using namespace std;
 
 PositionControllerLayer::PositionControllerLayer(Callbacks &callbacks, const PositionController &poscontrol)
 : callbacks(callbacks), poscontrol(poscontrol), dragging(false), lastangle(0) { }
@@ -14,11 +16,10 @@ void PositionControllerLayer::render(wxPaintDC &dc, const CoordScale &drawscale)
 }
 
 void PositionControllerLayer::renderRobot(wxPaintDC &dc, const CoordScale &drawscale) const {
-	const PositionFilter::Output &posout = poscontrol.getPositionFilter().getOutput();
-
-	Pos pos = drawscale.coordToPos(posout.pos);
+	Vec2D vecpos = poscontrol.getPositionFilter().getPosition();
+	Pos pos = drawscale.coordToPos(Vec2D(vecpos.x, 100 - vecpos.y)); // TODO don't encode room height here
 	const float thickness = 15;
-	const float dir = posout.dir;
+	const float dir = poscontrol.getPositionFilter().getHeading().getRad();
 
 	wxPoint points[3];
 	points[0].x = (int)(pos.x + thickness*cos(dir));
@@ -31,12 +32,13 @@ void PositionControllerLayer::renderRobot(wxPaintDC &dc, const CoordScale &draws
 }
 
 void PositionControllerLayer::renderControllerCommand(wxPaintDC &dc, const CoordScale &drawscale) const {
-	if (!poscontrol.getStarted())
+	if (poscontrol.getState() == PositionController::STOPPED)
 		return;
 	const PositionController::Command &command = poscontrol.getCommand();
+	Vec2D vec = Vec2D(command.destpos.x, 100 - command.destpos.y);
 
-	Pos pos = drawscale.coordToPos(command.destpos);
-	const float dir = command.destdir;
+	Pos pos = drawscale.coordToPos(vec);
+	const float dir = command.destheading.getRad();
 
 	dc.DrawCircle(pos.x, pos.y, 4);
 
@@ -72,11 +74,12 @@ bool PositionControllerLayer::mouseMotion(const Coord &coord) {
 
 bool PositionControllerLayer::leftUp(const Coord &coord) {
 	float angle;
-	if ((Vec2D(startcoord) - Vec2D(endcoord)).magnitude() < .1)
+	if ((Vec2D(startcoord) - Vec2D(endcoord)).magnitude() < 1)
 		angle = lastangle;
 	else
 		angle = atan2(-(endcoord.y - startcoord.y), endcoord.x - startcoord.x);
-	callbacks.onCommand(startcoord, angle);
+
+	callbacks.onCommand(Coord(startcoord.x, 100 - startcoord.y), angle);
 
 	lastangle = angle;
 	dragging = false;

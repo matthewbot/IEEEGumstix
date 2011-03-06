@@ -23,32 +23,27 @@ WheelsControl::Output DriveEquation::compute(const Motion &motion) const {
 }
 
 WheelsControl::WheelOutput DriveEquation::computeWheel(const WheelConfig &wconfig, const Motion &motion) const {
-	Vec2D relvel = motion.vel.rotate(-motion.curdir);
+	Vec2D relvel = motion.vel.rotate(motion.curdir);
 
-	Vec2D wheelout;
-	wheelout.x = relvel.x + motion.angvel*(-wconfig.relpos.x*sin(motion.curdir) - wconfig.relpos.y*cos(motion.curdir));
-	wheelout.y = -relvel.y + motion.angvel*(wconfig.relpos.x*cos(motion.curdir) - wconfig.relpos.y*sin(motion.curdir));
+	Vec2D wheelout = relvel + (wconfig.relpos*motion.angvel).rotate(-M_PI/2);
+	float mag = wheelout.magnitude();
 
 	WheelsControl::WheelOutput out;
-	out.angle = wheelout.angle()+config.rotationoffset;
-	if (out.angle < 0)
-		out.angle += 2*M_PI;
-	else if (out.angle >= 2*M_PI)
-		out.angle -= 2*M_PI;
-
-	float mag = wheelout.magnitude();
-	if (abs(mag) < config.minspeed) {
+	if (mag < config.minspeed) {
+		out.angle = 0;
 		out.effort = 0;
-	} else {
-		out.effort = wconfig.outscale*mag;
-		if (out.effort > 0)
-			out.effort += wconfig.outoffset;
-		else
-			out.effort -= wconfig.outoffset;
+		out.enabled = false;
+		return out;
 	}
 
+	out.angle = (wheelout.angle()+config.rotationoffset).getRad();
+	out.effort = wconfig.outscale*mag;
+	if (out.effort > 0)
+		out.effort += wconfig.outoffset;
+	else
+		out.effort -= wconfig.outoffset;
 	return out;
 }
 
-const DriveEquation::Motion DriveEquation::Motion::stop = { Vec2D(0, 0), 0, 0 };
+const DriveEquation::Motion DriveEquation::Motion::stop = { Vec2D(0, 0), Angle(0), 0 };
 

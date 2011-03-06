@@ -7,15 +7,26 @@ using namespace std;
 WheelsControl::WheelsControl(const Config &config) : config(config) { }
 
 void WheelsControl::writeOutput(const Output &output, GumstixPacket &gp) const {
+	bool reverse;
 	gp.enable_bits |= ENABLE_SERVOS;
 
-	gp.leftwheel_angle = toRawAngle(output.left.angle, config.left);
-	gp.rightwheel_angle = toRawAngle(output.right.angle, config.right);
-	gp.backwheel_angle = toRawAngle(output.back.angle, config.back);
+	if (output.left.enabled) {
+		gp.leftwheel_angle = toRawAngle(output.left.angle, gp.leftwheel_angle, config.left, reverse);
+		gp.leftwheel_effort = toRawEffort(output.left.effort, reverse);
+	} else
+		gp.leftwheel_effort = 0;
 
-	gp.leftwheel_effort = toRawEffort(output.left.effort, output.left.angle);
-	gp.rightwheel_effort = toRawEffort(output.right.effort, output.right.angle);
-	gp.backwheel_effort = toRawEffort(output.back.effort, output.back.angle);
+	if (output.right.enabled) {
+		gp.rightwheel_angle = toRawAngle(output.right.angle, gp.rightwheel_angle, config.right, reverse);
+		gp.rightwheel_effort = toRawEffort(output.right.effort, reverse);
+	} else
+		gp.rightwheel_effort = 0;
+
+	if (output.back.enabled) {
+		gp.backwheel_angle = toRawAngle(output.back.angle, gp.backwheel_angle, config.back, reverse);
+		gp.backwheel_effort = toRawEffort(output.back.effort, reverse);
+	} else
+		gp.backwheel_effort = 0;
 }
 
 WheelsControl::Output WheelsControl::readOutput(const AVRPacket &ap) const {
@@ -31,27 +42,45 @@ WheelsControl::Output WheelsControl::readOutput(const AVRPacket &ap) const {
 	return out;
 }
 
-int16_t WheelsControl::toRawAngle(float angle, const WheelConfig &wconf) {
-	int val = (int)(angle/M_PI*1800);
-	if (val < 0)
-		val += 1800;
-	else if (val >= 1800)
-		val -= 1800;
+int16_t WheelsControl::toRawAngle(float angle, int16_t curpos, const WheelConfig &wconf, bool &reverse) const {
+	reverse = false;
 
-	val += wconf.offset;
+	int pos = (int)(angle/M_PI*1800);
+	if (pos < 0) {
+		pos += 1800;
+		reverse = true;
+	} else if (pos > 1800) {
+		pos -= 1800;
+		reverse = true;
+	}
 
-	if (val < wconf.minstop)
+	const int th_low = config.turnhysteresis;
+	const int th_high = 1800 - config.turnhysteresis;
+
+	if (pos < th_low && curpos > th_high) {
+		pos = 1800;
+		reverse = !reverse;
+	} else if (pos > th_high && curpos < th_low) {
+		pos = 0;
+		reverse = !reverse;
+	}
+
+	pos += wconf.offset;
+
+	if (pos < wconf.minstop)
 		return wconf.minstop;
-	else if (val > wconf.maxstop)
+	else if (pos > wconf.maxstop)
 		return wconf.maxstop;
 	else
-		return (int16_t)val;
+		return (int16_t)pos;
 }
 
-int16_t WheelsControl::toRawEffort(float speed, float angle) {
-	if (angle < 0 || angle > M_PI)
-		speed = -speed;
-	return (int16_t)(speed*1000);
+int16_t WheelsControl::toRawEffort(float eff, bool reverse) {
+	int16_t effort = (int16_t)(eff*1000);
+	if (reverse)
+		return -effort;
+	else
+		return effort;
 }
 
 float WheelsControl::fromRawAngle(int16_t rawangle, int16_t raweffort, const WheelConfig &wconf) {

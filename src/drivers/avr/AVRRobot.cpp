@@ -58,11 +58,11 @@ void AVRRobot::calibrateCompassOffset(float angle) {
 	compass.calibrateOffset(ap, wheelscontrol, angle);
 }
 
-AVRRobot::SonarReading AVRRobot::getSonar1() const {
+float AVRRobot::getSonar1() const {
 	return sonar1.getReading(ap);
 }
 
-AVRRobot::SonarReading AVRRobot::getSonar2() const {
+float AVRRobot::getSonar2() const {
 	return sonar2.getReading(ap);
 }
 
@@ -76,6 +76,15 @@ void AVRRobot::setWheelAngles(float left, float right, float back) {
 	wheels.left.angle = left;
 	wheels.right.angle = right;
 	wheels.back.angle = back;
+	wheels.left.enabled = wheels.right.enabled = wheels.back.enabled = true;
+	wheelscontrol.writeOutput(wheels, gp);
+}
+
+void AVRRobot::offWheels() {
+	WheelsOutput wheels;
+	wheels.left.enabled = wheels.back.enabled = wheels.right.enabled = false;
+	wheels.left.effort = wheels.right.effort = wheels.back.effort = 0;
+	wheels.left.angle = wheels.right.angle = wheels.back.angle = 0;
 	wheelscontrol.writeOutput(wheels, gp);
 }
 

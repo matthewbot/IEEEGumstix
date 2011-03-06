@@ -31,6 +31,8 @@ DriveTabPanel::DriveTabPanel(wxWindow *parent)
 	sizer->Add(&maxeffortspin, 0, wxEXPAND);
 	sizer->Add(&enablecheck, 0, wxEXPAND);
 	sizer->Add(&compasscheck, 0, wxEXPAND);
+
+	angvelspin.SetRange(-100, 100);
 }
 
 char DriveTabPanel::getTabCharacter() const { return 'D'; }
@@ -47,7 +49,7 @@ void DriveTabPanel::onSync(AVRRobot &robot) {
 	DriveEquation::Motion motion;
 	motion.vel.x = xvelspin.GetValue();
 	motion.vel.y = yvelspin.GetValue();
-	motion.curdir = curdirspin.GetValue()/180.0*M_PI;
+	motion.curdir = Angle(curdirspin.GetValue()/180.0*M_PI);
 	motion.angvel = angvelspin.GetValue()/180.0*M_PI;
 
 	robot.setWheels(driveequ.compute(motion));
@@ -71,7 +73,7 @@ DriveTabPanel::DriveEquationConfig::DriveEquationConfig() {
 	back.outscale = outscale;
 	back.outoffset = outoffset;
 
-	rotationoffset = M_PI/2;
+	rotationoffset = Angle(M_PI/2);
 	minspeed = .1;
 }
 

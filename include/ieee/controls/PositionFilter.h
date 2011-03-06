@@ -2,7 +2,9 @@
 #define IEEE_POSITIONFILTER_H
 
 #include "ieee/controls/Vec2D.h"
+#include "ieee/controls/Angle.h"
 #include "ieee/drivers/avr/SonarSensor.h"
+#include <vector>
 
 namespace ieee {
 	class PositionFilter {
@@ -15,6 +17,8 @@ namespace ieee {
 				float sonarstepperrad; // sonar distance from center of stepper
 
 				float sonarmindist; // sonars are always kept pointing farther than this from the wall
+
+				int posbufsize; // this many position samples are averaged to produce our current output
 			};
 
 			PositionFilter(const Config &config);
@@ -22,40 +26,45 @@ namespace ieee {
 			enum SonarDir {
 				SONARDIR_EAST,
 				SONARDIR_NORTH,
-				SONARDIR_SOUTH,
 				SONARDIR_WEST,
+				SONARDIR_SOUTH,
 				SONARDIR_INDETERMINATE // sonars are too far from the desired position
 			};
 
-			static float sonarDirToRad(SonarDir dir);
-			static SonarDir radToSonarDir(float rad);
+			static Angle sonarDirToAngle(SonarDir dir);
+			static SonarDir angleToSonarDir(Angle angle);
 
 			struct Input {
 				SonarDir cursonardir;
-				SonarSensor::Reading sonar1;
-				SonarSensor::Reading sonar2;
+				float sonar1;
+				float sonar2;
 
-				float compassdir;
+				Angle compassheading;
 			};
 
-			struct Output {
-				Vec2D pos;
-				float dir;
-				bool ok;
+			void update(const Input &input);
 
-				SonarDir sonardir;
-			};
-
-			const Output &update(const Input &input);
-			inline const Output &getOutput() const { return output; }
+			inline const Vec2D &getPosition() const { return position; }
+			inline bool getPositionOk() const { return positionok; }
+			inline Angle getHeading() const { return heading; }
+			inline SonarDir getDesiredSonarDir() const { return desiredsonardir; }
+			inline Angle getDesiredSonarAngle() const { return sonarDirToAngle(desiredsonardir); }
 
 		private:
-			Output output;
 			const Config &config;
 
-			Vec2D lastsonarpos;
-			Vec2D updateSonarPos(const Input &input);
-			SonarDir computeSonarDir(const Vec2D &pos, SonarDir curdir) const;
+			Vec2D position;
+			bool positionok;
+			Angle heading;
+			SonarDir desiredsonardir;
+
+			std::vector<Vec2D> posbuf;
+
+			void updateHeading(const Input &input);
+			void updatePos(const Input &input);
+			void updateDesiredSonarDir(const Input &input);
+
+			Vec2D computeSonarPos(const Input &input) const;
 	};
 }
 

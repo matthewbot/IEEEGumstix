@@ -11,7 +11,6 @@ namespace ieee {
 	class AVRRobot {
 		public:
 			typedef WheelsControl::Output WheelsOutput;
-			typedef SonarSensor::Reading SonarReading;
 
 			struct Config {
 				CompassSensor::Config compass;
@@ -32,12 +31,13 @@ namespace ieee {
 			float getCompassAngle() const;
 			void calibrateCompassOffset(float desireddir=0);
 
-			SonarReading getSonar1() const;
-			SonarReading getSonar2() const;
+			float getSonar1() const;
+			float getSonar2() const;
 
 			void setWheels(const WheelsOutput &wheels);
 			WheelsOutput getCurrentWheels() const;
 			void setWheelAngles(float left, float right, float back);
+			void offWheels();
 
 			void setSonarAngle(float angle);
 			void setStepperEnabled(bool enabled=true);

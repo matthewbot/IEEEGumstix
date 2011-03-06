@@ -64,6 +64,7 @@ CommFrame::RobotConfig::RobotConfig() {
 	wheels.left.offset = 40;
 	wheels.right.offset = 0;
 	wheels.back.offset = 70;
+	wheels.turnhysteresis = 150;
 
 	sonar1.alpha = .3078;
 	sonar1.beta = -53.11357 + 3.5;
@@ -80,7 +81,6 @@ CommFrame::RobotConfig::RobotConfig() {
 	compass.backwheel_offset.magx += -0.51772, 4.10939, -8.35313, 3.73830, -9.84221, 0.27012;
 	compass.backwheel_offset.magy += 0.46597, -2.08954, 2.30283, -1.12453, -11.01647, 0.65481;
 
-	stepper.wrapangle = 3*M_PI/4;
-	stepper.stepsize = 1.8/180*M_PI;
+	stepper.stepsize = 1.65/180*M_PI;
 }
 

@@ -6,16 +6,17 @@ using namespace ieee;
 StepperControl::StepperControl(const Config &config) : config(config) { }
 
 void StepperControl::setAngle(GumstixPacket &gp, float angle) const {
-	if (config.wrapangle > 0 && angle >= config.wrapangle)
+	float curangle = gp.stepper_pos * config.stepsize;
+	while (angle - curangle >= M_PI)
 		angle -= 2*M_PI;
-	gp.stepper_pos = (int16_t)(angle / config.stepsize);
+	while (angle - curangle <= -M_PI)
+		angle += 2*M_PI;
 	gp.enable_bits |= ENABLE_STEPPER;
+	gp.stepper_pos = angle / config.stepsize;
 }
 
 float StepperControl::getCurAngle(const AVRPacket &ap) const {
 	float angle = ap.stepper_pos * config.stepsize;
-	if (angle < 0)
-		angle += 2*M_PI;
 	return angle;
 }
 

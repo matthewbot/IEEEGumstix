@@ -1,107 +1,123 @@
 #include "ieee/controls/PositionFilter.h"
 #include <cassert>
+#include <numeric>
 
 using namespace ieee;
+using namespace std;
 
-PositionFilter::PositionFilter(const Config &config) : config(config), lastsonarpos(0, 0) {
-	output.pos = Vec2D(0, 0);
-	output.dir = 0;
-	output.sonardir = SONARDIR_EAST;
-}
+PositionFilter::PositionFilter(const Config &config)
+: config(config),
+  position(0, 0),
+  positionok(false),
+  heading(0),
+  desiredsonardir(SONARDIR_EAST) { }
 
-float PositionFilter::sonarDirToRad(SonarDir dir) {
+Angle PositionFilter::sonarDirToAngle(SonarDir dir) {
 	assert(dir != SONARDIR_INDETERMINATE);
-	return dir * M_PI/2;
+	return Angle(dir * M_PI/2);
 }
 
-PositionFilter::SonarDir PositionFilter::radToSonarDir(float rad) {
+PositionFilter::SonarDir PositionFilter::angleToSonarDir(Angle angle) {
 	for (int i=0; i<4; i++) {
-		float actualrad = i*M_PI/2;
-		float delta = rad - actualrad;
-		while (delta >= M_PI)
-			delta -= 2*M_PI;
-		while (delta < -M_PI)
-			delta += 2*M_PI;
+		Angle sonarangle = Angle(i*M_PI/2);
+		Angle delta = angle - sonarangle;
 
-		if (abs(delta) < .05)
+		if (abs(delta.getDistFromZero()) < .1)
 			return (SonarDir)i;
 	}
 
 	return SONARDIR_INDETERMINATE;
 }
 
-const PositionFilter::Output &PositionFilter::update(const Input &input) {
-	output.dir = input.compassdir;
-	output.pos = updateSonarPos(input);
-	output.sonardir = computeSonarDir(output.pos, input.cursonardir);
-	output.ok = (input.cursonardir == output.sonardir); // for now, our "ok" status entirely depends on the sonars being alligned
-
-	return output;
+void PositionFilter::update(const Input &input) {
+	updateHeading(input);
+	updatePos(input);
+	updateDesiredSonarDir(input);
 }
 
-Vec2D PositionFilter::updateSonarPos(const Input &input) {
+void PositionFilter::updateHeading(const Input &input) {
+	heading = input.compassheading;
+}
+
+void PositionFilter::updatePos(const Input &input) {
+	positionok = false;
+
 	if (input.cursonardir == SONARDIR_INDETERMINATE)
-		return lastsonarpos;
+		return;
+
+	posbuf.push_back(computeSonarPos(input));
+	if (posbuf.size() > config.posbufsize)
+		posbuf.erase(posbuf.begin());
+
+	position = accumulate(posbuf.begin(), posbuf.end(), Vec2D(0, 0)) / posbuf.size(); // put the average in the output
+
+	if (posbuf.size() < config.posbufsize)
+		return;
+	else if (position.x < 0 || position.x > config.roomwidth || position.y < 0 || position.y > config.roomheight)
+		return;
+
+	positionok = true;
+}
+
+void PositionFilter::updateDesiredSonarDir(const Input &input) {
+	assert(input.cursonardir != SONARDIR_INDETERMINATE);
+
+	bool up = (input.cursonardir == SONARDIR_EAST || input.cursonardir == SONARDIR_NORTH);
+	bool right = (input.cursonardir == SONARDIR_EAST || input.cursonardir == SONARDIR_SOUTH);
+
+	if (position.x < config.sonarmindist)
+		right = true;
+	else if (position.x > config.roomwidth - config.sonarmindist)
+		right = false;
+
+	if (position.y < config.sonarmindist)
+		up = true;
+	else if (position.y > config.roomheight - config.sonarmindist)
+		up = false;
+
+	if (up) {
+		if (right)
+			desiredsonardir = SONARDIR_EAST;
+		else
+			desiredsonardir = SONARDIR_NORTH;
+	} else {
+		if (right)
+			desiredsonardir = SONARDIR_SOUTH;
+		else
+			desiredsonardir = SONARDIR_WEST;
+	}
+}
+
+Vec2D PositionFilter::computeSonarPos(const Input &input) const {
+	assert(input.cursonardir != SONARDIR_INDETERMINATE);
 
 	Vec2D sonarpos;
-	const float s1dist = input.sonar1.dist + config.sonarstepperrad;
-	const float s2dist = input.sonar2.dist + config.sonarstepperrad;
+	const float s1dist = input.sonar1 + config.sonarstepperrad;
+	const float s2dist = input.sonar2 + config.sonarstepperrad;
 
 	switch (input.cursonardir) {
 		case SONARDIR_EAST:
 			sonarpos.x = config.roomwidth - s1dist;
-			sonarpos.y = s2dist;
+			sonarpos.y = config.roomheight - s2dist;
 			break;
 
 		case SONARDIR_NORTH:
-			sonarpos.y = s1dist;
+			sonarpos.y = config.roomheight - s1dist;
 			sonarpos.x = s2dist;
 			break;
 
 		case SONARDIR_WEST:
 			sonarpos.x = s1dist;
-			sonarpos.y = config.roomheight - s2dist;
+			sonarpos.y = s2dist;
 			break;
 
 		case SONARDIR_SOUTH:
-			sonarpos.y = config.roomheight - s1dist;
+			sonarpos.y = s1dist;
 			sonarpos.x = config.roomwidth - s2dist;
 			break;
 	}
 
-	sonarpos -= config.sonaroffset.rotate(output.dir);
-
-	lastsonarpos = sonarpos;
+	sonarpos -= config.sonaroffset.rotate(heading);
 	return sonarpos;
-}
-
-PositionFilter::SonarDir PositionFilter::computeSonarDir(const Vec2D &pos, SonarDir curdir) const {
-	if (curdir == SONARDIR_INDETERMINATE)
-		return output.sonardir;
-
-	bool up = (curdir == SONARDIR_EAST || curdir == SONARDIR_NORTH);
-	bool right = (curdir == SONARDIR_EAST || curdir == SONARDIR_SOUTH);
-
-	if (pos.x < config.sonarmindist)
-		right = true;
-	else if (pos.x > config.roomwidth - config.sonarmindist)
-		right = false;
-
-	if (pos.y < config.sonarmindist)
-		up = false;
-	else if (pos.y > config.roomheight - config.sonarmindist)
-		up = true;
-
-	if (up) {
-		if (right)
-			return SONARDIR_EAST;
-		else
-			return SONARDIR_NORTH;
-	} else {
-		if (right)
-			return SONARDIR_SOUTH;
-		else
-			return SONARDIR_WEST;
-	}
 }
 
