@@ -6,7 +6,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/misc)
 include_directories(include)
 
 # locate boost and put it on the include path
-find_package(Boost COMPONENTS thread date_time REQUIRED)
+find_package(Boost COMPONENTS thread date_time filesystem REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 
 # read all subdirectories

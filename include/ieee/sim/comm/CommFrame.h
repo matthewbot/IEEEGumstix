@@ -6,6 +6,7 @@
 #include "ieee/sim/comm/WheelTabPanel.h"
 #include "ieee/sim/comm/DriveTabPanel.h"
 #include "ieee/sim/comm/DumpTabPanel.h"
+#include "ieee/sim/shared/ConfigLoader.h"
 #include <boost/scoped_ptr.hpp>
 #include <wx/wx.h>
 #include <wx/notebook.h>
@@ -23,11 +24,7 @@ namespace ieee {
 			typedef std::vector<TabPanel *> TabPanelVec;
 			TabPanelVec panels;
 
-			struct RobotConfig : AVRRobot::Config {
-				RobotConfig();
-			};
-
-			RobotConfig robotconfig;
+			ConfigLoader configloader;
 			boost::scoped_ptr<AVRRobot> robotptr;
 
 			DECLARE_EVENT_TABLE()

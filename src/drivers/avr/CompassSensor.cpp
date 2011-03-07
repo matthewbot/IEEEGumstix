@@ -1,7 +1,11 @@
 #include "ieee/drivers/avr/CompassSensor.h"
+#include <boost/algorithm/string.hpp>
+#include <boost/lexical_cast.hpp>
 #include <cmath>
 
 using namespace ieee;
+using namespace boost;
+using namespace boost::property_tree;
 using namespace std;
 
 CompassSensor::CompassSensor(const Config &config) : config(config), offset(0) { }
@@ -34,7 +38,7 @@ void CompassSensor::calibrateOffset(const AVRPacket &ap, const WheelsControl &wh
 float CompassSensor::polyval(const std::vector<float> &coefs, float val) {
 	float out = 0;
 	for (int i=0; i<coefs.size(); i++) {
-		out += coefs[i] * pow(val, coefs.size()-i-1);
+		out += coefs[i] * pow(val, (int)coefs.size()-i-1);
 	}
 
 	return out;
@@ -46,3 +50,33 @@ float CompassSensor::angleWrap(float angle) {
 	else
 		return angle;
 }
+
+static vector<float> strToFloatVec(const string &str);
+
+void CompassSensor::WheelOffsetPoly::readTree(const ptree &pt) {
+	magx = strToFloatVec(pt.get<string>("magx"));
+	magy = strToFloatVec(pt.get<string>("magy"));
+}
+
+void CompassSensor::Config::readTree(const ptree &pt) {
+	leftwheel_offset.readTree(pt.get_child("leftwheel_offset"));
+	rightwheel_offset.readTree(pt.get_child("rightwheel_offset"));
+	backwheel_offset.readTree(pt.get_child("backwheel_offset"));
+
+	centerx = (int16_t)pt.get<float>("centerx");
+	centery = (int16_t)pt.get<float>("centery");
+	yscale = pt.get<float>("yscale");
+}
+
+static vector<float> strToFloatVec(const string &str) {
+	vector<string> strs;
+	split(strs, str, is_space(), token_compress_on);
+
+	vector<float> floats(strs.size());
+	for (int i=0; i<strs.size(); i++)
+		floats[i] = lexical_cast<float>(strs[i]);
+
+	return floats;
+}
+
+

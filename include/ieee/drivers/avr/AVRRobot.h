@@ -6,6 +6,7 @@
 #include "ieee/drivers/avr/SonarSensor.h"
 #include "ieee/drivers/avr/WheelsControl.h"
 #include "ieee/drivers/avr/StepperControl.h"
+#include <boost/property_tree/ptree.hpp>
 
 namespace ieee {
 	class AVRRobot {
@@ -18,6 +19,8 @@ namespace ieee {
 				SonarSensor::Config sonar2;
 				WheelsControl::Config wheels;
 				StepperControl::Config stepper;
+
+				void readTree(const boost::property_tree::ptree &pt);
 			};
 
 			AVRRobot(const Config &config);

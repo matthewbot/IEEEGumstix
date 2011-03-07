@@ -4,6 +4,7 @@
 #include "ieee/controls/Vec2D.h"
 #include "ieee/controls/Angle.h"
 #include "ieee/drivers/avr/WheelsControl.h"
+#include <boost/property_tree/ptree.hpp>
 
 namespace ieee {
 	class DriveEquation {
@@ -13,13 +14,17 @@ namespace ieee {
 
 				float outscale;
 				float outoffset;
+
+				void readTree(const boost::property_tree::ptree &pt);
 			};
 
 			struct Config {
 				WheelConfig left, right, back;
 
 				Angle rotationoffset; // wheels are rotated this much relative to the frame
-				float minspeed; // speeds below this the wheel will be given 0 effort
+				float minspeed; // speeds below this the wheel will be disabled
+
+				void readTree(const boost::property_tree::ptree &pt);
 			};
 
 			struct Motion {

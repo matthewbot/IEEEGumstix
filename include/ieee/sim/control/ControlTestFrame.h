@@ -5,6 +5,7 @@
 #include "ieee/sim/control/PositionControllerLayer.h"
 #include "ieee/sim/shared/WorldPanel.h"
 #include "ieee/sim/shared/GridPanelLayer.h"
+#include "ieee/sim/shared/ConfigLoader.h"
 #include "ieee/controls/PositionController.h"
 #include "ieee/drivers/avr/AVRRobot.h"
 #include "ieee/shared/WorldGrid.h"
@@ -16,18 +17,8 @@ namespace ieee {
 			ControlTestFrame();
 
 		private:
-			struct PositionControllerConfig : PositionController::Config {
-				PositionControllerConfig();
-			};
-
-			PositionControllerConfig poscontrolconfig;
+			ConfigLoader configloader;
 			PositionController poscontrol;
-
-			struct AVRRobotConfig : AVRRobot::Config {
-				AVRRobotConfig();
-			};
-
-			AVRRobotConfig robotconfig;
 			boost::scoped_ptr<AVRRobot> robotptr;
 
 			WorldGrid grid;

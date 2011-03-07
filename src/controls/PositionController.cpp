@@ -1,6 +1,7 @@
 #include "ieee/controls/PositionController.h"
 
 using namespace ieee;
+using namespace boost::property_tree;
 
 PositionController::PositionController(const Config &config)
 : config(config),
@@ -104,4 +105,22 @@ void PositionController::updateMotion() {
 	else if (motion.angvel < -config.maxangvel)
 		motion.angvel = -config.maxangvel;
 }
+
+void PositionController::Config::readTree(const ptree &pt) {
+	posfilter.readTree(pt.get_child("posfilter"));
+	driveequ.readTree(pt.get_child("driveequ"));
+
+	stopdist = pt.get<float>("stopdist");
+
+	maxturndist = pt.get<float>("maxturndist");
+	turnspeed = pt.get<float>("turnspeed");
+
+	lockdist = pt.get<float>("lockdist");
+	lockangdiff = pt.get<float>("lockangdiff_deg") / 180 * M_PI;
+	lockspeed = pt.get<float>("lockspeed");
+
+	angvelfactor = pt.get<float>("angvelfactor");
+	maxangvel = pt.get<float>("maxangvel");
+}
+
 

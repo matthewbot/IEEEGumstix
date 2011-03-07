@@ -9,6 +9,7 @@ namespace ieee {
 		public:
 			inline Angle() { }
 			explicit inline Angle(float rad) : rad(rad) { normalize(); }
+			static inline Angle fromDegrees(float degrees) { return Angle(degrees / 180 * M_PI); }
 
 			inline float getRad() const { return rad; }
 			inline float getDistFromZero() const { if (rad < M_PI) { return rad; } else { return rad - 2*M_PI; } }

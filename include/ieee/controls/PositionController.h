@@ -4,6 +4,7 @@
 #include "ieee/controls/PositionFilter.h"
 #include "ieee/controls/DriveEquation.h"
 #include "ieee/drivers/avr/AVRRobot.h"
+#include <boost/property_tree/ptree.hpp>
 
 namespace ieee {
 	class PositionController {
@@ -23,6 +24,8 @@ namespace ieee {
 
 				float angvelfactor; // angular error * factor = desired angular velocity
 				float maxangvel; // angular velocity never exceeds this
+
+				void readTree(const boost::property_tree::ptree &pt);
 			};
 
 			PositionController(const Config &config);

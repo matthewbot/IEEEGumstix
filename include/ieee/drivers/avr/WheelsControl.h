@@ -2,6 +2,7 @@
 #define WHEELSCONTROL_H
 
 #include "ieee/drivers/avr/SerialPackets.h"
+#include <boost/property_tree/ptree.hpp>
 #include <stdint.h>
 
 namespace ieee {
@@ -11,12 +12,16 @@ namespace ieee {
 				int16_t minstop;
 				int16_t maxstop;
 				int16_t offset;
+
+				void readTree(const boost::property_tree::ptree &pt);
 			};
 
 			struct Config {
 				WheelConfig left, right, back;
 
 				int16_t turnhysteresis;
+
+				void readTree(const boost::property_tree::ptree &pt);
 			};
 
 			struct WheelOutput {

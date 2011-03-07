@@ -1,0 +1,57 @@
+wheels {
+	left {
+		minstop 0
+		maxstop 1800
+		offset 40
+	}
+
+	right {
+		minstop 0
+		maxstop 1800
+		offset 0
+	}
+
+	back {
+		minstop 0
+		maxstop 1800
+		offset 70
+	}
+
+	turnhysteresis 100
+}
+
+sonar1 {
+	alpha .3078
+	beta -49.61357
+}
+
+sonar2 {
+	alpha .26518
+	beta -46.60155
+}
+
+compass {
+	centerx -126.16
+	centery 242.57
+	yscale .9568
+
+	leftwheel_offset {
+		magx "-0.72880 1.03260 28.29561 -140.05029 238.21493 -7.61922"
+		magy "-6.7594 57.4896 -178.8064 241.6305 -103.1244 -3.5440"
+	}
+
+	rightwheel_offset {
+		magx "1.0366 -8.7516 25.4013 -27.4524 15.4142 1.2577"
+		magy "-3.3286 29.0120 -95.1656 149.4331 -117.6783 -4.2431"
+	}
+
+	backwheel_offset {
+		magx "-0.73648 8.29814 -27.30958 30.65160 -28.18682 2.86296"
+		magy "-0.70298 0.22097 13.25488 -24.32732 -10.30858 2.56629"
+	}
+}
+
+stepper {
+	stepsize_deg 1.5
+}
+

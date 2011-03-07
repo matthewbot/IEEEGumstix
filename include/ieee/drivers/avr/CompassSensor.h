@@ -3,6 +3,7 @@
 
 #include "ieee/drivers/avr/SerialPackets.h"
 #include "ieee/drivers/avr/WheelsControl.h"
+#include <boost/property_tree/ptree.hpp>
 #include <vector>
 
 namespace ieee {
@@ -11,6 +12,8 @@ namespace ieee {
 			struct WheelOffsetPoly {
 				std::vector<float> magx;
 				std::vector<float> magy;
+
+				void readTree(const boost::property_tree::ptree &pt);
 			};
 
 			struct Config {
@@ -21,6 +24,8 @@ namespace ieee {
 				int16_t centerx;
 				int16_t centery;
 				float yscale; // scale of y axis with respect to x axis
+
+				void readTree(const boost::property_tree::ptree &pt);
 			};
 
 			CompassSensor(const Config &config);

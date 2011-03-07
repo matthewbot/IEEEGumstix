@@ -6,6 +6,7 @@
 using namespace ieee;
 using namespace boost;
 using namespace boost::posix_time;
+using namespace boost::property_tree;
 using namespace std;
 
 AVRRobot::AVRRobot(const Config &config)
@@ -106,5 +107,13 @@ void AVRRobot::setStepperEnabled(bool enabled) {
 
 void AVRRobot::setUpDown(bool updown) {
 	gp.updown_lift = updown;
+}
+
+void AVRRobot::Config::readTree(const ptree &pt) {
+	compass.readTree(pt.get_child("compass"));
+	sonar1.readTree(pt.get_child("sonar1"));
+	sonar2.readTree(pt.get_child("sonar2"));
+	wheels.readTree(pt.get_child("wheels"));
+	stepper.readTree(pt.get_child("stepper"));
 }
 

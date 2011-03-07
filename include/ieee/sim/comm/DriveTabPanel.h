@@ -10,7 +10,7 @@
 namespace ieee {
 	class DriveTabPanel : public TabPanel {
 		public:
-			DriveTabPanel(wxWindow *parent);
+			DriveTabPanel(wxWindow *parent, const DriveEquation::Config &driveequconfig);
 
 			virtual char getTabCharacter() const; // TabPanel
 			virtual void onSync(AVRRobot &robot); // TabPanel
@@ -32,11 +32,6 @@ namespace ieee {
 			wxCheckBox enablecheck;
 			wxCheckBox compasscheck;
 
-			struct DriveEquationConfig : DriveEquation::Config {
-				DriveEquationConfig();
-			};
-
-			DriveEquationConfig equconf;
 			DriveEquation driveequ;
 	};
 }

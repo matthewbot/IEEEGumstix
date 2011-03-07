@@ -3,6 +3,7 @@
 #include <numeric>
 
 using namespace ieee;
+using namespace boost::property_tree;
 using namespace std;
 
 PositionFilter::PositionFilter(const Config &config)
@@ -120,4 +121,16 @@ Vec2D PositionFilter::computeSonarPos(const Input &input) const {
 	sonarpos -= config.sonaroffset.rotate(heading);
 	return sonarpos;
 }
+
+void PositionFilter::Config::readTree(const ptree &pt) {
+	roomwidth = pt.get<float>("roomwidth");
+	roomheight = pt.get<float>("roomheight");
+
+	sonaroffset.x = pt.get<float>("sonaroffset_x");
+	sonaroffset.y = pt.get<float>("sonaroffset_y");
+	sonarmindist = pt.get<float>("sonarmindist");
+
+	posbufsize = pt.get<int>("posbufsize");
+}
+
 

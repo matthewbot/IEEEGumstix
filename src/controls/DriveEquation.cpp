@@ -2,6 +2,7 @@
 #include <algorithm>
 
 using namespace ieee;
+using namespace boost::property_tree;
 using namespace std;
 
 DriveEquation::DriveEquation(const Config &config) : config(config) { }
@@ -43,6 +44,22 @@ WheelsControl::WheelOutput DriveEquation::computeWheel(const WheelConfig &wconfi
 	else
 		out.effort -= wconfig.outoffset;
 	return out;
+}
+
+void DriveEquation::WheelConfig::readTree(const ptree &pt) {
+	relpos.x = pt.get<float>("relpos_x");
+	relpos.y = pt.get<float>("relpos_y");
+	outscale = pt.get<float>("outscale");
+	outoffset = pt.get<float>("outoffset");
+}
+
+void DriveEquation::Config::readTree(const ptree &pt) {
+	left.readTree(pt.get_child("left"));
+	right.readTree(pt.get_child("right"));
+	back.readTree(pt.get_child("back"));
+
+	rotationoffset = Angle::fromDegrees(pt.get<float>("rotationoffset_deg"));
+	minspeed = pt.get<float>("minspeed");
 }
 
 const DriveEquation::Motion DriveEquation::Motion::stop = { Vec2D(0, 0), Angle(0), 0 };

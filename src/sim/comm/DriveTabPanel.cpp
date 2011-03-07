@@ -2,7 +2,7 @@
 
 using namespace ieee;
 
-DriveTabPanel::DriveTabPanel(wxWindow *parent)
+DriveTabPanel::DriveTabPanel(wxWindow *parent, const DriveEquation::Config &driveequconfig)
 : TabPanel(parent),
   xvellabel(this, -1, _("X Velocity")),
   xvelspin(this, -1, _("0")),
@@ -16,7 +16,7 @@ DriveTabPanel::DriveTabPanel(wxWindow *parent)
   maxeffortspin(this, -1, _("0")),
   enablecheck(this, -1, _("Enable")),
   compasscheck(this, -1, _("Compass")),
-  driveequ(equconf) {
+  driveequ(driveequconfig) {
 	wxFlexGridSizer *sizer = new wxFlexGridSizer(2, 5);
 	SetSizer(sizer);
 	sizer->Add(&xvellabel, 0, wxEXPAND);
@@ -53,27 +53,5 @@ void DriveTabPanel::onSync(AVRRobot &robot) {
 	motion.angvel = angvelspin.GetValue()/180.0*M_PI;
 
 	robot.setWheels(driveequ.compute(motion));
-}
-
-DriveTabPanel::DriveEquationConfig::DriveEquationConfig() {
-	left.relpos.x = 3.1903;
-	left.relpos.y = 5.5257;
-	right.relpos.x = 3.1903;
-	right.relpos.y = -5.5257;
-	back.relpos.x = -6.3805;
-	back.relpos.y = 0;
-
-	const float outscale = .1;
-	const float outoffset = .5;
-
-	left.outscale = outscale;
-	left.outoffset = outoffset;
-	right.outscale = outscale;
-	right.outoffset = outoffset;
-	back.outscale = outscale;
-	back.outoffset = outoffset;
-
-	rotationoffset = Angle(M_PI/2);
-	minspeed = .1;
 }
 

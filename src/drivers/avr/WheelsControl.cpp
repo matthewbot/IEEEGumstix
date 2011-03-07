@@ -2,6 +2,7 @@
 #include <cmath>
 
 using namespace ieee;
+using namespace boost::property_tree;
 using namespace std;
 
 WheelsControl::WheelsControl(const Config &config) : config(config) { }
@@ -107,4 +108,19 @@ WheelsControl::WheelOutput &WheelsControl::Output::getWheel(int num) {
 			return back;
 	}
 }
+
+void WheelsControl::WheelConfig::readTree(const ptree &pt) {
+	minstop = (int16_t)pt.get<int>("minstop");
+	maxstop = (int16_t)pt.get<int>("maxstop");
+	offset = (int16_t)pt.get<int>("offset");
+}
+
+void WheelsControl::Config::readTree(const ptree &pt) {
+	left.readTree(pt.get_child("left"));
+	right.readTree(pt.get_child("right"));
+	back.readTree(pt.get_child("back"));
+
+	turnhysteresis = (int16_t)pt.get<int>("turnhysteresis");
+}
+
 

@@ -2,6 +2,7 @@
 #include <cmath>
 
 using namespace ieee;
+using namespace boost::property_tree;
 
 StepperControl::StepperControl(const Config &config) : config(config) { }
 
@@ -25,6 +26,10 @@ void StepperControl::setEnabled(GumstixPacket &gp, bool enabled) const {
 		gp.enable_bits |= ENABLE_STEPPER;
 	else
 		gp.enable_bits &= ~ENABLE_STEPPER;
+}
+
+void StepperControl::Config::readTree(const ptree &pt) {
+	stepsize = pt.get<float>("stepsize_deg") / 180 * M_PI;
 }
 
 

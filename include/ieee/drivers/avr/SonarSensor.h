@@ -2,8 +2,7 @@
 #define IEEE_SONARDRIVER_H
 
 #include "ieee/drivers/avr/SerialPackets.h"
-#include <vector>
-#include <utility>
+#include <boost/property_tree/ptree.hpp>
 #include <stdint.h>
 
 namespace ieee {
@@ -11,6 +10,8 @@ namespace ieee {
 		public:
 			struct Config {
 				float alpha, beta; // distance = reading*alpha + beta
+
+				void readTree(const boost::property_tree::ptree &pt);
 			};
 
 			enum ReadingStatus {

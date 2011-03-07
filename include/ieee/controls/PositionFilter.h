@@ -4,6 +4,7 @@
 #include "ieee/controls/Vec2D.h"
 #include "ieee/controls/Angle.h"
 #include "ieee/drivers/avr/SonarSensor.h"
+#include <boost/property_tree/ptree.hpp>
 #include <vector>
 
 namespace ieee {
@@ -19,6 +20,8 @@ namespace ieee {
 				float sonarmindist; // sonars are always kept pointing farther than this from the wall
 
 				int posbufsize; // this many position samples are averaged to produce our current output
+
+				void readTree(const boost::property_tree::ptree &pt);
 			};
 
 			PositionFilter(const Config &config);
