@@ -51,7 +51,7 @@ bool ObjectPanelLayer::leftDown(const Coord &coord) {
 	return dragging;
 }
 
-bool ObjectPanelLayer::leftUp() {
+bool ObjectPanelLayer::leftUp(const Coord &coord) {
 	dragging = false;
 	return false;
 }
