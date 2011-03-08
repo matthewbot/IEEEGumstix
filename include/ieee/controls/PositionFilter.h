@@ -14,10 +14,9 @@ namespace ieee {
 				float roomwidth;
 				float roomheight;
 
-				Vec2D sonaroffset; // sonar position relative to the robot
-				float sonarstepperrad; // sonar distance from center of stepper
-
-				float sonarmindist; // sonars are always kept pointing farther than this from the wall
+				Vec2D sonarposoffset; // sonar position relative to the robot
+				float sonarmountradius; // sonar distance from center of mount
+				float sonarturnmindist; // sonars are always kept pointing farther than this from the wall
 
 				int posbufsize; // this many position samples are averaged to produce our current output
 

@@ -26,7 +26,7 @@ WheelsControl::Output DriveEquation::compute(const Motion &motion) const {
 WheelsControl::WheelOutput DriveEquation::computeWheel(const WheelConfig &wconfig, const Motion &motion) const {
 	Vec2D relvel = motion.vel.rotate(motion.curdir);
 
-	Vec2D wheelout = relvel + (wconfig.relpos*motion.angvel).rotate(-M_PI/2);
+	Vec2D wheelout = relvel + (wconfig.framepos*motion.angvel).rotate(-M_PI/2);
 	float mag = wheelout.magnitude();
 
 	WheelsControl::WheelOutput out;
@@ -37,20 +37,20 @@ WheelsControl::WheelOutput DriveEquation::computeWheel(const WheelConfig &wconfi
 		return out;
 	}
 
-	out.angle = (wheelout.angle()+config.rotationoffset).getRad();
-	out.effort = wconfig.outscale*mag;
+	out.angle = (wheelout.angle()+config.wheelangleoffset).getRad();
+	out.effort = wconfig.effortscale*mag;
 	if (out.effort > 0)
-		out.effort += wconfig.outoffset;
+		out.effort += wconfig.effortoffset;
 	else
-		out.effort -= wconfig.outoffset;
+		out.effort -= wconfig.effortoffset;
 	return out;
 }
 
 void DriveEquation::WheelConfig::readTree(const ptree &pt) {
-	relpos.x = pt.get<float>("relpos_x");
-	relpos.y = pt.get<float>("relpos_y");
-	outscale = pt.get<float>("outscale");
-	outoffset = pt.get<float>("outoffset");
+	framepos.x = pt.get<float>("framepos_x");
+	framepos.y = pt.get<float>("framepos_y");
+	effortscale = pt.get<float>("effortscale");
+	effortoffset = pt.get<float>("effortoffset");
 }
 
 void DriveEquation::Config::readTree(const ptree &pt) {
@@ -58,7 +58,7 @@ void DriveEquation::Config::readTree(const ptree &pt) {
 	right.readTree(pt.get_child("right"));
 	back.readTree(pt.get_child("back"));
 
-	rotationoffset = Angle::fromDegrees(pt.get<float>("rotationoffset_deg"));
+	wheelangleoffset = Angle::fromDegrees(pt.get<float>("wheelangleoffset_deg"));
 	minspeed = pt.get<float>("minspeed");
 }
 

@@ -15,15 +15,15 @@ namespace ieee {
 
 				float stopdist; // stop within this distance
 
-				float maxturndist; // turn in place when we're this many radians off
-				float turnspeed; // speed of turn in place radians/sec
+				float turnminangdiff; // turn in place when we're this many radians off
+				float turnangvel; // speed of turn in place radians/sec
 
 				float lockdist; // the desired desired velocity vector won't be recomputed as long as we're closer than this distance
-				float lockangdiff; // the maximum difference between the desired velocity and the locked velocity before we're temporarily "unlocked"
+				float lockmaxangdiff; // the maximum difference between the desired velocity and the locked velocity before we're temporarily "unlocked"
 				float lockspeed; // speed we use when in lock mode
 
-				float angvelfactor; // angular error * factor = desired angular velocity
-				float maxangvel; // angular velocity never exceeds this
+				float driveangvelfactor; // angular error * factor = desired angular velocity
+				float drivemaxangvel; // angular velocity never exceeds this
 
 				void readTree(const boost::property_tree::ptree &pt);
 			};

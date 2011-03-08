@@ -2,48 +2,49 @@ posfilter {
 	roomwidth 100
 	roomheight 100
 
-	sonaroffset_x 4
-	sonaroffset_y 0
-	sonarstepperrad 2.5
-	sonarmindist 30
+	sonarposoffset_x 4
+	sonarposoffset_y 0
+	sonarmountradius 2.5
+	sonarturnmindist 30
 
 	posbufsize 3
 }
 
 driveequ {
 	left {
-		relpos_x 3.1903
-		relpos_y 5.5257
-		outscale .0108
-		outoffset .6
+		framepos_x 3.1903
+		framepos_y 5.5257
+		effortscale .0108
+		effortoffset .6
 	}
 
 	right {
-		relpos_x 3.1903
-		relpos_y -5.5257
-		outscale .0108
-		outoffset .5
+		framepos_x 3.1903
+		framepos_y -5.5257
+		effortscale .0108
+		effortoffset .5
 	}
 
 	back {
-		relpos_x -6.3805
-		relpos_y 0
-		outscale .0108
-		outoffset .6
+		framepos_x -6.3805
+		framepos_y 0
+		effortscale .0108
+		effortoffset .6
 	}
 
-	rotationoffset_deg 90
+	wheelangleoffset_deg 90
 	minspeed .1
 }
 
-lockdist 15
-lockangdiff_deg 45
-lockspeed 10
 stopdist 3
 
-angvelfactor 1
-maxangvel 1
+turnminangdiff_deg .1
+turnangvel 1
 
-maxturndist .1
-turnspeed 1
+lockdist 15
+lockmaxangdiff_deg 45
+lockspeed 10
+
+driveangvelfactor 1
+drivemaxangvel 1
 

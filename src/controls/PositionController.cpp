@@ -44,7 +44,7 @@ void PositionController::updatePositionFilter(AVRRobot &robot) {
 void PositionController::updateMotion() {
 	Vec2D distvec = command.destpos - posfilter.getPosition(); // compute a vector giving the distance and direction to travel
 	float dist = distvec.magnitude(); // magnitude gives the distance as a scalar
-	float turndist = (command.destheading - posfilter.getHeading()).getDistFromZero(); // compute the amount the robot needs to turn
+	float angdiff = (command.destheading - posfilter.getHeading()).getDistFromZero(); // compute the amount the robot needs to turn
 
 	// first, handle state transitions
 	switch (state) {
@@ -57,17 +57,19 @@ void PositionController::updateMotion() {
 
 		case LOCK:
 			if (dist < config.stopdist) { // LOCK ends when we enter the stopdist
-				if (abs(turndist) > config.maxturndist) // if we still need to turn
+				if (abs(angdiff) > config.turnminangdiff) // if we still need to turn
 					state = TURN; // enter TURN
 				else
 					state = DONE; // don't need to turn, skip directly to DONE
-			} else if (abs((distvec.angle() - lockvec.angle()).getDistFromZero()) < config.lockangdiff) { // LOCK -> DRIVE if we missed / overshot
-				state = DRIVE;
+			} else {
+				float lockangdiff = (distvec.angle() - lockvec.angle()).getDistFromZero();
+				if (abs(lockangdiff) < config.lockmaxangdiff) // LOCK -> DRIVE if we missed / overshot
+					state = DRIVE;
 			}
 			break;
 
 		case TURN:
-			if (abs(turndist) < config.maxturndist) // TURN -> DONE if we no longer need to turn
+			if (abs(angdiff) < config.turnminangdiff) // TURN -> DONE if we no longer need to turn
 				state = DONE;
 			break;
 
@@ -78,7 +80,12 @@ void PositionController::updateMotion() {
 	switch (state) {
 		case DRIVE:
 			motion.vel = distvec.unit()*command.speed; // DRIVE just follows the direction of the distance vector
-			motion.angvel = (command.destheading - motion.curdir).getDistFromZero()*config.angvelfactor; // throw some angvel in so we turn while moving and look fancy
+			motion.angvel = angdiff*config.driveangvelfactor; // throw some angvel in so we turn while moving and look fancy
+
+			if (motion.angvel > config.drivemaxangvel) // limit angvel
+				motion.angvel = config.drivemaxangvel;
+			else if (motion.angvel < -config.drivemaxangvel)
+				motion.angvel = -config.drivemaxangvel;
 			break;
 
 		case LOCK:
@@ -88,7 +95,7 @@ void PositionController::updateMotion() {
 
 		case TURN:
 			motion.vel = Vec2D(0, 0); // TURN doesn't move
-			motion.angvel = turndist > 0 ? config.turnspeed : -config.turnspeed; // turn at a constant speed in the correct direction
+			motion.angvel = angdiff > 0 ? config.turnangvel : -config.turnangvel; // turn at a constant speed in the correct direction
 			break;
 
 		case DONE:
@@ -97,13 +104,7 @@ void PositionController::updateMotion() {
 			break;
 	}
 
-	// lastly, some housekeeping on the motion data
-
 	motion.curdir = posfilter.getHeading(); // always update curdir from the position filter
-	if (motion.angvel > config.maxangvel) // limit angvel
-		motion.angvel = config.maxangvel;
-	else if (motion.angvel < -config.maxangvel)
-		motion.angvel = -config.maxangvel;
 }
 
 void PositionController::Config::readTree(const ptree &pt) {
@@ -112,15 +113,15 @@ void PositionController::Config::readTree(const ptree &pt) {
 
 	stopdist = pt.get<float>("stopdist");
 
-	maxturndist = pt.get<float>("maxturndist");
-	turnspeed = pt.get<float>("turnspeed");
+	turnminangdiff = pt.get<float>("turnminangdiff_deg") / 180 * M_PI;
+	turnangvel = pt.get<float>("turnangvel");
 
 	lockdist = pt.get<float>("lockdist");
-	lockangdiff = pt.get<float>("lockangdiff_deg") / 180 * M_PI;
+	lockmaxangdiff = pt.get<float>("lockmaxangdiff_deg") / 180 * M_PI;
 	lockspeed = pt.get<float>("lockspeed");
 
-	angvelfactor = pt.get<float>("angvelfactor");
-	maxangvel = pt.get<float>("maxangvel");
+	driveangvelfactor = pt.get<float>("driveangvelfactor");
+	drivemaxangvel = pt.get<float>("drivemaxangvel");
 }
 
 

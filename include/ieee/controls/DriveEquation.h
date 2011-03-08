@@ -10,10 +10,10 @@ namespace ieee {
 	class DriveEquation {
 		public:
 			struct WheelConfig {
-				Vec2D relpos;
+				Vec2D framepos;
 
-				float outscale;
-				float outoffset;
+				float effortscale;
+				float effortoffset;
 
 				void readTree(const boost::property_tree::ptree &pt);
 			};
@@ -21,7 +21,7 @@ namespace ieee {
 			struct Config {
 				WheelConfig left, right, back;
 
-				Angle rotationoffset; // wheels are rotated this much relative to the frame
+				Angle wheelangleoffset; // wheels are rotated this much relative to the frame
 				float minspeed; // speeds below this the wheel will be disabled
 
 				void readTree(const boost::property_tree::ptree &pt);

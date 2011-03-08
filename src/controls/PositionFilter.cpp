@@ -66,14 +66,14 @@ void PositionFilter::updateDesiredSonarDir(const Input &input) {
 	bool up = (input.cursonardir == SONARDIR_EAST || input.cursonardir == SONARDIR_NORTH);
 	bool right = (input.cursonardir == SONARDIR_EAST || input.cursonardir == SONARDIR_SOUTH);
 
-	if (position.x < config.sonarmindist)
+	if (position.x < config.sonarturnmindist)
 		right = true;
-	else if (position.x > config.roomwidth - config.sonarmindist)
+	else if (position.x > config.roomwidth - config.sonarturnmindist)
 		right = false;
 
-	if (position.y < config.sonarmindist)
+	if (position.y < config.sonarturnmindist)
 		up = true;
-	else if (position.y > config.roomheight - config.sonarmindist)
+	else if (position.y > config.roomheight - config.sonarturnmindist)
 		up = false;
 
 	if (up) {
@@ -93,8 +93,8 @@ Vec2D PositionFilter::computeSonarPos(const Input &input) const {
 	assert(input.cursonardir != SONARDIR_INDETERMINATE);
 
 	Vec2D sonarpos;
-	const float s1dist = input.sonar1 + config.sonarstepperrad;
-	const float s2dist = input.sonar2 + config.sonarstepperrad;
+	const float s1dist = input.sonar1 + config.sonarmountradius;
+	const float s2dist = input.sonar2 + config.sonarmountradius;
 
 	switch (input.cursonardir) {
 		case SONARDIR_EAST:
@@ -118,7 +118,7 @@ Vec2D PositionFilter::computeSonarPos(const Input &input) const {
 			break;
 	}
 
-	sonarpos -= config.sonaroffset.rotate(heading);
+	sonarpos -= config.sonarposoffset.rotate(heading);
 	return sonarpos;
 }
 
@@ -126,9 +126,10 @@ void PositionFilter::Config::readTree(const ptree &pt) {
 	roomwidth = pt.get<float>("roomwidth");
 	roomheight = pt.get<float>("roomheight");
 
-	sonaroffset.x = pt.get<float>("sonaroffset_x");
-	sonaroffset.y = pt.get<float>("sonaroffset_y");
-	sonarmindist = pt.get<float>("sonarmindist");
+	sonarposoffset.x = pt.get<float>("sonarposoffset_x");
+	sonarposoffset.y = pt.get<float>("sonarposoffset_y");
+	sonarmountradius = pt.get<float>("sonarmountradius");
+	sonarturnmindist = pt.get<float>("sonarturnmindist");
 
 	posbufsize = pt.get<int>("posbufsize");
 }
