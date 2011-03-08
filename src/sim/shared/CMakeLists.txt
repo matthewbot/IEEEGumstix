@@ -6,6 +6,5 @@ file(GLOB sources "*.cpp")
 add_library(ieeesim ${sources})
 target_link_libraries(ieeesim ieeeshared ${wxWidgets_LIBRARIES} ${Boost_LIBRARIES})
 
-set(IEEE_CONFIG_DIR "${CMAKE_INSTALL_PREFIX}/etc/ieee" CACHE PATH "Directory where configuration .info files are kept")
 add_definitions("-DIEEE_CONFIG_DIR=\"${IEEE_CONFIG_DIR}\"")
 

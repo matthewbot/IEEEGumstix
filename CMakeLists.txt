@@ -9,6 +9,13 @@ include_directories(include)
 find_package(Boost COMPONENTS thread date_time filesystem REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 
+# handle our config files
+set(IEEE_CONFIG_DIR "${CMAKE_INSTALL_PREFIX}/etc/ieee" CACHE PATH "Directory where configuration .info files are kept")
+set(IEEE_CONFIG_INSTALL_DEFAULTS FALSE CACHE BOOL "Whether to copy default configuration files into IEEE_CONFIG_DIR on installation or not")
+if(IEEE_CONFIG_INSTALL_DEFAULTS)
+	install(DIRECTORY ${CMAKE_SOURCE_DIR}/misc/config/ DESTINATION ${IEEE_CONFIG_DIR})
+endif()
+
 # read all subdirectories
 add_subdirectory(src/shared)
 add_subdirectory(src/planner)
