@@ -38,8 +38,8 @@ driveequ {
 
 stopdist 3
 
-turnminangdiff_deg .1
-turnangvel 1
+turnminangdiff_deg 15
+turnangvel 1.2
 
 lockdist 15
 lockmaxangdiff_deg 45

@@ -17,7 +17,7 @@ wheels {
 		offset 70
 	}
 
-	turnhysteresis 100
+	turnhysteresis 150
 }
 
 sonar1 {

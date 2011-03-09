@@ -52,6 +52,8 @@ namespace ieee {
 				DONE
 			};
 
+			static const char *stateToString(State state);
+
 			inline void stop() { state = STOPPED; }
 			inline State getState() const { return state; }
 

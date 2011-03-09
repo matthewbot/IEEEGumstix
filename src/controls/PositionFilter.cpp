@@ -61,7 +61,8 @@ void PositionFilter::updatePos(const Input &input) {
 }
 
 void PositionFilter::updateDesiredSonarDir(const Input &input) {
-	assert(input.cursonardir != SONARDIR_INDETERMINATE);
+	if (input.cursonardir == SONARDIR_INDETERMINATE)
+		return;
 
 	bool up = (input.cursonardir == SONARDIR_EAST || input.cursonardir == SONARDIR_NORTH);
 	bool right = (input.cursonardir == SONARDIR_EAST || input.cursonardir == SONARDIR_SOUTH);
@@ -133,5 +134,4 @@ void PositionFilter::Config::readTree(const ptree &pt) {
 
 	posbufsize = pt.get<int>("posbufsize");
 }
-
 

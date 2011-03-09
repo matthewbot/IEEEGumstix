@@ -41,6 +41,9 @@ void PositionController::updatePositionFilter(AVRRobot &robot) {
 	robot.setSonarAngle((posfilter.getDesiredSonarAngle() - posfilter.getHeading()).getRad());
 }
 
+#include <iostream>
+using namespace std;
+
 void PositionController::updateMotion() {
 	Vec2D distvec = command.destpos - posfilter.getPosition(); // compute a vector giving the distance and direction to travel
 	float dist = distvec.magnitude(); // magnitude gives the distance as a scalar
@@ -63,7 +66,7 @@ void PositionController::updateMotion() {
 					state = DONE; // don't need to turn, skip directly to DONE
 			} else {
 				float lockangdiff = (distvec.angle() - lockvec.angle()).getDistFromZero();
-				if (abs(lockangdiff) < config.lockmaxangdiff) // LOCK -> DRIVE if we missed / overshot
+				if (abs(lockangdiff) > config.lockmaxangdiff) // LOCK -> DRIVE if we missed / overshot
 					state = DRIVE;
 			}
 			break;
@@ -122,6 +125,18 @@ void PositionController::Config::readTree(const ptree &pt) {
 
 	driveangvelfactor = pt.get<float>("driveangvelfactor");
 	drivemaxangvel = pt.get<float>("drivemaxangvel");
+}
+
+const char *PositionController::stateToString(State state) {
+	static const char *strs[] = {
+		"STOPPED",
+		"DRIVE",
+		"LOCK",
+		"TURN",
+		"DONE"
+	};
+
+	return strs[state];
 }
 
 

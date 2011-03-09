@@ -31,6 +31,7 @@ namespace ieee {
 			wxPanel optionspanel;
 			wxButton stopbutton;
 			wxButton resetbutton;
+			wxStaticText statetext;
 
 			wxTimer synctimer;
 

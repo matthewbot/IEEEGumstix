@@ -31,6 +31,7 @@ ControlTestFrame::ControlTestFrame()
   optionspanel(this, -1),
   stopbutton(&optionspanel, STOP_BUTTON, _("Stop"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT),
   resetbutton(&optionspanel, RESET_BUTTON, _("Reset"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT),
+  statetext(&optionspanel, -1, _("")),
   synctimer(this, SYNC_TIMER) {
 	panel.addLayer(&gridlayer);
 	panel.addLayer(&posconlayer);
@@ -39,6 +40,7 @@ ControlTestFrame::ControlTestFrame()
 	optionspanel.SetSizer(optionspanel_sizer);
 	optionspanel_sizer->Add(&stopbutton, 0, wxEXPAND);
 	optionspanel_sizer->Add(&resetbutton, 0, wxEXPAND);
+	optionspanel_sizer->Add(&statetext, 0, wxEXPAND);
 
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	SetSizer(sizer);
@@ -77,6 +79,7 @@ void ControlTestFrame::OnSyncEvent(wxTimerEvent &evt) {
 
 	while (robot.syncIn()) { }
 	poscontrol.update(robot);
+	statetext.SetLabel(wxString::From8BitData(PositionController::stateToString(poscontrol.getState())));
 
 	robot.syncOut();
 
