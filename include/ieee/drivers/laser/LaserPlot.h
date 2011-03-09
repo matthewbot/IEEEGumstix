@@ -14,6 +14,9 @@ namespace ieee {
 				int maxlasers;
 				float maxangle;
 
+				int emptyhitslaser;
+				int minemptyhits;
+
 				std::vector<int> minhits;
 				std::vector<WorldGrid::GridSquare> squarelookup;
 
@@ -22,10 +25,17 @@ namespace ieee {
 
 			LaserPlot(const Config &config, const LaserSensor::Readings &readings, const Coord &curcoord, float curangle, WorldGrid &grid, const CoordScale &gridscale);
 
-			inline int getCount(int x, int y, int laser) const { return squares[x][y][laser]; }
+			inline int getLaserHits(int x, int y, int laser) const { return laserhits[x][y][laser]; }
 
 		private:
-			boost::multi_array<int, 3> squares;
+			const Config &config;
+
+			boost::multi_array<int, 3> laserhits;
+			boost::multi_array<int, 2> emptyhits;
+
+			void plotLaserSquares(const LaserSensor::Readings &readings, const Coord &curcoord, float curangle, const CoordScale &gridscale);
+			void plotEmptySquares(const LaserSensor::Readings &readings, const Coord &curcoord, float curangle, const CoordScale &gridscale);
+			void writeGrid(WorldGrid &grid);
 	};
 }
 

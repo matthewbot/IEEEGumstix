@@ -64,7 +64,10 @@ LaserSimFrame::LaserPlotConfig::LaserPlotConfig() {
 	maxlasers = 3;
 	maxangle = 100;
 
-	minhits += 20, 20, 20;
+	emptyhitslaser = 1;
+	minemptyhits = 10;
+
+	minhits += 5, 5, 5;
 	squarelookup += WorldGrid::LARGE_OBSTACLE, WorldGrid::VICTIM, WorldGrid::SMALL_OBSTACLE;
 }
 
