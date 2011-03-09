@@ -2,6 +2,7 @@
 #define LASERTRACK_H
 
 #include "ieee/drivers/laser/Image.h"
+#include <boost/property_tree/ptree.hpp>
 #include <vector>
 #include <stdint.h>
 
@@ -9,11 +10,11 @@ namespace ieee {
 	class LaserTrack {
 		public:
 			struct Config {
-				int gmult;
-				int brmult;
 				int minval;
 				int maxpoints;
 				int lasersep;
+
+				void readTree(const boost::property_tree::ptree &pt);
 			};
 
 			typedef std::vector<int> LineData;

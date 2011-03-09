@@ -1,8 +1,10 @@
 #include "ieee/sim/laser/LaserSimFrame.h"
 #include "ieee/drivers/laser/LaserPlot.h"
 #include <sstream>
+#include <boost/assign.hpp>
 
 using namespace ieee;
+using namespace boost::assign;
 using namespace std;
 
 enum {
@@ -60,11 +62,8 @@ LaserSimFrame::LaserPlotConfig::LaserPlotConfig() {
 	maxlasers = 3;
 	maxangle = 100;
 
-	static const int minhits_array[] = { 20, 20, 20};
-	minhits = minhits_array;
-
-	static const WorldGrid::GridSquare squarelookup_array[] = { WorldGrid::LARGE_OBSTACLE, WorldGrid::VICTIM, WorldGrid::SMALL_OBSTACLE };
-	squarelookup = squarelookup_array;
+	minhits += 20, 20, 20;
+	squarelookup += WorldGrid::LARGE_OBSTACLE, WorldGrid::VICTIM, WorldGrid::SMALL_OBSTACLE;
 }
 
 void LaserSimFrame::OnWorldGridUpdateEvent(wxCommandEvent& event) {

@@ -3,6 +3,7 @@
 #include <stdint.h>
 
 using namespace ieee;
+using namespace boost::property_tree;
 using namespace std;
 
 LaserTrack::LaserTrack(const Config &config, const Image &frame)
@@ -106,4 +107,11 @@ Image LaserTrack::generateGreenChannel() const {
 
 	return out;
 }
+
+void LaserTrack::Config::readTree(const ptree &pt) {
+	minval = pt.get<int>("minval");
+	maxpoints = pt.get<int>("maxpoints");
+	lasersep = pt.get<int>("lasersep");
+}
+
 

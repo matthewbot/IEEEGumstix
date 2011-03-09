@@ -5,6 +5,7 @@
 #include "ieee/drivers/laser/Image.h"
 #include "ieee/drivers/laser/LaserTrack.h"
 #include "ieee/shared/types.h"
+#include <boost/property_tree/ptree.hpp>
 #include <vector>
 #include <memory>
 
@@ -33,17 +34,21 @@ namespace ieee {
 			};
 
 			struct Calibration {
+				inline Calibration() { }
+				inline Calibration(float alpha, float beta) : alpha(alpha), beta(beta) { }
+
 				float alpha;
 				float beta;
-				float offset;
 			};
 
-			struct Config : LaserTrack::Config {
-				inline Config() { }
+			struct Config {
+				LaserTrack::Config lasertrack;
 
-				const Calibration *calibrations;
+				std::vector<Calibration> calibrations;
 				int exposure;
 				float viewangle; // horizontal, in radians
+
+				void readTree(const boost::property_tree::ptree &pt);
 			};
 
 			LaserSensor(const Config &config, const std::string &devname="");

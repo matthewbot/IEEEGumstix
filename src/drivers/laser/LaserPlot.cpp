@@ -2,9 +2,11 @@
 #include <algorithm>
 #include <cassert>
 #include <cmath>
+#include <sstream>
 
 using namespace ieee;
 using namespace boost;
+using namespace boost::property_tree;
 using namespace std;
 
 LaserPlot::LaserPlot(const Config &config, const LaserSensor::Readings &readings, const Coord &curcoord, float curangle, WorldGrid &grid, const CoordScale &gridscale)
@@ -36,6 +38,25 @@ LaserPlot::LaserPlot(const Config &config, const LaserSensor::Readings &readings
 				}
 			}
 		}
+	}
+}
+
+void LaserPlot::Config::readTree(const ptree &pt) {
+	maxlasers = pt.get<int>("maxlasers");
+	maxangle = pt.get<float>("maxangle");
+
+	minhits.resize(maxlasers);
+	for (int i=0; i<maxlasers; i++) {
+		stringstream buf;
+		buf << "minhits_" << i;
+		minhits[i] = pt.get<int>(buf.str());
+	}
+
+	squarelookup.resize(maxlasers);
+	for (int i=0; i<maxlasers; i++) {
+		stringstream buf;
+		buf << "squarelookup_" << i;
+		squarelookup[i] = (WorldGrid::GridSquare)pt.get<int>(buf.str());
 	}
 }
 

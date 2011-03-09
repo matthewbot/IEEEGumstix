@@ -3,7 +3,9 @@
 
 #include "ieee/drivers/laser/LaserSensor.h"
 #include "ieee/shared/WorldGrid.h"
+#include <boost/property_tree/ptree.hpp>
 #include <boost/multi_array.hpp>
+#include <vector>
 
 namespace ieee {
 	class LaserPlot {
@@ -12,8 +14,10 @@ namespace ieee {
 				int maxlasers;
 				float maxangle;
 
-				const int *minhits;
-				const WorldGrid::GridSquare *squarelookup;
+				std::vector<int> minhits;
+				std::vector<WorldGrid::GridSquare> squarelookup;
+
+				void readTree(const boost::property_tree::ptree &pt);
 			};
 
 			LaserPlot(const Config &config, const LaserSensor::Readings &readings, const Coord &curcoord, float curangle, WorldGrid &grid, const CoordScale &gridscale);
