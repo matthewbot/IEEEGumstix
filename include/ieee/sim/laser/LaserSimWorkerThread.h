@@ -22,6 +22,8 @@ namespace ieee {
 			LaserSensor::Readings getLaserReadings() const;
 			LaserSensor::Debug getLaserDebug() const;
 			inline float getCaptureTime() const { return capturetime; } // in milliseconds
+			inline LaserSensor::Config &getConfig() { return laserconfig; }
+
 		private:
 			virtual ExitCode Entry();
 

@@ -5,6 +5,7 @@
 #include "ieee/sim/laser/LaserSimWorkerThread.h"
 #include "ieee/sim/laser/LaserPanelLayer.h"
 #include "ieee/sim/laser/LaserImagePanel.h"
+#include "ieee/sim/laser/LaserCalibratePanel.h"
 #include "ieee/sim/shared/GridPanelLayer.h"
 #include "ieee/sim/shared/WorldPanel.h"
 #include "ieee/sim/shared/ImagePanel.h"
@@ -34,6 +35,7 @@ namespace ieee {
 			LaserImagePanel *laserimagepanel;
 			ImagePanel *greenimagepanel;
 			ImagePanel *rawimagepanel;
+			LaserCalibratePanel *calibratepanel;
 
 			struct LaserPlotConfig : LaserPlot::Config {
 				LaserPlotConfig();
