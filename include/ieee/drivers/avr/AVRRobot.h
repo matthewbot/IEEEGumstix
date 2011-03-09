@@ -31,6 +31,8 @@ namespace ieee {
 
 			void disableAll(); // disables servos, steppers, and lasers
 
+			void setLasersEnabled(bool enabled=true);
+
 			float getCompassAngle() const;
 			void calibrateCompassOffset(float desireddir=0);
 

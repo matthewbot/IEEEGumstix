@@ -15,7 +15,9 @@ enum {
 SensorsTabPanel::SensorsTabPanel(wxWindow *parent)
 : TabPanel(parent),
   sensorlist(this, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT),
-  freezecheck(this, -1, _("Freeze")),
+  miscpanel(this),
+  freezecheck(&miscpanel, -1, _("Freeze")),
+  lasercheck(&miscpanel, -1, _("Laser")),
   sonaranglepanel(this),
   sonaranglelabel(&sonaranglepanel, -1, _("Stepper")),
   sonaranglespin(&sonaranglepanel, -1, _("0")),
@@ -32,6 +34,11 @@ SensorsTabPanel::SensorsTabPanel(wxWindow *parent)
 	sensorlist.InsertItem(MAGANGLE_ITEM, _("Mag Angle"));
 	sensorlist.InsertItem(BATTVOLTS_ITEM, _("Batt V"));
 
+	wxBoxSizer *miscpanel_sizer = new wxBoxSizer(wxHORIZONTAL);
+	miscpanel.SetSizer(miscpanel_sizer);
+	miscpanel_sizer->Add(&freezecheck);
+	miscpanel_sizer->Add(&lasercheck);
+
 	wxBoxSizer *sonaranglepanel_sizer = new wxBoxSizer(wxHORIZONTAL);
 	sonaranglepanel.SetSizer(sonaranglepanel_sizer);
 	sonaranglepanel_sizer->Add(&sonaranglelabel);
@@ -42,7 +49,7 @@ SensorsTabPanel::SensorsTabPanel(wxWindow *parent)
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	SetSizer(sizer);
 	sizer->Add(&sensorlist, 1, wxEXPAND);
-	sizer->Add(&freezecheck, 0, wxEXPAND);
+	sizer->Add(&miscpanel, 0, wxEXPAND);
 	sizer->Add(&sonaranglepanel, 0, 0);
 
 	sonaranglespin.SetRange(-360, 360);
@@ -73,5 +80,6 @@ void SensorsTabPanel::onSync(AVRRobot &robot) {
 		sonaranglespin.SetValue(-(int)round(angle));
 	robot.setSonarAngle(sonaranglespin.GetValue()/180.0*M_PI);
 	robot.setStepperEnabled(stepperen.GetValue());
+	robot.setLasersEnabled(lasercheck.GetValue());
 }
 

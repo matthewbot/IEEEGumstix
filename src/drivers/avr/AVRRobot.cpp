@@ -51,6 +51,13 @@ void AVRRobot::disableAll() {
 	gp.leftwheel_effort = gp.rightwheel_effort = gp.backwheel_effort = 0;
 }
 
+void AVRRobot::setLasersEnabled(bool enabled) {
+	if (enabled)
+		gp.enable_bits |= ENABLE_LASERS;
+	else
+		gp.enable_bits &= ~ENABLE_LASERS;
+}
+
 float AVRRobot::getCompassAngle() const {
 	return compass.getAngle(ap, wheelscontrol);
 }
