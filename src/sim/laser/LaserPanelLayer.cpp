@@ -25,7 +25,7 @@ void LaserPanelLayer::render(wxPaintDC &dc, const CoordScale &drawscale) const {
 		for (LaserSensor::DistAngleVec::const_iterator i = distangles.begin(); i != distangles.end(); ++i) {
 			Coord coord = i->toCoord(M_PI/2);
 
-			Pos pos = drawscale.coordToPos(50 - coord.x, 100 - coord.y);
+			Pos pos = drawscale.coordToPos(coord.x + 50, 100 - coord.y);
 
 			int num = min(laser, 3);
 			dc.SetPen(pens[num]);

@@ -30,8 +30,7 @@ void LaserPlot::plotLaserSquares(const LaserSensor::Readings &readings, const Co
 			if (abs(i->angle) > config.maxangle)
 				continue;
 
-			Coord coord = i->toCoord(curangle);
-
+			Coord coord = i->toCoord(curangle, config.extradist);
 			Pos pos = gridscale.coordToPos(curcoord.x + coord.x, curcoord.y - coord.y);
 			if (!(pos.x >= 0 && pos.x < laserhits.shape()[0] && pos.y >= 0 && pos.y < laserhits.shape()[1]))
 				continue;
@@ -96,5 +95,7 @@ void LaserPlot::Config::readTree(const ptree &pt) {
 		buf << "squarelookup_" << i;
 		squarelookup[i] = (WorldGrid::GridSquare)pt.get<int>(buf.str());
 	}
+
+	extradist = pt.get<float>("extradist");
 }
 

@@ -137,6 +137,14 @@ Pos CoordScale::coordToPos(float x, float y) const {
     return Pos((int)round(x*sx + xoff), (int)round(y*sy + yoff));
 }
 
+Pos CoordScale::coordToPos(float x, float y, float &errx, float &erry) const {
+    Pos p = coordToPos(x, y);
+    Coord c = posToCoord(p);
+    errx = x - c.x;
+    erry = y - c.y;
+    return p;
+}
+
 Coord CoordScale::posToCoord(int x, int y) const {
     return Coord(((float)x - xoff) / sx, ((float)y - yoff) / sy);
 }

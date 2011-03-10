@@ -5,9 +5,10 @@ using namespace ieee;
 using namespace boost::property_tree;
 using namespace std;
 
-Coord LaserSensor::DistAngle::toCoord(float rotate) const {
+Coord LaserSensor::DistAngle::toCoord(float rotate, float extradist) const {
+	float d = dist + extradist;
 	float a = angle + rotate;
-	return Coord(dist*cos(a), dist*sin(a));
+	return Coord(d*cos(a), d*sin(a));
 }
 
 LaserSensor::LaserSensor(const Config &config, const std::string &devname)
@@ -44,7 +45,7 @@ LaserSensor::Readings LaserSensor::captureReadings(Debug *debug) {
 
 LaserSensor::DistAngle LaserSensor::toDistAngle(int row, int col, int maxcol, int laser) const {
 	const Calibration &cal = config.calibrations[laser];
-	float angle = (col - maxcol/2) * (config.viewangle / maxcol);
+	float angle = (maxcol/2 - col) * (config.viewangle / maxcol);
 	float dist;
 	if (row > 0)
 		dist = 1/(cos(angle)*(cal.alpha*row + cal.beta));

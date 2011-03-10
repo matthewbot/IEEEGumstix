@@ -19,6 +19,7 @@ namespace ieee {
 
 				std::vector<int> minhits;
 				std::vector<WorldGrid::GridSquare> squarelookup;
+				float extradist;
 
 				void readTree(const boost::property_tree::ptree &pt);
 				void writeTree(boost::property_tree::ptree &pt) const;

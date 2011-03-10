@@ -5,9 +5,9 @@ sensor {
 		lasersep 3
 	}
 
-	calibration_0 "2.4545e-4 9.6096e-3"
-	calibration_1 "1.9022e-4 2.1082e-3"
-	calibration_2 "3.6926e-4 9.3072e-3"
+    calibration_0 "0.000578673 0.0196183"
+    calibration_1 "0.000417729 0.00419417"
+    calibration_2 "0.000375687 0.00410499"
 
 	exposure 4000
 	viewangle_deg 57
@@ -26,5 +26,7 @@ plot {
 	minhits_1 5
 	squarelookup_2 1
 	minhits_2 5
+
+	extradist 1.5
 }
 

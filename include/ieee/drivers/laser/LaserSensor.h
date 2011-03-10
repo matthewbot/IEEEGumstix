@@ -21,7 +21,7 @@ namespace ieee {
 				inline DistAngle() { }
 				inline DistAngle(float dist, float angle) : dist(dist), angle(angle) { }
 
-				Coord toCoord(float rotate=0) const;
+				Coord toCoord(float rotate=0, float extradist=0) const;
 			};
 
 			typedef std::vector<DistAngle> DistAngleVec;

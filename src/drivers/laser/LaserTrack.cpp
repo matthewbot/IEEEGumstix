@@ -79,10 +79,10 @@ void LaserTrack::scanCol(int col) {
 
 	sort(greatestrows.begin(), greatestrows.end());
 	for (int i=0; i<greatestrows.size(); i++) {
-		linevec[i][col] = greatestrows[i].row;
+		linevec[i + linevec.size() - greatestrows.size()][col] = greatestrows[i].row;
 	}
 
-	for (int i=greatestrows.size(); i<config.maxpoints; i++) {
+	for (int i=0; i<linevec.size() - greatestrows.size(); i++) {
 		linevec[i][col] = -1;
 	}
 }

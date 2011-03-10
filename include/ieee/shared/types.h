@@ -81,6 +81,7 @@ namespace ieee {
 		inline Coord posToCoord(const Pos &pos) const { return posToCoord(pos.x, pos.y); }
 
 		Pos coordToPos(float x, float y) const;
+		Pos coordToPos(float x, float y, float &errx, float &erry) const;
 		Coord posToCoord(int x, int y) const;
     };
 }
