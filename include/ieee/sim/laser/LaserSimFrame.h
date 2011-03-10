@@ -1,8 +1,7 @@
 #ifndef LASERSIMFRAME_H
 #define LASERSIMFRAME_H
 
-#include "ieee/drivers/laser/LaserPlot.h"
-#include "ieee/sim/laser/LaserSimWorkerThread.h"
+#include "ieee/drivers/laser/LaserMapper.h"
 #include "ieee/sim/laser/LaserPanelLayer.h"
 #include "ieee/sim/laser/LaserImagePanel.h"
 #include "ieee/sim/laser/LaserCalibratePanel.h"
@@ -15,17 +14,16 @@
 #include <wx/notebook.h>
 
 namespace ieee {
-	class LaserSimFrame : public wxFrame, LaserSimWorkerThread::Callbacks, LaserCalibratePanel::Callbacks {
+	class LaserSimFrame : public wxFrame, LaserMapper::Callbacks, LaserCalibratePanel::Callbacks {
 		public:
 			LaserSimFrame();
-			~LaserSimFrame();
 
 		private:
 			ConfigLoader configloader;
 
-			LaserSimWorkerThread thread;
 			WorldGrid grid;
 			CoordScale gridscale;
+			LaserMapper lasermapper;
 			LaserSensor::Readings readings;
 
 			wxStaticText rawreadingtext;

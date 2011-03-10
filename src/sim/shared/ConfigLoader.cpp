@@ -39,10 +39,5 @@ void ConfigLoader::saveLaserConfig() {
 	write_info(out, laserconfigpt);
 }
 
-void ConfigLoader::LaserConfig::readTree(const ptree &pt) {
-	sensor.readTree(pt.get_child("sensor"));
-	plot.readTree(pt.get_child("plot"));
-}
-
 const fs::path ConfigLoader::systemdefaultdir(IEEE_CONFIG_DIR);
 

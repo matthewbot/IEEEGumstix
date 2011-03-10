@@ -2,8 +2,7 @@
 #define CONFIGLOADER_H
 
 #include "ieee/drivers/avr/AVRRobot.h"
-#include "ieee/drivers/laser/LaserSensor.h" // this isn't great because now all simulator binaries depend on all our libraries..
-#include "ieee/drivers/laser/LaserPlot.h"
+#include "ieee/drivers/laser/LaserMapper.h" // this isn't great because now all simulator binaries depend on all our libraries..
 #include "ieee/controls/PositionController.h"
 #include <boost/filesystem.hpp>
 
@@ -16,8 +15,7 @@ namespace ieee {
 
 			inline AVRRobot::Config &getAVRRobotConfig() { return avrrobotconfig; }
 			inline PositionController::Config &getPositionControllerConfig() { return poscontrolconfig; }
-			inline LaserSensor::Config &getLaserSensorConfig() { return laserconfig.sensor; }
-			inline LaserPlot::Config &getLaserPlotConfig() { return laserconfig.plot; }
+			inline LaserMapper::Config &getLaserConfig() { return laserconfig; }
 
 			void saveLaserConfig();
 
@@ -25,15 +23,7 @@ namespace ieee {
 			boost::filesystem::path basedir;
 			AVRRobot::Config avrrobotconfig;
 			PositionController::Config poscontrolconfig;
-
-			struct LaserConfig {
-				LaserSensor::Config sensor;
-				LaserPlot::Config plot;
-
-				void readTree(const boost::property_tree::ptree &pt);
-			};
-
-			LaserConfig laserconfig;
+			LaserMapper::Config laserconfig;
 			boost::property_tree::ptree laserconfigpt;
 	};
 }

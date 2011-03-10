@@ -19,9 +19,9 @@ END_EVENT_TABLE()
 
 LaserSimFrame::LaserSimFrame()
 : wxFrame(NULL, -1, _("Hello World"), wxDefaultPosition, wxSize(450, 400)),
-  thread(*this, configloader.getLaserSensorConfig()),
   grid(10, 10, WorldGrid::UNKNOWN),
   gridscale(.1, .1, -.5, -.5),
+  lasermapper(configloader.getLaserConfig(), *this, grid.getWidth(), grid.getHeight(), gridscale),
   gridlayer(grid, gridscale),
   laserlayer(readings),
   rawreadingtext(this, -1, _("")),
@@ -31,6 +31,8 @@ LaserSimFrame::LaserSimFrame()
   greenimagepanel(new ImagePanel(&notebook)),
   rawimagepanel(new ImagePanel(&notebook)),
   calibratepanel(new LaserCalibratePanel(&notebook, *this)) {
+  	lasermapper.updateState(Coord(50, 100), M_PI/2);
+
 	gridworldpanel->addLayer(&gridlayer);
 	gridworldpanel->addLayer(&laserlayer);
 
@@ -46,12 +48,6 @@ LaserSimFrame::LaserSimFrame()
 	SetSizer(sizer);
 
 	rawreadingtext.SetFont(wxFont(12, wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
-
-	thread.start();
-}
-
-LaserSimFrame::~LaserSimFrame() {
-	thread.stop();
 }
 
 void LaserSimFrame::onNewLaserData() {
@@ -61,7 +57,7 @@ void LaserSimFrame::onNewLaserData() {
 }
 
 void LaserSimFrame::onApplyCalibrations(const std::vector<LaserSensor::Calibration> &calibrations) {
-	configloader.getLaserSensorConfig().calibrations = calibrations;
+	configloader.getLaserConfig().sensor.calibrations = calibrations;
 }
 
 void LaserSimFrame::onSaveCalibrations() {
@@ -69,11 +65,10 @@ void LaserSimFrame::onSaveCalibrations() {
 }
 
 void LaserSimFrame::OnWorldGridUpdateEvent(wxCommandEvent& event) {
-	readings = thread.getLaserReadings();
-	LaserSensor::Debug debug = thread.getLaserDebug();
-
-	grid.clear(WorldGrid::UNKNOWN);
-	LaserPlot laserplot(configloader.getLaserPlotConfig(), readings, Coord(50, 100), M_PI/2, grid, gridscale);
+	readings = lasermapper.getLaserReadings();
+	LaserSensor::Debug debug = lasermapper.getLaserDebug();
+	grid = lasermapper.getMapGrid();
+	lasermapper.clearMapGrid();
 
 	laserimagepanel->update(debug.rawframe, debug.rawreadings);
 	greenimagepanel->update(debug.greenframe);
@@ -88,7 +83,7 @@ void LaserSimFrame::OnWorldGridUpdateEvent(wxCommandEvent& event) {
 			buf << linedata[linedata.size()/2] << "\t";
 		}
 	}
-	buf << "Time " << (int)thread.getCaptureTime() << " ms";
+	buf << "Time " << (int)lasermapper.getUpdateTime() << " ms";
 
 	rawreadingtext.SetLabel(wxString(buf.str().c_str(), wxConvUTF8)); // eh...
 
@@ -96,7 +91,8 @@ void LaserSimFrame::OnWorldGridUpdateEvent(wxCommandEvent& event) {
 }
 
 void LaserSimFrame::OnPageChangeEvent(wxNotebookEvent &evt) {
-	thread.setDebugFlag(evt.GetSelection() != 0);
+	bool plot = evt.GetSelection() == 0;
+	bool debug = !plot;
+	lasermapper.setFlags(debug, plot);
 }
-
 

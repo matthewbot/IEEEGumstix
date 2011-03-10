@@ -10,7 +10,7 @@ Image::Image(Format format)
 Image::Image(int rows, int cols, Format format)
 : rows(rows), cols(cols), format(format), data(rows*cols*bytesPerPixel(format)) { }
 Image::Image(const Image &orig)
-: rows(orig.rows), cols(orig.cols), format(format), data(orig.data) { }
+: rows(orig.rows), cols(orig.cols), format(orig.format), data(orig.data) { }
 Image::Image(const Image &orig, Format format)
 : rows(orig.rows), cols(orig.cols), format(format), data(rows*cols*bytesPerPixel(format)) {
 	if (orig.format == format)
