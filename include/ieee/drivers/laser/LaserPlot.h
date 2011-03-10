@@ -21,6 +21,7 @@ namespace ieee {
 				std::vector<WorldGrid::GridSquare> squarelookup;
 
 				void readTree(const boost::property_tree::ptree &pt);
+				void writeTree(boost::property_tree::ptree &pt) const;
 			};
 
 			LaserPlot(const Config &config, const LaserSensor::Readings &readings, const Coord &curcoord, float curangle, WorldGrid &grid, const CoordScale &gridscale);

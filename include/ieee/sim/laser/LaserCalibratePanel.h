@@ -10,12 +10,17 @@
 namespace ieee {
 	class LaserCalibratePanel : public wxPanel {
 		public:
-			LaserCalibratePanel(wxWindow *parent, std::vector<LaserSensor::Calibration> &configcalibrations);
+			struct Callbacks {
+				virtual void onApplyCalibrations(const std::vector<LaserSensor::Calibration> &calibrations) =0;
+				virtual void onSaveCalibrations() =0;
+			};
+
+			LaserCalibratePanel(wxWindow *parent, Callbacks &callbacks);
 
 			void update(const LaserSensor::RawReadings &rawreadings);
 
 		private:
-			std::vector<LaserSensor::Calibration> &configcalibrations;
+			Callbacks &callbacks;
 
 			wxPanel entrypanel;
 			wxStaticText distspintext;
@@ -34,6 +39,7 @@ namespace ieee {
 			void OnCaptureButton(wxCommandEvent &evt);
 			void OnDropButton(wxCommandEvent &evt);
 			void OnApplyButton(wxCommandEvent &evt);
+			void OnSaveButton(wxCommandEvent &evt);
 
 			std::vector<int> curreadings;
 

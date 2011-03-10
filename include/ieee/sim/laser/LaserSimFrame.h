@@ -9,17 +9,20 @@
 #include "ieee/sim/shared/GridPanelLayer.h"
 #include "ieee/sim/shared/WorldPanel.h"
 #include "ieee/sim/shared/ImagePanel.h"
+#include "ieee/sim/shared/ConfigLoader.h"
 #include "ieee/shared/WorldGrid.h"
 #include <wx/wx.h>
 #include <wx/notebook.h>
 
 namespace ieee {
-	class LaserSimFrame : public wxFrame, LaserSimWorkerThread::Callbacks {
+	class LaserSimFrame : public wxFrame, LaserSimWorkerThread::Callbacks, LaserCalibratePanel::Callbacks {
 		public:
 			LaserSimFrame();
 			~LaserSimFrame();
 
 		private:
+			ConfigLoader configloader;
+
 			LaserSimWorkerThread thread;
 			WorldGrid grid;
 			CoordScale gridscale;
@@ -37,14 +40,12 @@ namespace ieee {
 			ImagePanel *rawimagepanel;
 			LaserCalibratePanel *calibratepanel;
 
-			struct LaserPlotConfig : LaserPlot::Config {
-				LaserPlotConfig();
-			};
-			LaserPlotConfig laserplotconfig;
-
 			DECLARE_EVENT_TABLE()
 
-			virtual void onNewLaserData();
+			virtual void onNewLaserData(); // LaserSimWorkerThread::Callbacks
+			virtual void onApplyCalibrations(const std::vector<LaserSensor::Calibration> &calibrations); // LaserCalibratePanel::Callbacks
+			virtual void onSaveCalibrations();
+
 			void OnWorldGridUpdateEvent(wxCommandEvent &evt);
 			void OnPageChangeEvent(wxNotebookEvent &evt);
 	};

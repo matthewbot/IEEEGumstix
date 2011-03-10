@@ -1,0 +1,30 @@
+sensor {
+	track {
+		minval 40
+		maxpoints 3
+		lasersep 3
+	}
+
+	calibration_0 "2.4545e-4 9.6096e-3"
+	calibration_1 "1.9022e-4 2.1082e-3"
+	calibration_2 "3.6926e-4 9.3072e-3"
+
+	exposure 4000
+	viewangle_deg 57
+}
+
+plot {
+	maxlasers 3
+	maxangle 100
+
+	emptyhitslaser 1
+	minemptyhits 10
+
+	squarelookup_0 3
+	minhits_0 5
+	squarelookup_1 2
+	minhits_1 5
+	squarelookup_2 1
+	minhits_2 5
+}
+

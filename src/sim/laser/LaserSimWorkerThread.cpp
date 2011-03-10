@@ -5,21 +5,10 @@
 using namespace ieee;
 using namespace boost::assign;
 
-LaserSimWorkerThread::LaserConfig::LaserConfig() {
-	lasertrack.minval = 30;
-	lasertrack.maxpoints = 3;
-	lasertrack.lasersep = 10;
-
-	calibrations += LaserSensor::Calibration(2.4545e-4, 9.6096e-03), LaserSensor::Calibration(1.9022e-4, 2.1028e-03), LaserSensor::Calibration(3.6926e-4, 9.3072e-03);
-	exposure = 4000;
-	viewangle = 55.7 / 180 * M_PI;
-};
-
-LaserSimWorkerThread::LaserSimWorkerThread(Callbacks &callbacks)
+LaserSimWorkerThread::LaserSimWorkerThread(Callbacks &callbacks, LaserSensor::Config &sensorconfig)
 : wxThread(wxTHREAD_JOINABLE),
   callbacks(callbacks),
-  laserconfig(),
-  laserptr(LaserSensor::createAndHandleExposureFailure(laserconfig)),
+  laserptr(LaserSensor::createAndHandleExposureFailure(sensorconfig)),
   stopflag(false),
   debugflag(true) {
 	Create();

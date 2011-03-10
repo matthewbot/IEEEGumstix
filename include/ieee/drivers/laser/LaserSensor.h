@@ -42,7 +42,7 @@ namespace ieee {
 			};
 
 			struct Config {
-				LaserTrack::Config lasertrack;
+				LaserTrack::Config track;
 
 				std::vector<Calibration> calibrations;
 				int exposure;

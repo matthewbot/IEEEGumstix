@@ -13,7 +13,7 @@ namespace ieee {
 					virtual void onNewLaserData() = 0;
 			};
 
-			LaserSimWorkerThread(Callbacks &callbacks);
+			LaserSimWorkerThread(Callbacks &callbacks, LaserSensor::Config &sensorconfig);
 
 			void start();
 			void stop();
@@ -22,7 +22,6 @@ namespace ieee {
 			LaserSensor::Readings getLaserReadings() const;
 			LaserSensor::Debug getLaserDebug() const;
 			inline float getCaptureTime() const { return capturetime; } // in milliseconds
-			inline LaserSensor::Config &getConfig() { return laserconfig; }
 
 		private:
 			virtual ExitCode Entry();
@@ -33,10 +32,6 @@ namespace ieee {
 			mutable wxCriticalSection critsect;
 			float capturetime;
 
-			struct LaserConfig : LaserSensor::Config {
-				LaserConfig();
-			};
-			LaserConfig laserconfig;
 			const std::auto_ptr<LaserSensor> laserptr;
 
 			volatile bool stopflag;

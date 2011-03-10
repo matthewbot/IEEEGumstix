@@ -19,7 +19,7 @@ END_EVENT_TABLE()
 
 LaserSimFrame::LaserSimFrame()
 : wxFrame(NULL, -1, _("Hello World"), wxDefaultPosition, wxSize(450, 400)),
-  thread(*this),
+  thread(*this, configloader.getLaserSensorConfig()),
   grid(10, 10, WorldGrid::UNKNOWN),
   gridscale(.1, .1, -.5, -.5),
   gridlayer(grid, gridscale),
@@ -30,7 +30,7 @@ LaserSimFrame::LaserSimFrame()
   laserimagepanel(new LaserImagePanel(&notebook)),
   greenimagepanel(new ImagePanel(&notebook)),
   rawimagepanel(new ImagePanel(&notebook)),
-  calibratepanel(new LaserCalibratePanel(&notebook, thread.getConfig().calibrations)) {
+  calibratepanel(new LaserCalibratePanel(&notebook, *this)) {
 	gridworldpanel->addLayer(&gridlayer);
 	gridworldpanel->addLayer(&laserlayer);
 
@@ -60,15 +60,12 @@ void LaserSimFrame::onNewLaserData() {
 	AddPendingEvent(event);
 }
 
-LaserSimFrame::LaserPlotConfig::LaserPlotConfig() {
-	maxlasers = 3;
-	maxangle = 100;
+void LaserSimFrame::onApplyCalibrations(const std::vector<LaserSensor::Calibration> &calibrations) {
+	configloader.getLaserSensorConfig().calibrations = calibrations;
+}
 
-	emptyhitslaser = 1;
-	minemptyhits = 10;
-
-	minhits += 5, 5, 5;
-	squarelookup += WorldGrid::LARGE_OBSTACLE, WorldGrid::VICTIM, WorldGrid::SMALL_OBSTACLE;
+void LaserSimFrame::onSaveCalibrations() {
+	configloader.saveLaserConfig();
 }
 
 void LaserSimFrame::OnWorldGridUpdateEvent(wxCommandEvent& event) {
@@ -76,7 +73,7 @@ void LaserSimFrame::OnWorldGridUpdateEvent(wxCommandEvent& event) {
 	LaserSensor::Debug debug = thread.getLaserDebug();
 
 	grid.clear(WorldGrid::UNKNOWN);
-	LaserPlot laserplot(laserplotconfig, readings, Coord(50, 100), M_PI/2, grid, gridscale);
+	LaserPlot laserplot(configloader.getLaserPlotConfig(), readings, Coord(50, 100), M_PI/2, grid, gridscale);
 
 	laserimagepanel->update(debug.rawframe, debug.rawreadings);
 	greenimagepanel->update(debug.greenframe);

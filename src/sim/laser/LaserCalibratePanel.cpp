@@ -14,11 +14,12 @@ BEGIN_EVENT_TABLE(LaserCalibratePanel, wxPanel)
 	EVT_BUTTON(CAPTURE_BUTTON, LaserCalibratePanel::OnCaptureButton)
 	EVT_BUTTON(DROP_BUTTON, LaserCalibratePanel::OnDropButton)
 	EVT_BUTTON(APPLY_BUTTON, LaserCalibratePanel::OnApplyButton)
+	EVT_BUTTON(SAVE_BUTTON, LaserCalibratePanel::OnSaveButton)
 END_EVENT_TABLE()
 
-LaserCalibratePanel::LaserCalibratePanel(wxWindow *parent, std::vector<LaserSensor::Calibration> &configcalibrations)
+LaserCalibratePanel::LaserCalibratePanel(wxWindow *parent, Callbacks &callbacks)
 : wxPanel(parent),
-  configcalibrations(configcalibrations),
+  callbacks(callbacks),
   entrypanel(this),
   distspintext(&entrypanel, -1, _("Distance: ")),
   distspin(&entrypanel, -1, _("10")),
@@ -103,10 +104,18 @@ void LaserCalibratePanel::OnDropButton(wxCommandEvent &evt) {
 }
 
 void LaserCalibratePanel::OnApplyButton(wxCommandEvent &evt) {
+	vector<LaserSensor::Calibration> calibrations(regresults.size());
+
 	for (int i=0; i<regresults.size(); i++) {
-		configcalibrations[i].alpha = regresults[i].alpha;
-		configcalibrations[i].beta = regresults[i].beta;
+		calibrations[i].alpha = regresults[i].alpha;
+		calibrations[i].beta = regresults[i].beta;
 	}
+
+	callbacks.onApplyCalibrations(calibrations);
+}
+
+void LaserCalibratePanel::OnSaveButton(wxCommandEvent &evt) {
+	callbacks.onSaveCalibrations();
 }
 
 void LaserCalibratePanel::updateRegression() {

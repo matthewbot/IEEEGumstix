@@ -74,6 +74,9 @@ void LaserPlot::Config::readTree(const ptree &pt) {
 	maxlasers = pt.get<int>("maxlasers");
 	maxangle = pt.get<float>("maxangle");
 
+	emptyhitslaser = pt.get<int>("emptyhitslaser");
+	minemptyhits = pt.get<int>("minemptyhits");
+
 	minhits.resize(maxlasers);
 	for (int i=0; i<maxlasers; i++) {
 		stringstream buf;

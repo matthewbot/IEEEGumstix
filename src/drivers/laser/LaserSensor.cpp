@@ -17,7 +17,7 @@ LaserSensor::RawReadings LaserSensor::captureRawReadings(Debug *debug) {
 	Image frame;
 	cap.readFrame(frame);
 
-	LaserTrack track(config.lasertrack, frame);
+	LaserTrack track(config.track, frame);
 
 	if (debug) {
 		debug->rawframe = frame;
@@ -70,10 +70,10 @@ auto_ptr<LaserSensor> LaserSensor::createAndHandleExposureFailure(Config &config
 }
 
 void LaserSensor::Config::readTree(const ptree &pt) {
-	lasertrack.readTree(pt.get_child("lasertrack"));
+	track.readTree(pt.get_child("track"));
 
-	calibrations.resize(lasertrack.maxpoints);
-	for (int i=0; i<lasertrack.maxpoints;i++) {
+	calibrations.resize(track.maxpoints);
+	for (int i=0; i<track.maxpoints;i++) {
 		stringstream propbuf;
 		propbuf << "calibration_" << i;
 
