@@ -35,11 +35,7 @@ LaserSensor::Readings LaserSensor::captureReadings(Debug *debug) {
 	for (int laser=0; laser<rawreadings.size(); laser++) {
 		const LaserTrack::LineData &line = rawreadings[laser];
 		for (int col=0; col < line.size(); col++) {
-			int row = line[col];
-			if (row == -1)
-				continue;
-
-			readings[laser].push_back(toDistAngle(row, col, line.size(), laser));
+			readings[laser].push_back(toDistAngle(line[col], col, line.size(), laser));
 		}
 	}
 
@@ -49,7 +45,11 @@ LaserSensor::Readings LaserSensor::captureReadings(Debug *debug) {
 LaserSensor::DistAngle LaserSensor::toDistAngle(int row, int col, int maxcol, int laser) const {
 	const Calibration &cal = config.calibrations[laser];
 	float angle = (col - maxcol/2) * (config.viewangle / maxcol);
-	float dist = 1/(cos(angle)*(cal.alpha*row + cal.beta));
+	float dist;
+	if (row > 0)
+		dist = 1/(cos(angle)*(cal.alpha*row + cal.beta));
+	else
+		dist = 150;
 	return DistAngle(dist, angle);
 }
 
