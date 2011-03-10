@@ -30,6 +30,7 @@ namespace ieee {
 
 			PositionController(const Config &config);
 
+			inline PositionFilter &getPositionFilter() { return posfilter; }
 			inline const PositionFilter &getPositionFilter() const { return posfilter; }
 
 			struct Command {

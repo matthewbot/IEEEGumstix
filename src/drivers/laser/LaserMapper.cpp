@@ -10,7 +10,7 @@ LaserMapper::LaserMapper(Config &config, Callbacks &callbacks, int gridwidth, in
   callbacks(callbacks),
   gridscale(gridscale),
   laserptr(LaserSensor::createAndHandleExposureFailure(config.sensor)),
-  mapgrid(gridwidth, gridheight),
+  mapgrid(gridwidth, gridheight, WorldGrid::UNKNOWN),
   curpos(0, 0),
   curdir(0),
   stopflag(false),

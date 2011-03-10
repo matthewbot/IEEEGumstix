@@ -52,6 +52,8 @@ namespace ieee {
 			inline SonarDir getDesiredSonarDir() const { return desiredsonardir; }
 			inline Angle getDesiredSonarAngle() const { return sonarDirToAngle(desiredsonardir); }
 
+			void setPosition(const Vec2D &vec2d, Angle heading);
+
 		private:
 			const Config &config;
 

@@ -15,7 +15,7 @@ sensor {
 
 plot {
 	maxlasers 3
-	maxangle 100
+	maxangle_deg 22
 
 	emptyhitslaser 1
 	minemptyhits 10

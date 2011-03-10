@@ -36,6 +36,12 @@ void PositionFilter::update(const Input &input) {
 	updateDesiredSonarDir(input);
 }
 
+void PositionFilter::setPosition(const Vec2D &position, Angle heading) {
+	this->position = position;
+	this->heading = heading;
+	positionok = true;
+}
+
 void PositionFilter::updateHeading(const Input &input) {
 	heading = input.compassheading;
 }

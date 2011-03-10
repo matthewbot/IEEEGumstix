@@ -27,9 +27,12 @@ void LaserPlot::plotLaserSquares(const LaserSensor::Readings &readings, const Co
 		const LaserSensor::DistAngleVec &distangles = readings[laser];
 
 		for (LaserSensor::DistAngleVec::const_iterator i = distangles.begin(); i != distangles.end(); ++i) {
-			Coord coord = i->toCoord(M_PI/2);
+			if (abs(i->angle) > config.maxangle)
+				continue;
 
-			Pos pos = gridscale.coordToPos(curcoord.x - coord.x, curcoord.y - coord.y);
+			Coord coord = i->toCoord(curangle);
+
+			Pos pos = gridscale.coordToPos(curcoord.x + coord.x, curcoord.y - coord.y);
 			if (!(pos.x >= 0 && pos.x < laserhits.shape()[0] && pos.y >= 0 && pos.y < laserhits.shape()[1]))
 				continue;
 
@@ -39,11 +42,14 @@ void LaserPlot::plotLaserSquares(const LaserSensor::Readings &readings, const Co
 }
 
 void LaserPlot::plotEmptySquares(const LaserSensor::Readings &readings, const Coord &curcoord, float curangle, const CoordScale &gridscale) {
-	const LaserSensor::DistAngleVec &emptydistangle = readings[config.emptyhitslaser];
+	const LaserSensor::DistAngleVec &emptydistangle = readings[0];
 	for (LaserSensor::DistAngleVec::const_iterator i = emptydistangle.begin(); i != emptydistangle.end(); ++i) {
+		if (abs(i->angle) > config.maxangle)
+			continue;
+
 		for (float dist=.5; dist < i->dist; dist+=.5) {
-			Coord coord = LaserSensor::DistAngle(dist, i->angle).toCoord(M_PI/2);
-			Pos pos = gridscale.coordToPos(curcoord.x - coord.x, curcoord.y - coord.y);
+			Coord coord = LaserSensor::DistAngle(dist, i->angle).toCoord(curangle);
+			Pos pos = gridscale.coordToPos(curcoord.x + coord.x, curcoord.y - coord.y);
 			if (!(pos.x >= 0 && pos.x < emptyhits.shape()[0] && pos.y >= 0 && pos.y < emptyhits.shape()[1]))
 				break;
 
@@ -72,7 +78,7 @@ void LaserPlot::writeGrid(WorldGrid &grid) {
 
 void LaserPlot::Config::readTree(const ptree &pt) {
 	maxlasers = pt.get<int>("maxlasers");
-	maxangle = pt.get<float>("maxangle");
+	maxangle = pt.get<float>("maxangle_deg")/180*M_PI;
 
 	emptyhitslaser = pt.get<int>("emptyhitslaser");
 	minemptyhits = pt.get<int>("minemptyhits");
