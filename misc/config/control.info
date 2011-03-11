@@ -4,7 +4,7 @@ posfilter {
 
 	sonarposoffset_x 4
 	sonarposoffset_y 0
-	sonarmountradius 2.5
+	sonarmountradius 3
 	sonarturnmindist 30
 
 	posbufsize 3

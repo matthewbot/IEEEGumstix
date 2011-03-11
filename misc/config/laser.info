@@ -23,9 +23,9 @@ plot {
 	squarelookup_0 3
 	minhits_0 5
 	squarelookup_1 2
-	minhits_1 5
+	minhits_1 20
 	squarelookup_2 1
-	minhits_2 5
+	minhits_2 20
 
 	extradist 1.5
 }

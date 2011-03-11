@@ -22,7 +22,7 @@ wheels {
 
 sonar1 {
 	alpha .3078
-	beta -49.61357
+	beta -46.61357
 }
 
 sonar2 {
@@ -52,6 +52,6 @@ compass {
 }
 
 stepper {
-	stepsize_deg 1.5
+	stepsize_deg 1.8
 }
 

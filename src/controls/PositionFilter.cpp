@@ -125,7 +125,7 @@ Vec2D PositionFilter::computeSonarPos(const Input &input) const {
 			break;
 	}
 
-	sonarpos -= config.sonarposoffset.rotate(heading);
+	sonarpos -= config.sonarposoffset.rotate(-heading);
 	return sonarpos;
 }
 

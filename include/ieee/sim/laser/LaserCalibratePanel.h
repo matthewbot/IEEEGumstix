@@ -4,6 +4,7 @@
 #include "ieee/drivers/laser/LaserSensor.h"
 #include <wx/wx.h>
 #include <wx/spinctrl.h>
+#include <wx/listctrl.h>
 #include <vector>
 #include <utility>
 
